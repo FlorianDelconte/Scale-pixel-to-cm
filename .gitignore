@@ -6,3 +6,5 @@
 *.exe
 *.o
 *.so
+venv
+deeplearning
