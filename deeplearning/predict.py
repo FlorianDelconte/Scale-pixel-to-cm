@@ -20,7 +20,7 @@ from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from keras import backend as keras
 
 import model
-
+import cv2
 
 net = model.unet()
 net.load_weights(model.fullname)
@@ -40,7 +40,7 @@ for path in os.listdir(dir_input):
 	if path == ".DS_Store": continue
 	file 	= "{}/{}".format(dir_input, path)
 	img 	= io.imread(file, plugin='matplotlib')
-	img 	= np.array([img])
+	img 	= np.array([img])	
 	print(img.shape)
 	img 	= np.reshape(img, [1, model.height, model.width, model.channels])
 	px 		= net.predict(img, verbose=1)
