@@ -1,5 +1,4 @@
-# Compiled source #
-###################
+# Compiled source
 *.com
 *.class
 *.dll
@@ -9,7 +8,7 @@
 *.JPG
 *.jpg
 *.pyc
-##################
-#Virtual environnement#
+.Python
+#Virtual environnement
 venv
 deeplearning/model
