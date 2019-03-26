@@ -3,7 +3,7 @@ import os
 import csv
 import sys
 import skimage.io as io
-import skimage.transform as transform
+#import skimage.transform as transform
 #import skimage.transform as trans
 
 #import matplotlib.pyplot as plt
@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.image as img
 import scipy.misc
 
-from sklearn.model_selection import train_test_split
+#from sklearn.model_selection import train_test_split
 
 from keras.models import *
 from keras.layers import *
@@ -40,7 +40,7 @@ for path in os.listdir(dir_input):
 	if path == ".DS_Store": continue
 	file 	= "{}/{}".format(dir_input, path)
 	img 	= io.imread(file, plugin='matplotlib')
-	img 	= np.array([img])	
+	img 	= np.array([img])
 	print(img.shape)
 	img 	= np.reshape(img, [1, model.height, model.width, model.channels])
 	px 		= net.predict(img, verbose=1)

@@ -8,7 +8,9 @@ import itertools
 import image
 
 import model
-
+################################################################################
+#Permet de transformer les images en vecteur entrée pour le CNN
+################################################################################
 def trainset_generator(batch_size,
                        train_path,
                        image_folder,
