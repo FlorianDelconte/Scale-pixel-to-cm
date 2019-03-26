@@ -7,6 +7,7 @@
 *.o
 *.so
 *.JPG
+*.pyc
 ##################
 #Virtual environnement#
 venv
