@@ -17,7 +17,7 @@ def main(path_img,taille):
         im = Image.open(path_img+item)
         f, e = os.path.splitext(path_img+item)
         imResize = im.resize((taille,taille), Image.ANTIALIAS)
-        imResize.save(f+'.JPG', 'JPEG', quality=90)
+        imResize.save(f+'.jpg', 'JPEG', quality=90)
 
 if __name__ == "__main__":
     #path_img = os.path.join(os.getcwd(), 'dataset','test','input/')
