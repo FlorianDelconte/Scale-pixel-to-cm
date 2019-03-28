@@ -4,19 +4,23 @@ import sys
 import cv2
 
 class Comparator:
-    def __init__(self,path_i,path_iSeg):
+    def __init__(self,path_i,path_iSeg,path_dest):
         #chemin des repertoire qui contient les images et les images segmented
         self.path_image=path_i
         self.path_imageSeg=path_iSeg
+        self.path_dest=path_dest
         #liste des images
         self.list_img=[]
         for element in os.listdir(path_image):
             self.list_img.append(element)
+        self.list_img=sorted(self.list_img)
         #liste des images segmenté
         self.list_imgSeg=[]
         for element in os.listdir(path_imageSeg):
             self.list_imgSeg.append(element)
-
+        self.list_imgSeg=sorted(self.list_imgSeg)
+        print(self.list_imgSeg)
+        print(self.list_img)
         #lecture des images
         self.img = cv2.imread(self.path_image+self.list_img[0],cv2.IMREAD_COLOR)
         self.img2 = cv2.imread(self.path_imageSeg+self.list_imgSeg[0],0)
@@ -38,14 +42,23 @@ class Comparator:
         #print(self.list_img)
 
     def maj_red_mask(self):
-        for i in range(0,self.img2.shape[0]):
+        '''for i in range(0,self.img2.shape[0]):
             for j in range(0,self.img2.shape[1]):
                 if(self.img2[i][j]!=0):
-                    self.red_masque[i][j]=[0,0,255]
+                    self.red_masque[i][j]=[0,0,255]'''
+        self.img2[self.img2>0]=255
+        RGB = np.array((*"RGB",))
+        self.red_masque=np.multiply.outer(self.img2, RGB=='R')
+
+        #np.set_printoptions(threshold=sys.maxsize)
+        #print(self.red_masque)
 
     def compare_image(self):
         self.maj_red_mask()
-        self.res = cv2.addWeighted(self.img,1,self.red_masque,0.6,0)
+        #print(self.img.shape)
+        #print(self.red_masque.shape)
+        if(self.img.shape==self.red_masque.shape):
+            self.res = cv2.addWeighted(self.img,1,self.red_masque,0.6,0)
 
     def show_image(self):
         cv2.imshow('image',self.res )
@@ -53,7 +66,7 @@ class Comparator:
         cv2.destroyAllWindows()
 
     def save_masqued_image(self,name):
-        cv2.imwrite('masqued_image/'+name,self.res)
+        cv2.imwrite(self.path_dest+name,self.res)
 
     def run(self):
         if(len(self.list_imgSeg)==len(self.list_img)):
@@ -70,13 +83,14 @@ class Comparator:
             print("problème : les repertoire n'ont pas la même taille")
 
 if __name__ == '__main__':
-    if( len(sys.argv)==3):
+    if( len(sys.argv)==4):
         path_image=sys.argv[1]
         path_imageSeg=sys.argv[2]
+        path_dest=sys.argv[3]
     else:
-        print("arg 1 : path image arg 2 : path image segmented")
+        print("arg 1 : path image arg 2 : path image segmented arg3 : path destination")
         sys.exit()
-    comp = Comparator(path_image,path_imageSeg)
+    comp = Comparator(path_image,path_imageSeg,path_dest)
     comp.run()
     #comp.maj_red_mask()
     #comp.compare_image()
