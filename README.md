@@ -35,6 +35,8 @@ python3 comparator.py ../deeplearning/dataset/test/input/ ../deeplearning/datase
 ```
 Ce script recupère les images d'entrée du CNN et images de sortie (les images segmentées). Il les additionne et sauvegarde le rasultats dans le repertoire 'masqued_image'
 
+![alt tag](https://user-images.githubusercontent.com/32356150/55181372-d35e7e00-518b-11e9-90bd-1f1f5956577f.png)
+
 4. Calculer l'erreur de segmentation (par rapport à la véritée terrain).
 l'erreur est mesurée entre l'image attendu (celle de la véritée terrain) et l'image en sortie du CNN. Elle est calculée en faisant un XOR entre la sortie du CNN et l'image attendu. Le nombre de pixel différent de zéro résultant du XOR est ensuite divisé par le nombre de pixels différents de zéro dans l'image attendue.
 Il y a deux manières d'executer le script erreur_grume.py :
