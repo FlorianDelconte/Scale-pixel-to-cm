@@ -3,6 +3,10 @@ import os
 import sys
 import cv2
 
+##############################
+#Classe python qui permet d'ajouter un l'images segmenté sur l'image normal
+##############################
+
 class Comparator:
     def __init__(self,path_i,path_iSeg,path_dest):
         #chemin des repertoire qui contient les images et les images segmented
@@ -42,16 +46,9 @@ class Comparator:
         #print(self.list_img)
 
     def maj_red_mask(self):
-        '''for i in range(0,self.img2.shape[0]):
-            for j in range(0,self.img2.shape[1]):
-                if(self.img2[i][j]!=0):
-                    self.red_masque[i][j]=[0,0,255]'''
         self.img2[self.img2>0]=255
         RGB = np.array((*"RGB",))
         self.red_masque=np.multiply.outer(self.img2, RGB=='R')
-
-        #np.set_printoptions(threshold=sys.maxsize)
-        #print(self.red_masque)
 
     def compare_image(self):
         self.maj_red_mask()
