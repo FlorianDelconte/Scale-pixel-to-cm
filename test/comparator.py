@@ -2,17 +2,18 @@ import numpy as np
 import os
 import sys
 import cv2
+import matplotlib.pyplot as plt
 
 ##############################
 #Classe python qui permet d'ajouter un l'images segmenté sur l'image normal
 ##############################
 
 class Comparator:
-    def __init__(self,path_i,path_iSeg,path_dest):
+    def __init__(self,path_i,path_iSeg):
         #chemin des repertoire qui contient les images et les images segmented
         self.path_image=path_i
         self.path_imageSeg=path_iSeg
-        self.path_dest=path_dest
+        #self.path_dest=path_dest
         #liste des images
         self.list_img=[]
         for element in os.listdir(path_image):
@@ -23,27 +24,24 @@ class Comparator:
         for element in os.listdir(path_imageSeg):
             self.list_imgSeg.append(element)
         self.list_imgSeg=sorted(self.list_imgSeg)
-        print(self.list_imgSeg)
-        print(self.list_img)
+        #liste des images de la vérité terrain
+        self.list_imgTerrain=[]
+        for element in os.listdir(path_terrain):
+            self.list_imgTerrain.append(element)
+        self.list_imgTerrain=sorted(self.list_imgTerrain)
         #lecture des images
         self.img = cv2.imread(self.path_image+self.list_img[0],cv2.IMREAD_COLOR)
         self.img2 = cv2.imread(self.path_imageSeg+self.list_imgSeg[0],0)
+        #self.imgTerrain = cv2.imread(self.path_terrain+self.list_imgTerrain[0],cv2.IMREAD_COLOR)
         #passage en matrice
         self.img= np.array(self.img)
         self.img2= np.array(self.img2)
+        #self.imgTerrain=np.array(self.imgTerrain)
         #creation du masque rouge
         self.red_masque=np.zeros((self.img2.shape[0],self.img2.shape[1],3), np.uint8)
         #creation de l'image résultat
         self.res=np.zeros((self.img2.shape[0],self.img2.shape[1],3), np.uint8)
 
-        #self.img= cv2.imread(path_image+self.list_img[0],cv2.IMREAD_COLOR)
-        #self.img2= cv2.imread(path_imageSeg+self.list_imgSeg[0],0)
-        #self.img= np.array(self.img)
-        #self.img2= np.array(self.img2)
-
-
-        #print(self.list_imgSeg)
-        #print(self.list_img)
 
     def maj_red_mask(self):
         self.img2[self.img2>0]=255
@@ -57,13 +55,18 @@ class Comparator:
         if(self.img.shape==self.red_masque.shape):
             self.res = cv2.addWeighted(self.img,1,self.red_masque,0.6,0)
 
+
     def show_image(self):
         cv2.imshow('image',self.res )
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        c = cv2.waitKey(0)
+        if(c==113):
+            cv2.destroyAllWindows()
+            sys.exit(0)
+        else:
+            cv2.destroyAllWindows()
 
     def save_masqued_image(self,name):
-        cv2.imwrite(self.path_dest+name,self.res)
+        cv2.imwrite(path_dest+name,self.res)
 
     def run(self):
         if(len(self.list_imgSeg)==len(self.list_img)):
@@ -75,19 +78,31 @@ class Comparator:
                 self.img= np.array(self.img)
                 self.img2= np.array(self.img2)
                 self.compare_image()
-                self.save_masqued_image(self.list_img[i])
+                if(show==0):
+                    self.save_masqued_image(self.list_img[i])
+                else:
+                    self.show_image()
         else:
             print("problème : les repertoire n'ont pas la même taille")
-
+show=1
+path_dest=None
+path_terrain="../truth_ground/visu/256_256/"
 if __name__ == '__main__':
     if( len(sys.argv)==4):
         path_image=sys.argv[1]
         path_imageSeg=sys.argv[2]
         path_dest=sys.argv[3]
+        show=0
+        print("écriture dans le repertoire : "+sys.argv[3])
     else:
-        print("arg 1 : path image arg 2 : path image segmented arg3 : path destination")
-        sys.exit()
-    comp = Comparator(path_image,path_imageSeg,path_dest)
+        if( len(sys.argv)==3):
+            path_image=sys.argv[1]
+            path_imageSeg=sys.argv[2]
+        else:
+            print("arg 1 : path image arg 2 : path image segmented arg3 : path destination")
+            sys.exit()
+
+    comp = Comparator(path_image,path_imageSeg)
     comp.run()
     #comp.maj_red_mask()
     #comp.compare_image()
