@@ -20,8 +20,8 @@ import os
 #####################
 
 # Image size
-height		= 256
-width   	= 256
+height		= 256#256
+width   	= 256#256
 channels 	= 3
 numFilt 	= 16
 
