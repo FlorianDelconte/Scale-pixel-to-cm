@@ -8,9 +8,7 @@ import itertools
 import image
 
 import model
-################################################################################
-#Permet de transformer les images en vecteur entrée pour le CNN
-################################################################################
+
 def trainset_generator(batch_size,
                        train_path,
                        image_folder,
@@ -22,7 +20,7 @@ def trainset_generator(batch_size,
                        mask_save_prefix = "mask",
                        flag_multi_class = False,
                        num_class = 2,
-                       save_to_dir = None,
+                       save_to_dir = "visu_data_gen/",
                        target_size = (model.height, model.width),
                        seed = 1):
     '''
@@ -54,10 +52,12 @@ def trainset_generator(batch_size,
                                                   save_to_dir = save_to_dir,
                                                   save_prefix  = mask_save_prefix,
                                                   seed = seed)
-    while True:
+    i=0
+    while i<batch_size:
         x = image_generator.next()
         y = mask_generator.next()
         yield (x[0], y[0])
+        i+=1
 
 
 def gen_train_npy(image_path,mask_path,flag_multi_class = False,num_class = 2,image_prefix = "image",mask_prefix = "mask",image_as_gray = True,mask_as_gray = True):
@@ -76,32 +76,44 @@ def gen_train_npy(image_path,mask_path,flag_multi_class = False,num_class = 2,im
     mask_arr = np.array(mask_arr)
     return image_arr,mask_arr
 
+
 #=====================#
 #   Generate datas    #
 #=====================#
-#train_dir = os.path.join(os.getcwd(), 'dataset', 'train')
-#input_folder    = 'input'
-#label_folder    = 'label'
-#save_dir        = 'aug'
-#aug_dir         = "".join([train_dir, '/', save_dir])
 
-#model_name = "model_x"
+'''train_dir = os.path.join(os.getcwd(), 'dataset', 'train')
+input_folder    = 'input'
+label_folder    = 'output'
+save_dir        = 'visu_data_gen'
+aug_dir         = "".join([train_dir, '/', save_dir])
 
-#data_gen_args = dict(rotation_range=0.2,
-#                     width_shift_range=0.05,
-#                     height_shift_range=0.05,
-#                     shear_range=0.05,
-#                     zoom_range=0.1,
-#                     horizontal_flip=True,
-#                     fill_mode='nearest')
 
-#__generator = trainset_generator(2, train_dir, input_folder, label_folder,
-#                                      data_gen_args, save_to_dir=aug_dir)
+#transform param
+data_gen_args = dict(rotation_range=0.5,
+                     width_shift_range=0.2,
+                     height_shift_range=0.2,
+                     shear_range=0.2,
+                     zoom_range=0.2,
+                     horizontal_flip=True,
+                     fill_mode='wrap')
 
-#num_batch = 0
-#for i,batch in enumerate(__generator):
-#    print i
-#    if(i >= num_batch):
-#        break
+data_gen_args = dict(rotation_range=0.2,
+                     width_shift_range=0.05,
+                     height_shift_range=0.05,
+                     shear_range=0.05,
+                     zoom_range=0.1,
+                     horizontal_flip=True,
+                     fill_mode='nearest')
+#number of méta image you want to create.
+number_batch = 10
+__generator = trainset_generator(number_batch, train_dir, input_folder, label_folder,
+                                      data_gen_args, save_to_dir=aug_dir)
 
-#image_arr, mask_arr = gen_train_npy(aug_dir, aug_dir)
+
+for i,batch in enumerate(__generator):
+    print(i)
+    if(i >= number_batch):
+        break
+
+
+#image_arr, mask_arr = gen_train_npy(aug_dir, aug_dir)'''
