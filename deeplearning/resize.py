@@ -16,7 +16,7 @@ def main(path_img,taille):
         print(item)
         im = Image.open(path_img+item)
         f, e = os.path.splitext(path_img+item)
-        imResize = im.resize((taille,taille),cv2.INTER_AREA)
+        imResize = im.resize((taille,taille),cv2.INTER_NEAREST)#INTER_NEAREST for binaire et INTER_AREA for rgb
         imResize.save(f+e, 'JPEG', quality=100)
 
 if __name__ == "__main__":
