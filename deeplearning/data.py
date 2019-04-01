@@ -52,12 +52,12 @@ def trainset_generator(batch_size,
                                                   save_to_dir = save_to_dir,
                                                   save_prefix  = mask_save_prefix,
                                                   seed = seed)
-    i=0
-    while i<batch_size:
+
+    while True:
         x = image_generator.next()
         y = mask_generator.next()
         yield (x[0], y[0])
-        i+=1
+
 
 
 def gen_train_npy(image_path,mask_path,flag_multi_class = False,num_class = 2,image_prefix = "image",mask_prefix = "mask",image_as_gray = True,mask_as_gray = True):
@@ -113,7 +113,7 @@ __generator = trainset_generator(number_batch, train_dir, input_folder, label_fo
 for i,batch in enumerate(__generator):
     print(i)
     if(i >= number_batch):
-        break
+        break'''
 
 
-#image_arr, mask_arr = gen_train_npy(aug_dir, aug_dir)'''
+#image_arr, mask_arr = gen_train_npy(aug_dir, aug_dir)

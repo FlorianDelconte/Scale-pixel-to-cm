@@ -37,8 +37,8 @@ validation_steps	= 10
 
 name = "LEN_256c.hdf5"
 
-train_folder	= "train_256x256"
-valid_folder	= "valid_256x256"
+train_folder	= "train"
+valid_folder	= "valid"
 test_folder		= "test"
 
 
