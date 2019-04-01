@@ -24,11 +24,6 @@ class Comparator:
         for element in os.listdir(path_imageSeg):
             self.list_imgSeg.append(element)
         self.list_imgSeg=sorted(self.list_imgSeg)
-        #liste des images de la vérité terrain
-        self.list_imgTerrain=[]
-        for element in os.listdir(path_terrain):
-            self.list_imgTerrain.append(element)
-        self.list_imgTerrain=sorted(self.list_imgTerrain)
         #lecture des images
         self.img = cv2.imread(self.path_image+self.list_img[0],cv2.IMREAD_COLOR)
         self.img2 = cv2.imread(self.path_imageSeg+self.list_imgSeg[0],0)
@@ -86,7 +81,7 @@ class Comparator:
             print("problème : les repertoire n'ont pas la même taille")
 show=1
 path_dest=None
-path_terrain="../truth_ground/visu/256_256/"
+
 if __name__ == '__main__':
     if( len(sys.argv)==4):
         path_image=sys.argv[1]
