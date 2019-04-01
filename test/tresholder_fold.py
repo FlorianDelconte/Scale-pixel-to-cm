@@ -1,18 +1,21 @@
 import numpy as np
+from PIL import Image
 import os
 import sys
 import cv2
 import matplotlib.pyplot as plt
 
-c =119
+seuil =1
 def main(path_img):
     dirs = os.listdir( path_img )
     for item in dirs:
         print(item)
-        im = Image.open(path_img+item)
-        imBinaire=cv2.threshold(im, seuil ,255,cv2.THRESH_BINARY)
-        imBinaire.save(f+e, 'JPEG', quality=100)
-        
+        f, e = os.path.splitext(path_img+item)
+        im = cv2.imread(path_img+item,0)
+        _,imBinaire=cv2.threshold(im, seuil ,255,cv2.THRESH_BINARY)
+        #imBinaire.save(f+e, 'JPEG', quality=100)
+        cv2.imwrite(f+e,imBinaire)
+
 if __name__ == '__main__':
     if( len(sys.argv)==2):
         path_image=sys.argv[1]
