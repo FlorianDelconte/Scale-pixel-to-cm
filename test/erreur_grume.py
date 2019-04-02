@@ -163,7 +163,7 @@ def compute_global_err():
         print("moyenne des TP "+str(moyTP))
         print("moyenne des TN "+str(moyTN))
         print("moyenne des FN "+str(moyFN))
-        print("moyenne des FN "+str(moyFP))
+        print("moyenne des FP "+str(moyFP))
 
 if __name__ == '__main__':
     if(len(sys.argv)>1):
