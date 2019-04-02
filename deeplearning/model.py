@@ -37,18 +37,20 @@ validation_steps	= 10
 
 name = "LEN_256c.hdf5"
 
+size_folder="256_256"
+
 train_folder	= "train"
 valid_folder	= "valid"
 test_folder		= "test"
 
 
-train_dir_input 	= os.path.join(os.getcwd(),'..' ,'DATA', train_folder, 'input')
-valid_dir_input 	= os.path.join(os.getcwd(), '..','DATA', valid_folder, 'input')
-test_dir_input 		= os.path.join(os.getcwd(), '..','DATA', test_folder, 'input')
+train_dir_input 	= os.path.join(os.getcwd(),'..' ,'DATA', train_folder,size_folder, 'input')
+valid_dir_input 	= os.path.join(os.getcwd(), '..','DATA', valid_folder,size_folder, 'input')
+test_dir_input 		= os.path.join(os.getcwd(), '..','DATA', test_folder,size_folder, 'input')
 
-train_dir_output 	= os.path.join(os.getcwd(), '..','DATA', train_folder, 'output')
-valid_dir_output	= os.path.join(os.getcwd(), '..','DATA', valid_folder, 'output')
-test_dir_output 	= os.path.join(os.getcwd(), '..','DATA', test_folder, 'output')
+train_dir_output 	= os.path.join(os.getcwd(), '..','DATA', train_folder, size_folder, 'output')
+valid_dir_output	= os.path.join(os.getcwd(), '..','DATA', valid_folder, size_folder, 'output')
+test_dir_output 	= os.path.join(os.getcwd(), '..','DATA', test_folder, size_folder, 'output')
 
 save_dir 			= os.path.join(os.getcwd(), 'model', 'save')
 fullname 			= "".join([save_dir, '/', name])

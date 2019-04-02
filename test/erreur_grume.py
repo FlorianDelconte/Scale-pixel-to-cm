@@ -4,7 +4,7 @@ import sys
 import cv2
 import matplotlib.pyplot as plt
 
-path_segmented_grume_test="/../DATA/test/output/"
+path_segmented_grume_test="/../DATA/test/256_256/output/"
 path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/256_256/"
 path_visu_grume_expected="/../DATA/truth_ground/visu/256_256/"
 path_visu_grume_test="/../DATA/test/visu/256_256/"
