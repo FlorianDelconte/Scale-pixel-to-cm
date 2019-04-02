@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 import os
 #os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import csv
@@ -36,30 +36,38 @@ label_folder    = 'output'
 
 data_gen_args = dict(rescale = 1.0 / 255,
                      rotation_range=0.2,
+                     width_shift_range=0.2,
+                     height_shift_range=0.2,
+                     shear_range=0.2,
+                     zoom_range=0.2,
+                     horizontal_flip=True,
+                     fill_mode='nearest')
+'''data_gen_args = dict(rescale = 1.0 / 255,
+                     rotation_range=0.2,
                      width_shift_range=0.05,
                      height_shift_range=0.05,
                      shear_range=0.05,
                      zoom_range=0.05,
                      horizontal_flip=True,
-                     fill_mode='nearest')
+                     fill_mode='nearest')'''
 
 
 def loadDataset(directory, h=model.height, w=model.width, c=model.channels, n=model.numDatas):
     #datas = np.zeros((h, w, c, n))
-    
+
     if os.path.isdir(directory):
         mylist = os.listdir(directory)
         if '.DS_Store' in mylist: mylist.remove('.DS_Store')
-        
+
         mylist = ["{}/{}".format(directory, file) for file in mylist]
         imgs = io.imread_collection(mylist, plugin='matplotlib')
         imgs = np.array([img for img in imgs])
-        
+
         return imgs
 
 #        for (i, file) in enumerate(os.listdir(directory)):
 #           if file=='.DS_Store': continue
-#           
+#
 #           fullpath = "{}/{}".format(directory, file)
 #           #print fullpath
 #           if os.path.isdir(fullpath): continue
@@ -76,19 +84,19 @@ def loadDataset(directory, h=model.height, w=model.width, c=model.channels, n=mo
 def loadTargets(directory, h=model.height, w=model.width, c=model.channels, n=model.numDatas):
     #targets = np.zeros((n, 2))
     if os.path.isdir(target_dir):
-        
+
         mylist = os.listdir(directory)
         if '.DS_Store' in mylist: mylist.remove('.DS_Store')
-        
+
         mylist = ["{}/{}".format(directory, file) for file in mylist]
-        
+
         # IF CSV
         #for (i, file) in enumerate(mylist):
         #    with open(file, 'r') as text:
         #        line = csv.reader(text, delimiter=',')
         #        for row in line:
         #            targets[i, :] = np.array(row, dtype=np.int32)
-        
+
         # IF JPG
         trgs = io.imread_collection(mylist, plugin='matplotlib')
         trgs = np.array([t for t in trgs])
@@ -183,5 +191,3 @@ net.fit_generator(__generators,
 #scores = net.evaluate(x_test, y_test, verbose=1)
 #print('Test loss:', scores[0])
 #print('Test accuracy:', scores[1])
-
-
