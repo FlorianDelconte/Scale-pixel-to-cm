@@ -8,6 +8,9 @@ path_segmented_grume_test="/deeplearning/dataset/test/output/"
 path_segmented_grume_expected="/truth_ground/sgm_grume/256_256/"
 path_visu_grume_expected="/truth_ground/visu/256_256/"
 path_visu_grume_test="/test/masqued_image/"
+
+
+
 path=os.getcwd()
 size=256
 
@@ -21,6 +24,10 @@ def compute_error(img_test,img_expected):
 def show_image(img_test,img_expected,im_visu_ob,im_visu_exp):
     fig=plt.figure()
     ax = fig.add_axes([0, 0, 1, 1])
+    img_expected = cv2.cvtColor(img_expected, cv2.COLOR_BGR2RGB)
+    img_test = cv2.cvtColor(img_test, cv2.COLOR_BGR2RGB)
+    im_visu_exp = cv2.cvtColor(im_visu_exp, cv2.COLOR_BGR2RGB)
+    im_visu_ob = cv2.cvtColor(im_visu_ob, cv2.COLOR_BGR2RGB)
 
     t=plt.subplot(2,2,1)
     t.set_title("truth_ground")
@@ -83,9 +90,9 @@ def compute_global_err_with_visu():
             im_visu_ob=cv2.imread(path+path_visu_grume_test+l_visu_test[i],cv2.IMREAD_COLOR)
 
             im_ob=cv2.imread(path+path_segmented_grume_test+l_ob[i],0)
-            _,im_ob=cv2.threshold(im_ob, 119, 255, cv2.THRESH_BINARY)
+            _,im_ob=cv2.threshold(im_ob, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
             im_exp=cv2.imread(path+path_segmented_grume_expected+l_exp[i],0)
-            _,im_exp=cv2.threshold(im_exp, 119, 255, cv2.THRESH_BINARY)
+            _,im_exp=cv2.threshold(im_exp, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
             im_ob = np.array(im_ob)
             im_exp= np.array(im_exp)

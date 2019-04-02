@@ -27,6 +27,7 @@ class Comparator:
         #lecture des images
         self.img = cv2.imread(self.path_image+self.list_img[0],cv2.IMREAD_COLOR)
         self.img2 = cv2.imread(self.path_imageSeg+self.list_imgSeg[0],0)
+        #self.img2 =cv2.threshold(self.img2, 0 ,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
         #self.imgTerrain = cv2.imread(self.path_terrain+self.list_imgTerrain[0],cv2.IMREAD_COLOR)
         #passage en matrice
         self.img= np.array(self.img)
