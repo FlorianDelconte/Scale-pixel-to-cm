@@ -22,7 +22,7 @@ def main(path_img,taille):
 if __name__ == "__main__":
     #path_img = os.path.join(os.getcwd(), 'dataset','test','input/')
     if(len(sys.argv)<2):
-        path_img=os.path.join(os.getcwd(), 'dataset','test','input/')
+        path_img=os.path.join(os.getcwd(), '..','DATA','test','input/')
         taille=256
         #print("path_img="+os.path.join(os.getcwd(), 'dataset','test','input/'))
         #print("taille=256")

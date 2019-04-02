@@ -4,10 +4,10 @@ import sys
 import cv2
 import matplotlib.pyplot as plt
 
-path_segmented_grume_test="/deeplearning/dataset/test/output/"
-path_segmented_grume_expected="/truth_ground/sgm_grume/256_256/"
-path_visu_grume_expected="/truth_ground/visu/256_256/"
-path_visu_grume_test="/test/masqued_image/"
+path_segmented_grume_test="/../DATA/test/output/"
+path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/256_256/"
+path_visu_grume_expected="/../DATA/truth_ground/visu/256_256/"
+path_visu_grume_test="/../DATA/test/visu/256_256/"
 
 
 
@@ -88,7 +88,7 @@ def compute_global_err_with_visu():
             print(l_visu_exp[i])
             im_visu_exp=cv2.imread(path+path_visu_grume_expected+l_visu_exp[i],cv2.IMREAD_COLOR)
             im_visu_ob=cv2.imread(path+path_visu_grume_test+l_visu_test[i],cv2.IMREAD_COLOR)
-
+            print(path+path_visu_grume_test+l_visu_test[i])
             im_ob=cv2.imread(path+path_segmented_grume_test+l_ob[i],0)
             _,im_ob=cv2.threshold(im_ob, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
             im_exp=cv2.imread(path+path_segmented_grume_expected+l_exp[i],0)
@@ -96,7 +96,6 @@ def compute_global_err_with_visu():
 
             im_ob = np.array(im_ob)
             im_exp= np.array(im_exp)
-
             #compute_error(im_ob,im_exp)
             show_image(im_ob,im_exp,im_visu_ob,im_visu_exp)
     else:
