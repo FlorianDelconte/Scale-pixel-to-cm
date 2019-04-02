@@ -16,14 +16,48 @@ size=256
 
 
 def compute_error(img_test,img_expected):
-    diff=cv2.bitwise_xor(img_test,img_expected)
-    nb_err=np.count_nonzero(diff)
-    nb_pix_exp=np.count_nonzero(img_expected)
-    return nb_err/nb_pix_exp
+    TP = 0
+    FN = 0
+    FP = 0
+    TN = 0
+    #compute TruePositif
+    image_test_add_exp=cv2.bitwise_and(img_test,img_expected)
+    TP=np.count_nonzero(image_test_add_exp)#nombre de pixel dansf la forme réel ET dans la forme estimée
+    #compute TrueNegatif
+    image_test_add_exp_inverse=cv2.bitwise_not(image_test_add_exp)
+    TN=np.count_nonzero(image_test_add_exp_inverse)#nombre de pixel à l'exterrieur de la forme réel ET à l'exterrieur de la forme estimée
+    #compute FalseNegatif
+    img_test_inverse=cv2.bitwise_not(img_test)
+    image_test_inverse_add_exp=cv2.bitwise_and(img_expected,img_test_inverse)
+    FN=np.count_nonzero(image_test_inverse_add_exp)
+    #compute FalsePositif
+    img_exp_inverse=cv2.bitwise_not(img_expected)
+    image_exp_inverse_add_test=cv2.bitwise_and(img_exp_inverse,img_test)
+    FP=np.count_nonzero(image_exp_inverse_add_test)
+    '''cv2.imshow('img_exp',img_expected)
+    cv2.imshow('img_exp_inverse',img_exp_inverse)
+    cv2.imshow('img_test',img_test)
+    cv2.imshow('FP',image_exp_inverse_add_test)
+    c = cv2.waitKey(0)
+    if(c==113):
+        cv2.destroyAllWindows()
+        sys.exit(0)
+    else:
+        cv2.destroyAllWindows()'''
+    #diff=cv2.bitwise_xor(img_test,img_expected)
+    #nb_err=np.count_nonzero(diff)
+    #nb_pix_exp=np.count_nonzero(img_expected)
+    return TP,TN,FN,FP
     #print(nb_err/nb_pix_exp)
 def show_image(img_test,img_expected,im_visu_ob,im_visu_exp):
     fig=plt.figure()
     ax = fig.add_axes([0, 0, 1, 1])
+
+
+    TP,TN,FN,FP=compute_error(img_test,img_expected)
+
+
+
     img_expected = cv2.cvtColor(img_expected, cv2.COLOR_BGR2RGB)
     img_test = cv2.cvtColor(img_test, cv2.COLOR_BGR2RGB)
     im_visu_exp = cv2.cvtColor(im_visu_exp, cv2.COLOR_BGR2RGB)
@@ -42,12 +76,11 @@ def show_image(img_test,img_expected,im_visu_ob,im_visu_exp):
 
     t3=plt.subplot(2,2,4)
     plt.imshow(im_visu_ob)
-    print(img_test)
-    print(compute_error(img_test,img_expected))
-    plt.text(0.05, 0.8, "erreur :\n"+str('%.3f'%(compute_error(img_test,img_expected))),
-        horizontalalignment='center',
+
+    plt.text(0.01, 0.8, "erreur :\n"+"TP : "+str(TP)+"\nTN : "+str(TN)+"\nFN : "+str(FN)+"\nFP : "+str(FP),
+        horizontalalignment='left',
         verticalalignment='center',
-        rotation=45,
+        rotation=0,
         transform=ax.transAxes)
 
     plt.show()
@@ -88,7 +121,7 @@ def compute_global_err_with_visu():
             print(l_visu_exp[i])
             im_visu_exp=cv2.imread(path+path_visu_grume_expected+l_visu_exp[i],cv2.IMREAD_COLOR)
             im_visu_ob=cv2.imread(path+path_visu_grume_test+l_visu_test[i],cv2.IMREAD_COLOR)
-            print(path+path_visu_grume_test+l_visu_test[i])
+            #print(path+path_visu_grume_test+l_visu_test[i])
             im_ob=cv2.imread(path+path_segmented_grume_test+l_ob[i],0)
             _,im_ob=cv2.threshold(im_ob, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
             im_exp=cv2.imread(path+path_segmented_grume_expected+l_exp[i],0)
@@ -104,21 +137,33 @@ def compute_global_err_with_visu():
 def compute_global_err():
     l_exp,l_ob,_,_=make_list()
     if(len(l_exp)==len(l_ob)):
-        moy=0
+        moyTP=0
+        moyTN=0
+        moyFN=0
+        moyFP=0
         for i in range(0,len(l_ob)):
             print(l_ob[i])
             im_ob=cv2.imread(path+path_segmented_grume_test+l_ob[i],0)
-            _,im_ob=cv2.threshold(im_ob, 119, 255, cv2.THRESH_BINARY)
+            _,im_ob=cv2.threshold(im_ob, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
             im_exp=cv2.imread(path+path_segmented_grume_expected+l_exp[i],0)
-            _,im_exp=cv2.threshold(im_exp, 119, 255, cv2.THRESH_BINARY)
+            _,im_exp=cv2.threshold(im_exp, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
             im_ob = np.array(im_ob)
             im_exp= np.array(im_exp)
-            err=compute_error(im_ob,im_exp)
-            print("erreur : "+str(err))
-            moy+=err
+            TP,TN,FN,FP=compute_error(im_ob,im_exp)
+            print("TP : "+str(TP)+" TN : "+str(TN)+" FN : "+str(FN)+" FP : "+str(FP))
+            moyTP+=TP
+            moyTN+=TN
+            moyFN+=FN
+            moyFP+=FP
         print("------------------------")
-        moy=moy/len(l_ob)
-        print(moy)
+        moyTP=moyTP/len(l_ob)
+        moyTN=moyTN/len(l_ob)
+        moyFN=moyFN/len(l_ob)
+        moyFP=moyFP/len(l_ob)
+        print("moyenne des TP "+str(moyTP))
+        print("moyenne des TN "+str(moyTN))
+        print("moyenne des FN "+str(moyFN))
+        print("moyenne des FN "+str(moyFP))
 
 if __name__ == '__main__':
     if(len(sys.argv)>1):
