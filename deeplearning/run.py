@@ -28,28 +28,27 @@ batch_size = model.batch_size
 epochs = model.epochs
 
 # Folders Train, Valid, Test and Save
-train_dir = os.path.join(os.getcwd(), 'dataset', model.train_folder)
-valid_dir = os.path.join(os.getcwd(), 'dataset', model.valid_folder)
+train_dir = os.path.join(os.getcwd(), '..','DATA', model.train_folder,model.size_folder)
+valid_dir = os.path.join(os.getcwd(), '..','DATA', model.valid_folder,model.size_folder)
 input_folder    = 'input'
 label_folder    = 'output'
 
-
-data_gen_args = dict(rescale = 1.0 / 255,
-                     rotation_range=0.2,
+'''data_gen_args = dict(rescale = 1.0 / 255,
+                     rotation_range=0.5,
                      width_shift_range=0.2,
                      height_shift_range=0.2,
                      shear_range=0.2,
                      zoom_range=0.2,
                      horizontal_flip=True,
-                     fill_mode='nearest')
-'''data_gen_args = dict(rescale = 1.0 / 255,
+                     fill_mode='wrap')'''
+data_gen_args = dict(rescale = 1.0 / 255,
                      rotation_range=0.2,
                      width_shift_range=0.05,
                      height_shift_range=0.05,
                      shear_range=0.05,
                      zoom_range=0.05,
                      horizontal_flip=True,
-                     fill_mode='nearest')'''
+                     fill_mode='nearest')
 
 
 def loadDataset(directory, h=model.height, w=model.width, c=model.channels, n=model.numDatas):
