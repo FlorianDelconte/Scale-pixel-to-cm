@@ -4,10 +4,11 @@ import sys
 import cv2
 import matplotlib.pyplot as plt
 
-path_segmented_grume_test="/../DATA/test/output/"
-path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/256_256/"
-path_visu_grume_expected="/../DATA/truth_ground/visu/256_256/"
-path_visu_grume_test="/../DATA/test/visu/256_256/"
+size="256_256/"
+path_segmented_grume_test="/../DATA/test/"+size+"/output/"
+path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/"+size
+path_visu_grume_expected="/../DATA/truth_ground/visu/"+size
+path_visu_grume_test="/../DATA/test/visu/"+size
 
 
 
@@ -49,14 +50,15 @@ def compute_error(img_test,img_expected):
     #nb_pix_exp=np.count_nonzero(img_expected)
     return TP,TN,FN,FP
     #print(nb_err/nb_pix_exp)
+
 def show_image(img_test,img_expected,im_visu_ob,im_visu_exp):
     fig=plt.figure()
     ax = fig.add_axes([0, 0, 1, 1])
 
 
     TP,TN,FN,FP=compute_error(img_test,img_expected)
-
-
+    precision=TP/(TP+FP)
+    recall=TP/(TP+FN)
 
     img_expected = cv2.cvtColor(img_expected, cv2.COLOR_BGR2RGB)
     img_test = cv2.cvtColor(img_test, cv2.COLOR_BGR2RGB)
@@ -78,6 +80,12 @@ def show_image(img_test,img_expected,im_visu_ob,im_visu_exp):
     plt.imshow(im_visu_ob)
 
     plt.text(0.01, 0.8, "erreur :\n"+"TP : "+str(TP)+"\nTN : "+str(TN)+"\nFN : "+str(FN)+"\nFP : "+str(FP),
+        horizontalalignment='left',
+        verticalalignment='center',
+        rotation=0,
+        transform=ax.transAxes)
+
+    plt.text(0.01, 0.2, "précision : "+str(precision)+"recall : "+str(recall),
         horizontalalignment='left',
         verticalalignment='center',
         rotation=0,
@@ -141,6 +149,8 @@ def compute_global_err():
         moyTN=0
         moyFN=0
         moyFP=0
+        moyPré=0
+        moyReca=0
         for i in range(0,len(l_ob)):
             print(l_ob[i])
             im_ob=cv2.imread(path+path_segmented_grume_test+l_ob[i],0)
@@ -150,20 +160,28 @@ def compute_global_err():
             im_ob = np.array(im_ob)
             im_exp= np.array(im_exp)
             TP,TN,FN,FP=compute_error(im_ob,im_exp)
-            print("TP : "+str(TP)+" TN : "+str(TN)+" FN : "+str(FN)+" FP : "+str(FP))
+            precision=TP/(TP+FP)
+            recall=TP/(TP+FN)
+            print("TP : "+str(TP)+" TN : "+str(TN)+" FN : "+str(FN)+" FP : "+str(FP)+" precision : "+str(precision)+"recall : "+str(recall))
             moyTP+=TP
             moyTN+=TN
             moyFN+=FN
             moyFP+=FP
+            moyPré+=precision
+            moyReca+=recall
         print("------------------------")
         moyTP=moyTP/len(l_ob)
         moyTN=moyTN/len(l_ob)
         moyFN=moyFN/len(l_ob)
         moyFP=moyFP/len(l_ob)
+        moyPré=moyPré/len(l_ob)
+        moyReca=moyReca/len(l_ob)
         print("moyenne des TP "+str(moyTP))
         print("moyenne des TN "+str(moyTN))
         print("moyenne des FN "+str(moyFN))
         print("moyenne des FP "+str(moyFP))
+        print("moyenne des précision "+str(moyPré))
+        print("moyenne des recall "+str(moyReca))
 
 if __name__ == '__main__':
     if(len(sys.argv)>1):
