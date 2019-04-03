@@ -9,19 +9,20 @@ import matplotlib.pyplot as plt
 ##############################
 
 class Comparator:
-    def __init__(self,path_i,path_iSeg):
+    def __init__(self,path_i,path_iSeg,path_dest):
+        self.path_dest=path_dest
         #chemin des repertoire qui contient les images et les images segmented
         self.path_image=path_i
         self.path_imageSeg=path_iSeg
         #self.path_dest=path_dest
         #liste des images
         self.list_img=[]
-        for element in os.listdir(path_image):
+        for element in os.listdir(self.path_image):
             self.list_img.append(element)
         self.list_img=sorted(self.list_img)
         #liste des images segmenté
         self.list_imgSeg=[]
-        for element in os.listdir(path_imageSeg):
+        for element in os.listdir(self.path_imageSeg):
             self.list_imgSeg.append(element)
         self.list_imgSeg=sorted(self.list_imgSeg)
         #lecture des images
@@ -62,11 +63,12 @@ class Comparator:
             cv2.destroyAllWindows()
 
     def save_masqued_image(self,name):
-        cv2.imwrite(path_dest+name,self.res)
+        cv2.imwrite(self.path_dest+name,self.res)
 
     def run(self):
         if(len(self.list_imgSeg)==len(self.list_img)):
             for i in range(0,len(self.list_imgSeg)):
+                print("creation du visuel ",i)
                 self.red_masque=np.zeros((self.img2.shape[0],self.img2.shape[1],3), np.uint8)
                 self.res=np.zeros((self.img2.shape[0],self.img2.shape[1],3), np.uint8)
                 self.img= cv2.imread(self.path_image+self.list_img[i],cv2.IMREAD_COLOR)
@@ -80,13 +82,14 @@ class Comparator:
                     self.show_image()
         else:
             print("problème : les repertoire n'ont pas la même taille")
-show=1
-path_dest=None
+show=0
+
 
 if __name__ == '__main__':
     if( len(sys.argv)==4):
         path_image=sys.argv[1]
         path_imageSeg=sys.argv[2]
+        path=os.getcwd()
         path_dest=sys.argv[3]
         show=0
         print("écriture dans le repertoire : "+sys.argv[3])
@@ -98,7 +101,7 @@ if __name__ == '__main__':
             print("arg 1 : path image arg 2 : path image segmented arg3 : path destination")
             sys.exit()
 
-    comp = Comparator(path_image,path_imageSeg)
+    comp = Comparator(path_image,path_imageSeg,path_dest)
     comp.run()
     #comp.maj_red_mask()
     #comp.compare_image()

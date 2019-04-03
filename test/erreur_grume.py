@@ -3,17 +3,19 @@ import os
 import sys
 import cv2
 import matplotlib.pyplot as plt
+from comparator import Comparator
 
-size="256_256/"
+size="512_512"
 path_segmented_grume_test="/../DATA/test/"+size+"/output/"
-path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/"+size
-path_visu_grume_expected="/../DATA/truth_ground/visu/"+size
-path_visu_grume_test="/../DATA/test/visu/"+size
+path_img_test="/../DATA/test/"+size+"/input/"
+path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/"+size+"/"
+path_visu_grume_expected="/../DATA/truth_ground/visu/"+size+"/"
+path_visu_grume_test="/../DATA/test/visu/"+size+"/"
 
 
 
 path=os.getcwd()
-size=256
+
 
 
 def compute_error(img_test,img_expected):
@@ -121,8 +123,12 @@ def make_list():
 
     return list_imgexpected,list_imgobtenue,list_visu_exp,list_visu_test
 
+def create_visu():
+    comp = Comparator(path+path_img_test,path+path_segmented_grume_test,path+path_visu_grume_test)
+    comp.run()
 
 def compute_global_err_with_visu():
+    create_visu()
     l_exp,l_ob,l_visu_exp,l_visu_test=make_list()
     if(len(l_exp)==len(l_ob)):
         for i in range(0,len(l_ob)):
@@ -155,10 +161,12 @@ def compute_global_err():
             print(l_ob[i])
             im_ob=cv2.imread(path+path_segmented_grume_test+l_ob[i],0)
             _,im_ob=cv2.threshold(im_ob, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+            print(path+path_segmented_grume_expected)
             im_exp=cv2.imread(path+path_segmented_grume_expected+l_exp[i],0)
             _,im_exp=cv2.threshold(im_exp, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
             im_ob = np.array(im_ob)
             im_exp= np.array(im_exp)
+
             TP,TN,FN,FP=compute_error(im_ob,im_exp)
             precision=TP/(TP+FP)
             recall=TP/(TP+FN)
@@ -191,3 +199,4 @@ if __name__ == '__main__':
             print("arg=v for visual error")
     else:
         compute_global_err()
+        #create_visu()
