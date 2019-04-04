@@ -5,7 +5,7 @@ import cv2
 import matplotlib.pyplot as plt
 from comparator import Comparator
 
-size="512_512"
+size="256_256"
 path_segmented_grume_test="/../DATA/test/"+size+"/output/"
 path_img_test="/../DATA/test/"+size+"/input/"
 path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/"+size+"/"
@@ -166,7 +166,10 @@ def compute_global_err():
             print(l_ob[i])
             im_ob=cv2.imread(path+path_segmented_grume_test+l_ob[i],0)
             _,im_ob=cv2.threshold(im_ob, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+<<<<<<< HEAD
             #print(path+path_segmented_grume_expected)
+=======
+>>>>>>> 25b70fa1fc3deeea50f97bc3d8886af405846a0e
             im_exp=cv2.imread(path+path_segmented_grume_expected+l_exp[i],0)
             _,im_exp=cv2.threshold(im_exp, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
             im_ob = np.array(im_ob)
