@@ -81,7 +81,7 @@ def gen_train_npy(image_path,mask_path,flag_multi_class = False,num_class = 2,im
 #   Generate datas    #
 #=====================#
 
-'''train_dir = os.path.join(os.getcwd(), '..', 'DATA','train','512_512')
+train_dir = os.path.join(os.getcwd(), '..', 'DATA','train','512_512')
 input_folder    = 'input'
 label_folder    = 'output'
 save_dir        = 'visu_data_gen'
@@ -89,7 +89,7 @@ aug_dir         = "".join([train_dir, '/', save_dir])
 
 
 #transform param
-data_gen_args = dict(rescale = 1.0 / 511,
+'''data_gen_args = dict(rescale = 1.0 / 511,
                      rotation_range=0.5,
                      width_shift_range=0.2,
                      height_shift_range=0.2,
@@ -114,7 +114,7 @@ __generator = trainset_generator(number_batch, train_dir, input_folder, label_fo
 for i,batch in enumerate(__generator):
     print(i)
     if(i >= number_batch):
-        break'''
-
+        break
+'''
 
 #image_arr, mask_arr = gen_train_npy(aug_dir, aug_dir)
