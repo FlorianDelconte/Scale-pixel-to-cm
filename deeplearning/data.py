@@ -80,7 +80,7 @@ def gen_train_npy(image_path,mask_path,flag_multi_class = False,num_class = 2,im
 #=====================#
 #   Generate datas    #
 #=====================#
-
+'''
 train_dir = os.path.join(os.getcwd(), '..', 'DATA','train','512_512')
 input_folder    = 'input'
 label_folder    = 'output'
@@ -89,7 +89,7 @@ aug_dir         = "".join([train_dir, '/', save_dir])
 
 
 #transform param
-'''data_gen_args = dict(rescale = 1.0 / 511,
+data_gen_args = dict(rescale = 1.0 / 511,
                      rotation_range=0.5,
                      width_shift_range=0.2,
                      height_shift_range=0.2,
@@ -104,7 +104,7 @@ data_gen_args = dict(rotation_range=0.2,
                      shear_range=0.05,
                      zoom_range=0.1,
                      horizontal_flip=True,
-                     fill_mode='nearests')
+                     fill_mode='nearest')
 #number of méta image you want to create.
 number_batch = 10
 __generator = trainset_generator(number_batch, train_dir, input_folder, label_folder,

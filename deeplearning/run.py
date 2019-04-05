@@ -41,6 +41,7 @@ label_folder    = 'output'
                      zoom_range=0.2,
                      horizontal_flip=True,
                      fill_mode='wrap')'''
+                     
 data_gen_args = dict(rescale = 1.0 / 255,
                      rotation_range=0.2,
                      width_shift_range=0.05,

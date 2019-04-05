@@ -20,8 +20,8 @@ import os
 #####################
 
 # Image size
-height		= 512#256
-width   	= 512#256
+height		= 256#256
+width   	= 256#256
 channels 	= 3
 numFilt 	= 16
 
@@ -36,8 +36,8 @@ validation_steps	= 10
 
 size_folder=str(height)+"_"+str(width)
 
-name = "LEN_"+size_folder+"c.hdf5"
-
+#name = "LEN_"+size_folder+"_BS4_c.hdf5"
+name= "LEN_256c.hdf5"
 
 train_folder	= "train"
 valid_folder	= "valid"
