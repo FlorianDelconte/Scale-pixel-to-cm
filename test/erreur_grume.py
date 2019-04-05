@@ -27,8 +27,10 @@ def compute_error(img_test,img_expected):
     image_test_add_exp=cv2.bitwise_and(img_test,img_expected)
     TP=np.count_nonzero(image_test_add_exp)#nombre de pixel dansf la forme réel ET dans la forme estimée
     #compute TrueNegatif
-    image_test_add_exp_inverse=cv2.bitwise_not(image_test_add_exp)
-    TN=np.count_nonzero(image_test_add_exp_inverse)#nombre de pixel à l'exterrieur de la forme réel ET à l'exterrieur de la forme estimée
+    image_test_inverse=cv2.bitwise_not(img_test)
+    img_expected_inverse=cv2.bitwise_not(img_expected)
+    image_test_inverse_and_img_expected_inverse=cv2.bitwise_and(image_test_inverse,img_expected_inverse)
+    TN=np.count_nonzero(image_test_inverse_and_img_expected_inverse)#nombre de pixel à l'exterrieur de la forme réel ET à l'exterrieur de la forme estimée
     #compute FalseNegatif
     img_test_inverse=cv2.bitwise_not(img_test)
     image_test_inverse_add_exp=cv2.bitwise_and(img_expected,img_test_inverse)
@@ -37,10 +39,13 @@ def compute_error(img_test,img_expected):
     img_exp_inverse=cv2.bitwise_not(img_expected)
     image_exp_inverse_add_test=cv2.bitwise_and(img_exp_inverse,img_test)
     FP=np.count_nonzero(image_exp_inverse_add_test)
-    '''cv2.imshow('img_exp',img_expected)
-    cv2.imshow('img_exp_inverse',img_exp_inverse)
-    cv2.imshow('img_test',img_test)
-    cv2.imshow('FP',image_exp_inverse_add_test)
+
+    '''cv2.imshow('img reel',img_expected)
+    cv2.imshow('img reel inversee',img_exp_inverse)
+    cv2.imshow('img estimee',img_test)
+    cv2.imshow('img estimee inverse',image_test_inverse)
+    cv2.imshow('img estimee inverse AND img reel inversee',image_test_inverse_and_img_expected_inverse)
+    #cv2.imshow('add img test et img_exp_inverse',image_test_inverse_add_exp)
     c = cv2.waitKey(0)
     if(c==113):
         cv2.destroyAllWindows()
@@ -161,6 +166,10 @@ def compute_global_err():
             print(l_ob[i])
             im_ob=cv2.imread(path+path_segmented_grume_test+l_ob[i],0)
             _,im_ob=cv2.threshold(im_ob, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+<<<<<<< HEAD
+            #print(path+path_segmented_grume_expected)
+=======
+>>>>>>> 25b70fa1fc3deeea50f97bc3d8886af405846a0e
             im_exp=cv2.imread(path+path_segmented_grume_expected+l_exp[i],0)
             _,im_exp=cv2.threshold(im_exp, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
             im_ob = np.array(im_ob)
