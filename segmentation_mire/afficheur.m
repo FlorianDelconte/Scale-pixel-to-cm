@@ -15,9 +15,10 @@ fig=figure('Name','Segmentation de mire');
 for i = 1:nfiles
     filelist(i).name
     [I_RGB,R,G,B,I_HSV,H,S,V]=create_composante(filelist(i).folder,filelist(i).name);
-    affiche_composante(I_RGB,R,G,B,I_HSV,H,S,V)
-%     BW = imbinarize(S,0.3);
-%     imshow(BW); hold on;
+    %affiche_composante(I_RGB,R,G,B,I_HSV,H,S,V)
+
+     BW = imbinarize(S,0.3);
+     imshow(BW); hold on;
 %     corners = detectHarrisFeatures(BW,'FilterSize', 111);
 %     plot(corners.selectStrongest(30));
     truesize(fig);

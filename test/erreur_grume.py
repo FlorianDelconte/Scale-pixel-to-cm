@@ -1,16 +1,17 @@
 import numpy as np
 import os
-import sys
+import sys, getopt
 import cv2
 import matplotlib.pyplot as plt
 from comparator import Comparator
 
-size="256_256"
-path_segmented_grume_test="/../DATA/test/"+size+"/output/"
-path_img_test="/../DATA/test/"+size+"/input/"
-path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/"+size+"/"
-path_visu_grume_expected="/../DATA/truth_ground/visu/"+size+"/"
-path_visu_grume_test="/../DATA/test/visu/"+size+"/"
+size="512_512"
+visu =0
+path_segmented_grume_test=None
+path_img_test=None
+path_segmented_grume_expected=None
+path_visu_grume_expected=None
+path_visu_grume_test=None
 
 
 
@@ -19,6 +20,7 @@ path=os.getcwd()
 
 
 def compute_error(img_test,img_expected):
+
     TP = 0
     FN = 0
     FP = 0
@@ -154,6 +156,7 @@ def compute_global_err_with_visu():
         print("erreur : les listes n'ont pas la même taille")
 
 def compute_global_err():
+    print("eee",size)
     l_exp,l_ob,_,_=make_list()
     if(len(l_exp)==len(l_ob)):
         moyTP=0
@@ -196,11 +199,29 @@ def compute_global_err():
         print("moyenne des recall "+str(moyReca))
 
 if __name__ == '__main__':
-    if(len(sys.argv)>1):
-        if(sys.argv[1]=="v"):
-            compute_global_err_with_visu()
-        else:
-            print("arg=v for visual error")
-    else:
+    try:
+      opts, args = getopt.getopt(sys.argv[1:],"hs:v:",["size=","visu="])
+    except getopt.GetoptError:
+        print("erreur_grume.py -s <img size> -v <y | n>")
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print("erreur_grume.py -s <img size> -v <y | n>")
+            sys.exit()
+        elif opt in ("-s", "--size"):
+            size=arg
+
+        elif opt in ("-v", "--visu"):
+            visu=arg
+    #########init path for compute erreur and create visu
+    path_segmented_grume_test="/../DATA/test/"+size+"/output/"
+    path_img_test="/../DATA/test/"+size+"/input/"
+    path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/"+size+"/"
+    path_visu_grume_expected="/../DATA/truth_ground/visu/"+size+"/"
+    path_visu_grume_test="/../DATA/test/visu/"+size+"/"
+    #####################################################
+    if(visu=="n"):
         compute_global_err()
-        #create_visu()
+    else:
+        if(visu=="y"):
+            compute_global_err_with_visu()
