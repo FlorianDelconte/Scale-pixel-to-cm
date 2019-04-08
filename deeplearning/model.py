@@ -25,7 +25,6 @@ width   	= 256#256
 channels 	= 3
 numFilt 	= 16
 
-# Outputsize
 learning_rate	= 0.1
 
 batch_size		= 2
@@ -34,23 +33,26 @@ epochs			= 10
 steps_per_epoch 	= 100
 validation_steps	= 10
 
+object = "mire"
+
 size_folder=str(height)+"_"+str(width)
 
-#name = "LEN_"+size_folder+"_BS4_c.hdf5"
-name= "LEN_256c.hdf5"
+name = "LEN_"+size_folder+"_"+object+"c.hdf5"
+#name= "LEN_256c.hdf5"
 
 train_folder	= "train"
 valid_folder	= "valid"
 test_folder		= "test"
 
 
-train_dir_input 	= os.path.join(os.getcwd(), '..' ,'DATA', train_folder,size_folder, 'input')
-valid_dir_input 	= os.path.join(os.getcwd(), '..','DATA', valid_folder,size_folder, 'input')
-test_dir_input 		= os.path.join(os.getcwd(), '..','DATA', test_folder,size_folder, 'input')
 
-train_dir_output 	= os.path.join(os.getcwd(), '..','DATA', train_folder, size_folder, 'output')
-valid_dir_output	= os.path.join(os.getcwd(), '..','DATA', valid_folder, size_folder, 'output')
-test_dir_output 	= os.path.join(os.getcwd(), '..','DATA', test_folder, size_folder, 'output')
+train_dir_input 	= os.path.join(os.getcwd(), '..' ,'DATA', train_folder, object,size_folder, 'input')
+valid_dir_input 	= os.path.join(os.getcwd(), '..','DATA', valid_folder, object,size_folder, 'input')
+test_dir_input 		= os.path.join(os.getcwd(), '..','DATA', test_folder, object,size_folder, 'input')
+
+train_dir_output 	= os.path.join(os.getcwd(), '..','DATA', train_folder, object, size_folder, 'output')
+valid_dir_output	= os.path.join(os.getcwd(), '..','DATA', valid_folder, object, size_folder, 'output')
+test_dir_output 	= os.path.join(os.getcwd(), '..','DATA', test_folder, object,size_folder, 'output')
 
 save_dir 			= os.path.join(os.getcwd(), 'model', 'save')
 fullname 			= "".join([save_dir, '/', name])

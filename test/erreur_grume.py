@@ -7,6 +7,7 @@ from comparator import Comparator
 
 size="512_512"
 visu =0
+obj="grume"
 path_segmented_grume_test=None
 path_img_test=None
 path_segmented_grume_expected=None
@@ -200,28 +201,34 @@ def compute_global_err():
 
 if __name__ == '__main__':
     try:
-      opts, args = getopt.getopt(sys.argv[1:],"hs:v:",["size=","visu="])
+      opts, args = getopt.getopt(sys.argv[1:],"hs:vo:",["size=","visu=","object="])
     except getopt.GetoptError:
-        print("erreur_grume.py -s <img size> -v <y | n>")
+        print("erreur_grume.py -s <img size> -v -o <grume | mire>")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print("erreur_grume.py -s <img size> -v <y | n>")
+            print("erreur_grume.py -s <img size> -v -o <grume | mire>")
             sys.exit()
         elif opt in ("-s", "--size"):
             size=arg
-
         elif opt in ("-v", "--visu"):
-            visu=arg
+            visu=1
+        elif opt in ("-o", "--object"):
+            if(arg=="mire" or arg=="grume"):
+                obj=arg
+            else:
+                print("erreur tapez -o <grume | mire>")
+                sys.exit()
+
     #########init path for compute erreur and create visu
-    path_segmented_grume_test="/../DATA/test/"+size+"/output/"
-    path_img_test="/../DATA/test/"+size+"/input/"
+    path_segmented_grume_test="/../DATA/test/"+obj+"/"+size+"/output/"
+    path_img_test="/../DATA/test/"+obj+"/"+size+"/input/"
     path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/"+size+"/"
     path_visu_grume_expected="/../DATA/truth_ground/visu/"+size+"/"
     path_visu_grume_test="/../DATA/test/visu/"+size+"/"
     #####################################################
-    if(visu=="n"):
+    if(visu==0):
         compute_global_err()
     else:
-        if(visu=="y"):
+        if(visu==1):
             compute_global_err_with_visu()
