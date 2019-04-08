@@ -37,8 +37,8 @@ object = "mire"
 
 size_folder=str(height)+"_"+str(width)
 
-name = "LEN_"+size_folder+"_"+object+"c.hdf5"
-#name= "LEN_256c.hdf5"
+#name = "LEN_"+size_folder+"_"+object+"_c.hdf5"
+name= "LEN_256_256_mirePre_c.hdf5"
 
 train_folder	= "train"
 valid_folder	= "valid"

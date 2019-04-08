@@ -67,8 +67,14 @@ def show_image(img_test,img_expected,im_visu_ob,im_visu_exp):
 
 
     TP,TN,FN,FP=compute_error(img_test,img_expected)
-    precision=TP/(TP+FP)
-    recall=TP/(TP+FN)
+    if(TP+FP !=0):
+        precision=TP/(TP+FP)
+    else:
+        precision =0
+    if(TP+FN!=0):
+        recall=TP/(TP+FN)
+    else:
+        recall=0
 
     img_expected = cv2.cvtColor(img_expected, cv2.COLOR_BGR2RGB)
     img_test = cv2.cvtColor(img_test, cv2.COLOR_BGR2RGB)
@@ -176,8 +182,14 @@ def compute_global_err():
             im_exp= np.array(im_exp)
 
             TP,TN,FN,FP=compute_error(im_ob,im_exp)
-            precision=TP/(TP+FP)
-            recall=TP/(TP+FN)
+            if(TP+FP !=0):
+                precision=TP/(TP+FP)
+            else:
+                precision =0
+            if(TP+FN!=0):
+                recall=TP/(TP+FN)
+            else:
+                recall=0
             print("TP : "+str(TP)+" TN : "+str(TN)+" FN : "+str(FN)+" FP : "+str(FP)+" precision : "+str(precision)+"recall : "+str(recall))
             moyTP+=TP
             moyTN+=TN
@@ -223,9 +235,12 @@ if __name__ == '__main__':
     #########init path for compute erreur and create visu
     path_segmented_grume_test="/../DATA/test/"+obj+"/"+size+"/output/"
     path_img_test="/../DATA/test/"+obj+"/"+size+"/input/"
-    path_segmented_grume_expected="/../DATA/truth_ground/sgm_grume/"+size+"/"
-    path_visu_grume_expected="/../DATA/truth_ground/visu/"+size+"/"
-    path_visu_grume_test="/../DATA/test/visu/"+size+"/"
+
+    path_segmented_grume_expected="/../DATA/truth_ground/"+obj+"/"+size+"/"
+
+    path_segmented_grume_expected="/../DATA/truth_ground/"+obj+"/"+size+"/"
+    path_visu_grume_expected="/../DATA/truth_ground/visu/"+obj+"/"+size+"/"
+    path_visu_grume_test="/../DATA/test/visu/"+obj+"/"+size+"/"
     #####################################################
     if(visu==0):
         compute_global_err()

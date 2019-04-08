@@ -28,8 +28,8 @@ batch_size = model.batch_size
 epochs = model.epochs
 
 # Folders Train, Valid, Test and Save
-train_dir = os.path.join(os.getcwd(), '..','DATA', model.train_folder,model.size_folder)
-valid_dir = os.path.join(os.getcwd(), '..','DATA', model.valid_folder,model.size_folder)
+train_dir = os.path.join(os.getcwd(), '..','DATA', model.train_folder,model.object,model.size_folder)
+valid_dir = os.path.join(os.getcwd(), '..','DATA', model.valid_folder,model.object,model.size_folder)
 input_folder    = 'input'
 label_folder    = 'output'
 
@@ -41,7 +41,7 @@ label_folder    = 'output'
                      zoom_range=0.2,
                      horizontal_flip=True,
                      fill_mode='wrap')'''
-                     
+
 data_gen_args = dict(rescale = 1.0 / 255,
                      rotation_range=0.2,
                      width_shift_range=0.05,
