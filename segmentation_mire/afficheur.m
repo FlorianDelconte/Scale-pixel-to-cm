@@ -1,40 +1,43 @@
 close all
-path='../DATA/truth_ground/img/512_512/';
+clear all
 
-%name1='fva_huawei_E009H_1.jpg'
-%name2='huawei_E010H_label.jpg'
-%name3='huawei_E001B_label.jpg'
-%name4='huawei_E008B_3.jpg'
-%name5='huawei_E066H_1.jpg'.{jpg,png}
-%name6='huawei_E091B_2.jpg'
+path_img='../DATA/truth_ground/img/256_256/';
+path_sgmMire='../DATA/test/mire/256_256/output/';
+Nbcorner=32;
+filtersize=3;
+seuil=0.5;
+contour_methode='Canny';%Prewitt Roberts log zerocross Canny approxcanny
+
+
 edge_detector='Canny'%'Sobel''Prewitt''Roberts''log''Canny''approxcanny'
-filelist=[dir(strcat(path,'*.jpg'));dir(strcat(path,'*.JPG'))]
+filelist_img=[dir(strcat(path_img,'*.jpg'));dir(strcat(path_img,'*.JPG'))]
+filelist_sgm=[dir(strcat(path_sgmMire,'*.jpg'));dir(strcat(path_sgmMire,'*.JPG'))]
 %filelist = dir([path,'*.{JPG,jpg}']);
-nfiles = length(filelist)
+nfiles = length(filelist_img)
 fig=figure('Name','Segmentation de mire');
 for i = 1:nfiles
-    filelist(i).name
-    [I_RGB,R,G,B,I_HSV,H,S,V] = create_composante(filelist(i).folder,filelist(i).name);
-    affiche_composante(I_RGB,R,G,B,I_HSV,H,S,V)
-    R = edge(R,edge_detector);
-    G = edge(G,edge_detector);
-    B = edge(B,edge_detector);
-    H = edge(H,edge_detector);
-    S = edge(S,edge_detector);
-    V = edge(V,edge_detector);
+    filelist_img(i).name
+    filelist_sgm(i).name
+    %lecture de l'image RGB
+    I_RGB=imread(strcat(strcat(path_img, '/'), filelist_img(i).name));
+    %lecture du masque
+    MASQUE=imread(strcat(strcat(path_sgmMire, '/'), filelist_sgm(i).name));
+    MASQUE=im2bw(MASQUE,0);
+    %calcul l'image masqué
+    I_RGB_masqued = bsxfun(@times, I_RGB, cast(MASQUE,class(I_RGB)));
+    %recupère les composantes
+    [I_RGB,R,G,B,I_HSV,H,S,V] = create_composante(I_RGB_masqued);
     
-    %affiche_composante(I_RGB,R,G,B,I_HSV,H,S,V)
-    %corners = detectHarrisFeatures(S,'FilterSize', 81);
-
-    %plot(s,corners.selectStrongest(100));
     
-     %BW = imbinarize(S,0.3);
-     %imshow(BW); hold on;
-%     corners = detectHarrisFeatures(BW,'FilterSize', 111);
-%     plot(corners.selectStrongest(30));
+    %OPERATION
+    [I_RGB,R,G,B,I_HSV,H,S,V] = treshold(I_RGB,R,G,B,I_HSV,H,S,V,seuil);
+    %[I_RGB,R,G,B,I_HSV,H,S,V] = apply_Otsu(I_RGB,R,G,B,I_HSV,H,S,V);
+    [I_RGB,R,G,B,I_HSV,H,S,V]=detect_contour(I_RGB,R,G,B,I_HSV,H,S,V,contour_methode);
+    %AFFICHAGE
+    affiche_composante(I_RGB,R,G,B,I_HSV,H,S,V);
+    %affichage_harris(I_RGB,R,G,B,I_HSV,H,S,V,Nbcorner,filtersize);
     truesize(fig);
     pause;
 end
-close all
 %corners = detectHarrisFeatures(I);
 %plot(corners.selectStrongest(300));

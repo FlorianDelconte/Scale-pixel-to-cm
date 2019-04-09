@@ -1,5 +1,4 @@
-function [I_RGB,R,G,B,I_HSV,H,S,V] = create_composante(path,name)
-    I_RGB=imread(strcat(strcat(path, '/'),name));
+function [I_RGB,R,G,B,I_HSV,H,S,V] = create_composante(I_RGB)
     % Composante rouge
     R = I_RGB(:,:,1);
     % Composante verte
