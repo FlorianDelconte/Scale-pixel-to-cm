@@ -31,15 +31,18 @@ def compute_error(img_test,img_expected):
     #compute TruePositif
     image_test_add_exp=cv2.bitwise_and(img_test,img_expected)
     TP=np.count_nonzero(image_test_add_exp)#nombre de pixel dansf la forme réel ET dans la forme estimée
+
     #compute TrueNegatif
     image_test_inverse=cv2.bitwise_not(img_test)
     img_expected_inverse=cv2.bitwise_not(img_expected)
     image_test_inverse_and_img_expected_inverse=cv2.bitwise_and(image_test_inverse,img_expected_inverse)
     TN=np.count_nonzero(image_test_inverse_and_img_expected_inverse)#nombre de pixel à l'exterrieur de la forme réel ET à l'exterrieur de la forme estimée
+
     #compute FalseNegatif
     img_test_inverse=cv2.bitwise_not(img_test)
     image_test_inverse_add_exp=cv2.bitwise_and(img_expected,img_test_inverse)
     FN=np.count_nonzero(image_test_inverse_add_exp)
+
     #compute FalsePositif
     img_exp_inverse=cv2.bitwise_not(img_expected)
     image_exp_inverse_add_test=cv2.bitwise_and(img_exp_inverse,img_test)
@@ -165,7 +168,6 @@ def compute_global_err_with_visu():
         print("erreur : les listes n'ont pas la même taille")
 
 def compute_global_err():
-    print("eee",size)
     l_exp,l_ob,_,_=make_list()
     if(len(l_exp)==len(l_ob)):
         moyTP=0
@@ -176,9 +178,11 @@ def compute_global_err():
         moyReca=0
         for i in range(0,len(l_ob)):
             print(l_ob[i])
+
             im_ob=cv2.imread(path+path_segmented_grume_test+l_ob[i],0)
             _,im_ob=cv2.threshold(im_ob, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
             im_exp=cv2.imread(path+path_segmented_grume_expected+l_exp[i],0)
+            print(path+path_segmented_grume_expected+l_exp[i])
             _,im_exp=cv2.threshold(im_exp, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
             im_ob = np.array(im_ob)
             im_exp= np.array(im_exp)

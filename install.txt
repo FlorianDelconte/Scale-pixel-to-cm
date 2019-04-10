@@ -35,3 +35,7 @@ find . -iname '*.JPG' -exec mogrify -format png {} +
 
 ---------------------------------------------------------------Suppression de tous les fichiers recursivement ayant l'extenstion spécifié
 find . -iname *.png -type f | xargs rm
+
+
+huawei_E092H_4.jpg
+huawei_E091B_2.jpg
