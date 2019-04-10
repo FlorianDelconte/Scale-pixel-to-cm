@@ -5,9 +5,11 @@ import cv2
 import matplotlib.pyplot as plt
 from comparator import Comparator
 
-size="512_512"
+size="256_256"
 visu =0
-obj="grume"
+obj="mire"
+imgFormat="PNG"
+
 path_segmented_grume_test=None
 path_img_test=None
 path_segmented_grume_expected=None
@@ -213,13 +215,13 @@ def compute_global_err():
 
 if __name__ == '__main__':
     try:
-      opts, args = getopt.getopt(sys.argv[1:],"hs:vo:",["size=","visu=","object="])
+      opts, args = getopt.getopt(sys.argv[1:],"hs:vo:f:",["size=","visu=","object=","format="])
     except getopt.GetoptError:
-        print("erreur_grume.py -s <img size> -v -o <grume | mire>")
+        print("erreur_grume.py -s <img size> -v -o <grume | mire> -f <PNG | JPG>")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print("erreur_grume.py -s <img size> -v -o <grume | mire>")
+            print("erreur_grume.py -s <img size> -v -o <grume | mire> -f <PNG | JPG>")
             sys.exit()
         elif opt in ("-s", "--size"):
             size=arg
@@ -231,16 +233,22 @@ if __name__ == '__main__':
             else:
                 print("erreur tapez -o <grume | mire>")
                 sys.exit()
+        elif opt in ("-f", "--format"):
+            if(arg=="PNG" or arg=="JPG"):
+                imgFormat=arg
+                print("coucou")
+            else:
+                print("erreur tapez -f <PNG | JPG>")
+                sys.exit()
 
     #########init path for compute erreur and create visu
-    path_segmented_grume_test="/../DATA/test/"+obj+"/"+size+"/output/"
-    path_img_test="/../DATA/test/"+obj+"/"+size+"/input/"
+    path_segmented_grume_test="/../DATA/"+imgFormat+"/test/"+obj+"/"+size+"/output/"
+    path_img_test="/../DATA/"+imgFormat+"/test/"+obj+"/"+size+"/input/"
+    #path_segmented_grume_expected=os.path.join('..','DATA', imgFormat,'truth_ground',obj,size)
+    path_segmented_grume_expected="/../DATA/"+imgFormat+"/truth_ground/"+obj+"/"+size+"/"
 
-    path_segmented_grume_expected="/../DATA/truth_ground/"+obj+"/"+size+"/"
-
-    path_segmented_grume_expected="/../DATA/truth_ground/"+obj+"/"+size+"/"
-    path_visu_grume_expected="/../DATA/truth_ground/visu/"+obj+"/"+size+"/"
-    path_visu_grume_test="/../DATA/test/visu/"+obj+"/"+size+"/"
+    path_visu_grume_expected="/../DATA/"+imgFormat+"/truth_ground/visu/"+obj+"/"+size+"/"
+    path_visu_grume_test="/../DATA/"+imgFormat+"/test/visu/"+obj+"/"+size+"/"
     #####################################################
     if(visu==0):
         compute_global_err()
