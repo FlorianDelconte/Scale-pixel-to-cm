@@ -3,7 +3,7 @@ clear all
 
 path_img='../DATA/truth_ground/img/256_256/';
 path_sgmMire='../DATA/test/mire/256_256/output/';
-Nbcorner=32;
+Nbcorner=16;
 filtersize=3;
 seuil=0.5;
 contour_methode='Canny';%Prewitt Roberts log zerocross Canny approxcanny
@@ -27,14 +27,13 @@ for i = 1:nfiles
     I_RGB_masqued = bsxfun(@times, I_RGB, cast(MASQUE,class(I_RGB)));
     %recupère les composantes
     [I_RGB,R,G,B,I_HSV,H,S,V] = create_composante(I_RGB_masqued);
-    
-    
+
     %OPERATION
-    [I_RGB,R,G,B,I_HSV,H,S,V] = treshold(I_RGB,R,G,B,I_HSV,H,S,V,seuil);
+    %[I_RGB,R,G,B,I_HSV,H,S,V] = treshold(I_RGB,R,G,B,I_HSV,H,S,V,seuil);
     %[I_RGB,R,G,B,I_HSV,H,S,V] = apply_Otsu(I_RGB,R,G,B,I_HSV,H,S,V);
     [I_RGB,R,G,B,I_HSV,H,S,V]=detect_contour(I_RGB,R,G,B,I_HSV,H,S,V,contour_methode);
     %AFFICHAGE
-    affiche_composante(I_RGB,R,G,B,I_HSV,H,S,V);
+    %affiche_composante(I_RGB,R,G,B,I_HSV,H,S,V);
     %affichage_harris(I_RGB,R,G,B,I_HSV,H,S,V,Nbcorner,filtersize);
     truesize(fig);
     pause;
