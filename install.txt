@@ -24,9 +24,14 @@ make
 
 ---------------------------------------------------------------TensorFlow
 %%voir https://www.tensorflow.org/install/pip
-%%pour activer l'environnement virtuel 
-source ./venv/bin/activate 
+%%pour activer l'environnement virtuel
+source ./venv/bin/activate
 %%pour installer tensorflow
 pip install --upgrade tensorflow
-%%pour quitter l'environnement virtuel 
+%%pour quitter l'environnement virtuel
 deactivate
+---------------------------------------------------------------Changer de format d'images tous les fichiers recursivement
+find . -iname '*.JPG' -exec mogrify -format png {} +
+
+---------------------------------------------------------------Suppression de tous les fichiers recursivement ayant l'extenstion spécifié
+find . -iname *.png -type f | xargs rm
