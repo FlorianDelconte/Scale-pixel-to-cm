@@ -28,8 +28,8 @@ batch_size = model.batch_size
 epochs = model.epochs
 
 # Folders Train, Valid, Test and Save
-train_dir = os.path.join(os.getcwd(), '..','DATA', model.train_folder,model.object,model.size_folder)
-valid_dir = os.path.join(os.getcwd(), '..','DATA', model.valid_folder,model.object,model.size_folder)
+train_dir = os.path.join(os.getcwd(), '..','DATA', model.imgFormat,model.train_folder,model.object,model.size_folder)
+valid_dir = os.path.join(os.getcwd(), '..','DATA', model.imgFormat,model.valid_folder,model.object,model.size_folder)
 input_folder    = 'input'
 label_folder    = 'output'
 
