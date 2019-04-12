@@ -12,11 +12,13 @@ for i = 1:nfiles
     SGM=imread(path_name);
     SGM_nonzero = nonzeros(SGM);
     [counts,x]=imhist(SGM_nonzero);
-    %bar(counts);
-    sum=sum+counts;
-    %pause;  
+    bar(counts);
+    filelist_sgm(i).name
+    saveas(fig,strcat(strcat(path_sgmMire, '/msk_histo/'), filelist_sgm(i).name ));
+    sum=sum+counts; 
 end
 sum=sum / 60;
 bar(sum);
+saveas(fig,strcat(strcat(path_sgmMire, '/msk_histo/'), "moyenne.png" ));
 %h=histogram(sum,256)
 %h.Orientation = 'horizontal';
