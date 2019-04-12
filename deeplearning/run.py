@@ -34,13 +34,14 @@ input_folder    = 'input'
 label_folder    = 'output'
 
 '''data_gen_args = dict(rescale = 1.0 / 255,
-                     rotation_range=0.5,
-                     width_shift_range=0.2,
-                     height_shift_range=0.2,
-                     shear_range=0.2,
-                     zoom_range=0.2,
+                     rotation_range=0.2,
+                     width_shift_range=0.05,
+                     height_shift_range=0.05,
+                     shear_range=0.05,
+                     zoom_range=0.05,
                      horizontal_flip=True,
-                     fill_mode='wrap')'''
+                     vertical_flip=True,
+                     fill_mode='nearest')'''
 
 data_gen_args = dict(rescale = 1.0 / 255,
                      rotation_range=0.2,
@@ -100,6 +101,7 @@ def loadTargets(directory, h=model.height, w=model.width, c=model.channels, n=mo
         # IF JPG
         trgs = io.imread_collection(mylist, plugin='matplotlib')
         trgs = np.array([t for t in trgs])
+        print(trgs)
         return trgs
 
 # Create network

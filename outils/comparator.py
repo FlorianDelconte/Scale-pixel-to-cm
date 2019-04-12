@@ -50,7 +50,7 @@ class Comparator:
         #print(self.img.shape)
         #print(self.red_masque.shape)
         if(self.img.shape==self.red_masque.shape):
-            self.res = cv2.addWeighted(self.img,1,self.red_masque,0.6,0)
+            self.res = cv2.addWeighted(self.img,1,self.red_masque,1,0)
 
 
     def show_image(self):
@@ -70,7 +70,7 @@ class Comparator:
             for i in range(0,len(self.list_imgSeg)):
                 print("creation du visuel ",i)
                 self.red_masque=np.zeros((self.img2.shape[0],self.img2.shape[1],3), np.uint8)
-                self.res=np.zeros((self.img2.shape[0],self.img2.shape[1],3), np.uint8)
+                self.res=np.zeros((self.img2.shape[0],self.img2.shape[1],1), np.uint8)
                 self.img= cv2.imread(self.path_image+self.list_img[i],cv2.IMREAD_COLOR)
                 self.img2= cv2.imread(self.path_imageSeg+self.list_imgSeg[i],0)
                 self.img= np.array(self.img)

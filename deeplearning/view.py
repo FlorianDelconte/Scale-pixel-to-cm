@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 import os
 import csv
 import sys
@@ -21,7 +21,7 @@ from keras import backend as keras
 
 import model
 
-load_name 	= model.name 
+load_name 	= model.name
 filter_dir 	= os.path.join(os.getcwd(), 'model', 'filters')
 net			= model.unet()
 net.load_weights(model.fullname)
@@ -38,7 +38,7 @@ for j, name in enumerate(layers):
 	subfilter = "".join([filter_dir, "/{}".format(j)])
 	if not os.path.isdir(subfilter):
 		os.makedirs(subfilter)
-	print w, h, c, n
+	print (w, h, c, n)
 	for i in range(n):
 		fi = weights[:,:,:,i]
 		#ri = weights[:,:,0,i]
@@ -47,4 +47,4 @@ for j, name in enumerate(layers):
 		#scipy.misc.toimage(ri, cmin=-1.0, cmax=1.0).save('{}/r{}.jpg'.format(subfilter, i))
 		#scipy.misc.toimage(gi, cmin=-1.0, cmax=1.0).save('{}/b{}.jpg'.format(subfilter, i))
 		scipy.misc.toimage(fi, cmin=-1.0, cmax=1.0).save('{}/g{}.jpg'.format(subfilter, i))
-		#scipy.misc.toimage(bi, cmin=-1.0, cmax=1.0).save('{}/g{}.jpg'.format(subfilter, i))		
+		#scipy.misc.toimage(bi, cmin=-1.0, cmax=1.0).save('{}/g{}.jpg'.format(subfilter, i))

@@ -34,11 +34,11 @@ steps_per_epoch 	= 100
 validation_steps	= 10
 
 object = "mire"
-imgFormat = "PNG"
+imgFormat = "JPG"
 size_folder=str(height)+"_"+str(width)
 
-#name = "LEN_"+size_folder+"_"+object+"_c.hdf5"
-name= "LEN256_OBJmire_FORMpng.hdf5"
+#name = "LEN_"+s ize_folder+"_"+object+"_c.hdf5"
+name= "LEN_256_256_mirePre_c.hdf5"
 
 train_folder	= "train"
 valid_folder	= "valid"
@@ -57,7 +57,7 @@ test_dir_output 	= os.path.join(os.getcwd(), '..','DATA',imgFormat, test_folder,
 save_dir 			= os.path.join(os.getcwd(), 'model', 'save')
 fullname 			= "".join([save_dir, '/', name])
 
-numDatas = 30
+numDatas = 60
 #########
 # Model #
 # ----- #
