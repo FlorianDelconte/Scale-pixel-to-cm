@@ -61,7 +61,7 @@ def trainset_generator(batch_size,
 
 
 def gen_train_npy(image_path,mask_path,flag_multi_class = False,num_class = 2,image_prefix = "image",mask_prefix = "mask",image_as_gray = True,mask_as_gray = True):
-    image_name_arr = glob.glob(os.path.join(image_path,"%s*.png"%image_prefix))
+    image_name_arr = glob.glob(os.path.join(image_path,"%s*.jpg"%image_prefix))
     image_arr = []
     mask_arr = []
     for index,item in enumerate(image_name_arr):
