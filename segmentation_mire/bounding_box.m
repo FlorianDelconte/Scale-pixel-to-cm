@@ -1,6 +1,6 @@
 function [M] = bounding_box(n,img)
     path_sgmMire='../DATA/PNG/sgm_mire/msk_otsu/max_composante/';
-    path_name_msk=strcat(strcat(path_sgmMire, '/'), n)
+    path_name_msk=strcat(strcat(path_sgmMire, '/'), n);
     MASQUE=imread(path_name_msk);
     MASQUE=logical(MASQUE);
 
