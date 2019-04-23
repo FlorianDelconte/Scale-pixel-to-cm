@@ -8,10 +8,6 @@ fig=figure('Name','bjr');
 for i = 1:nfiles
     path_name_write=strcat(strcat(path_sgmMire, '/max_composante/'), filelist_sgm(i).name)
     SGM=imread(strcat(strcat(path_sgmMire, '/'), filelist_sgm(i).name));
-%     CC = bwconncomp(SGM)
-%     numPixels = cellfun(@numel,CC.PixelIdxList);
-%     [biggest,idx] = max(numPixels);
-%     SGM(CC.PixelIdxList{idx}) = 0;
     biggest=bwareafilt(SGM,1);
     imshow(biggest)
     
