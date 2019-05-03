@@ -18,17 +18,19 @@ for i = 1:nfiles
         contour=imread(path_name);
         contour=bounding_box(filelist_img(i).name,contour);
         %%%%%%%%%%%%%DETECTION DE LA MIRE%%%%%%%%%%%%%%%%%%%%%%%%
-        [H,theta,rho] = hough(contour,'RhoResolution',5);
+        [H,theta,rho] = hough(contour,'RhoResolution',3);
         %%%%DETECTION DES LIGNES HORIZONTALES%%%%
         ind_max_p = houghpeaks(H,1);
         theta_max = theta(ind_max_p(2));
         hough_vector_max_theta=H(:,ind_max_p(2));
         [V,I,w]=findpeaks(hough_vector_max_theta,'WidthReference','halfheight');%'MinPeakDistance',10
+        %w=w.*5;
         %%%%DETECTION DES LIGNES +90 DEGREES%%%%%
         ind_dec_p = mod(ind_max_p(2)+90,180);
         theta_dec = theta(ind_dec_p);
         hough_vector_max_theta_90=H(:,ind_dec_p);
         [V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90,'WidthReference','halfheight');%'MinPeakDistance',5
+        %w_dec=w_dec.*5; 
         %%%%NETOYAGE VECTEURS%%%%%%%%%%%%%%%%%%%%
         [V,I,w]=clear(V,I,w);
         [V_dec,I_dec,w_dec]=clear(V_dec,I_dec,w_dec);
@@ -145,18 +147,18 @@ function [pixel_line]=get_pixel_line_by_normal(fig_img,contour,rho,theta,P,w)
         pts_normal2=[pts_normal1 ;point3];
         normal_x=[point1(1) point2(1) point3(1)];
         normal_y=[point1(2) point2(2) point3(2)];
-        % plot(normal_x,normal_y,'LineWidth',1.5,'Color','yellow');  
+        %plot(normal_x,normal_y,'LineWidth',1.5,'Color','yellow');  
         [x,y]=bresenham(point2(1),point2(2),point3(1),point3(2));
-        pixels= [x,y];
-        pixels(pixels(:,1)<=0, :)=[];
-        pixels(pixels(:,1)>width, :)=[];
-        pixels(pixels(:,2)<=0, :)=[];
-        pixels(pixels(:,2)>height, :)=[];
-        pixels(:,1);
-        pixels(:,2);
+        %pixels= [x,y] ;
+%         pixels(pixels(:,1)<=0, :)=[];
+%         pixels(pixels(:,1)>width, :)=[];
+%         pixels(pixels(:,2)<=0, :)=[];
+%         pixels(pixels(:,2)>height, :)=[];
+       % pixels(:,1);
+       % pixels(:,2);
         %contour(sub2ind(size(contour),pixels(:,2),pixels(:,1))) = 255;
-        
-        [x,y]=get_nearest_pixel_line(point1,pixels,contour);
+  
+        [x,y]=get_nearest_pixel_line(point1,[x,y],contour);
         pixel_line=[pixel_line;[x,y]];
         %pixel_normal=[pixel_normal;pixels];
     end
@@ -168,29 +170,22 @@ function [x, y]=get_nearest_pixel_line(point_droite, pixels, image)
     point_droite;
     nb_pix=length(pixels(:,1));
     true_pix=[];
-    %Selection des pixel qui sont différent de zero parmis les pixels
-    %appartenant à la normal
-    
     for i = 1:nb_pix
-        if(image(pixels(i,2),pixels(i,1))==255);
-            true_pix=[true_pix ;pixels];
+        if(image(pixels(i,2),pixels(i,1))>0 )
+            p=[pixels(i,1),pixels(i,2)];
+            true_pix=[true_pix ;p];
         end
     end
-    %true_pix(1)
     nb_true_pix=length(true_pix);
-    %
-    if(nb_true_pix<=0)
-        x=-1;
-        y=-1;
-    elseif(nb_true_pix==1)
-        x=true_pix(1);
-        y=true_pix(2);
-    elseif(nb_true_pix>1)
+    %par defaut un si aucun pixel est blanc sur la  normal, x,y valent -1
+    x=-1;
+    y=-1;
+    if(nb_true_pix>0  )
         distance=sqrt(((true_pix(:,2)-point_droite(2))+(true_pix(:,1)-point_droite(1))).*((true_pix(:,2)-point_droite(:,2))+(true_pix(:,1)-point_droite(:,1))));
-        [v,indice] = max(distance);
-        x=true_pix(indice,1);
-        y=true_pix(indice,2);
-    end
+        [v,indice] = min(distance);
+         x=true_pix(indice,1);
+         y=true_pix(indice,2);
+     end
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -221,7 +216,7 @@ function affichage_pixel_normal(fig_pixel,contour,pixel_line)
     size(pixel_line);
     size(img);
     final_image(:,:,1)=img;
-    
+    final_image(:,:,2)=contour ;
     imshow(final_image);hold on;
     truesize(fig_pixel );
     
@@ -251,6 +246,7 @@ function affichage_img(fig_img,img,img_name,lines,lines_dec,rho_out,theta_out,rh
         pts=[x1 y1];
         pts(pts(:,2)<0, :)=[];
         pts(pts(:,2)>height, :)=[];
+        %plot(pts(:,1),pts(:,2),'Color','yellow','r*');
         plot(pts(:,1),pts(:,2),'LineWidth',1.5,'Color','red');
     end
     for i=1:length(rho_dec_out(1,:))
