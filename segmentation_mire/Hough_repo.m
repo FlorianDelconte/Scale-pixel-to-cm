@@ -35,7 +35,8 @@ for i = 1 :nfiles
         %w_dec=w_dec.*5; 
         %%%%NETOYAGE VECTEURS%%%%%%%%%%%%%%%%%%%%
         [V,I,w]=clear(V,I,w);
-        [V_dec,I_dec,w_dec]=clear(V_dec,I_dec,w_dec);
+        %[V,I,w]=clear2(V,I,w,rho);
+        [V_dec,I_dec,w_dec]=clear_dec(V_dec,I_dec,w_dec,rho );
         %%%%CREATION DES PEAKS%%%%%%%%%%%%%%%%%%%
         P=zeros(length(I),1);
         P(:)=ind_max_p(2);
@@ -52,18 +53,23 @@ for i = 1 :nfiles
         %get_pixel_line_by_hough(P,P_dec,contour,theta,rho,fig_pixel,w/2);
         %pixel_all_line=get_pixel_line_by_normal(fig_img, contour,rho,theta,P,w);
         %pixel_all_line_dec=get_pixel_line_by_normal(fig_img, contour,rho,theta,P_dec,w_dec);
-        get_pixel_line_by_pavage(fig_img, contour,rho,theta,P,w); 
+        figure(fig_pixel);
+        pixel_all_line=get_pixel_line_by_pavage(fig_img, contour,rho,theta,P,P_dec,w);
+
         %%%%LINES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %         lines = houghlines(contour,theta,rho,P,'FillGap',10000);
 %         lines_dec = houghlines(contour,theta,rho,P_dec,'FillGap',10000);   
         %%%%ECRITURE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %write_file(strcat(path_write, strrep(filelist_img(i).name,'.png','.dat')),pixel_all_line);
         %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %pixel_all_line_dec=[];
         %affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_dec);
         affichage_img(fig_img,contour,filelist_img(i).name,rho_out,theta_out,rho_dec_out,theta_dec_out);
         affichage_hough(fig_hough,H,theta,rho,I,I_dec,theta_max,theta_dec);
         affichage_distrib(fig_vecteur,hough_vector_max_theta,[V,I,w],fig_vecteur_long,hough_vector_max_theta_90,[V_dec,I_dec,w_dec],rho);
         pause;   
+        figure(fig_pixel);
+        clf('reset')
         clearfig(fig_img,fig_vecteur,fig_vecteur_long,fig_hough,fig_pixel);
     else
         fprintf("segmentation to short for analyse")
@@ -88,12 +94,137 @@ function [V_res,I_res,w_res]= clear(V_dec,ind_dec,w)
     
     t=[V_dec ind_dec];
     t=[t w];
-    %t
+    %retrait des lignes dont le nombre de vote est < à la moyenne
     t(t(:,1)<m, :)=[];
-   
+
+
     V_res=t(:,1);
     I_res= t(:,2);
     w_res = t(:,3);
+    
+end
+function [V_res,I_res,w_res]= clear2(V_dec,ind_dec,w,rho)
+    m=mean(V_dec);
+    
+    t=[V_dec ind_dec];
+    t=[t w];
+    %retrait des lignes dont le nombre de vote est < à la moyenne
+    V_dec=t(:,1);
+    ind_dec= t(:,2);
+    w_dec = t(:,3);
+    taille=length(ind_dec);
+    res=[]
+    %aucun traitement si qu'un seul peaks
+    if(taille>2)
+       %calcul de la moyenne des distance entre droite
+       m=0;
+       for i=1:taille-1
+           rho_peaks=rho(ind_dec(i));
+           rho_peaks_next=rho(ind_dec(i+1));
+           distance=rho_peaks_next-rho_peaks ;
+           m=m+distance;
+       end
+       m=m/(taille-1);
+       %[votemax,imax]=max(V_dec);
+       [sorted_v,index]= sortrows(V_dec,'descend');
+       imax1=index(1);
+       imax2=index(2);
+       %comparaison des indice de rho pour savoir lequel est à droite ou a
+       %gauche
+       if(ind_dec(imax1)<ind_dec(imax2))
+           ind_gauche=imax1;
+           ind_droite=imax2;
+       else
+           ind_gauche=imax2;
+           ind_droite=imax1;
+       end
+       rho_gauche=rho(ind_dec(ind_gauche));
+       rho_droite=rho(ind_dec(ind_droite));
+       distance_entre_pique_max=rho_droite-rho_gauche
+       seuil_accepted=(distance_entre_pique_max/100)*10
+       res=[];
+       for i=1:length(ind_dec)
+           for j=1:length(ind_dec)
+               if(i~=j)
+                   if(i<j)
+                        rho_peaks=rho(ind_dec(i));
+                        rho_peaks_next=rho(ind_dec(j));
+                   else
+                        rho_peaks=rho(ind_dec(j));
+                        rho_peaks_next=rho(ind_dec(i));
+                   end
+                    distance=rho_peaks_next-rho_peaks ;
+                   if(distance>distance_entre_pique_max-seuil_accepted && distance<distance_entre_pique_max+seuil_accepted)
+                     res=[res;t(i,1) t(i,2) t(i,3)];
+                     res=[res;t(j,1) t(j,2) t(j,3)];
+                   end
+               end
+           end
+       end
+%        %parcourt des autres piques
+%        for i=3:length(sorted_v)
+%            icurrent=index(i);
+%            rho_current=rho(ind_dec(icurrent));
+%            distance_droite_current=rho_droite
+%        end
+%        if(sorted_t(1,2)<sorted_t(2,2))
+%            gauche=[sorted_t(1,1) sorted_t(1,2) sorted_t(1,3)];
+%            droite=[sorted_t(2,1) sorted_t(2,2) sorted_t(2,3)];
+%        else
+%            gauche=[sorted_t(2,1) sorted_t(2,2) sorted_t(2,3)];
+%            droite=[sorted_t(1,1) sorted_t(1,2) sorted_t(1,3)];
+%        end
+       %calcul de rho
+        %rho_gauche=rho(gauche(1,2));
+        %rho_droite=rho(droite(1,2));
+       %distance entre les deux droite = rho_droite-rho-gauche
+%        distance_entre_pique=rho_droite-rho_gauche;
+       
+%         res=[t(imax1,1) t(imax1,2) t(imax1,3)];
+%         res=[res;t(imax2,1) t(imax2,2) t(imax2,3)];
+    end
+    res
+    V_res=res(:,1);
+    I_res= res(:,2); 
+    w_res = res(:,3);
+    
+end
+function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho)
+    m=mean(V_dec);
+    t=[V_dec ind_dec];
+    t=[t w];
+    %retrait des lignes dont le nombre de vote est < à la moyenne
+    t(t(:,1)<m, :)=[];
+    V_dec=t(:,1);
+    ind_dec= t(:,2);
+    w_dec = t(:,3);
+    %Calcul de la distance (rho) moyenne entre les piques
+    dist=[];
+    for i=1:length(ind_dec)-1
+       rho_peaks=rho(ind_dec(i));
+       rho_peaks_next=rho(ind_dec(i+1));
+       distance=rho_peaks_next-rho_peaks ;
+       dist=[dist ;distance];
+    end
+    mdist=median(dist);
+    seuil_accepted=(mdist/100)*45;
+    mdist-seuil_accepted;
+    mdist+seuil_accepted;
+    res=[];
+    for i=1:length(ind_dec)-1
+        rho_peaks=rho(ind_dec(i));
+        rho_peaks_next=rho(ind_dec(i+1));
+        distance=rho_peaks_next-rho_peaks ;
+        distance;
+        w_dec(i);
+        if(distance>mdist-seuil_accepted && distance<mdist+seuil_accepted)
+            res=[res;t(i,1) t(i,2) t(i,3)];
+            res=[res;t(i+1,1) t(i+1,2) t(i+1,3)];
+        end
+    end
+    V_res=res(:,1);
+    I_res= res(:,2);
+    w_res = res(:,3);
     
 end
 function get_pixel_line_by_hough(P,P_dec,contour,theta,rho,fig_pixel,w)
@@ -121,62 +252,264 @@ function get_pixel_line_by_hough(P,P_dec,contour,theta,rho,fig_pixel,w)
     imshow(final_image);
     hold off;
 end
-function [pixel_all_line]=get_pixel_line_by_pavage(fig_img,contour,rho,theta,P,w)
+function [firstdroite]=get_pixel_line_by_pavage(fig_img,contour,rho,theta,P,P_dec,w)
     [height, width] = size(contour);  
-    pixel_all_line=[];
-    [nbligne,nbcolonne] = size(P);
-    figure(fig_img);
-    imshow(contour);hold on;
-    numdroite=4 ;
-    %largeur/theta/rho de la droite courante
-    %largeur_d=w(numdroite)*2;
+    firstdroite=[];
+    %[nbligne,nbcolonne] = size(P);
+    numdroite=1  ;
+    %première droite
     theta_d=theta(P(numdroite,2 ));
     rho_d=rho(P(numdroite,1));
-    %rho_d
-    %rho(P(3,1))
+    %première normal
+    theta_n=theta(P_dec(numdroite,2 ));
+    rho_n=rho(P_dec(numdroite,1));
     %creation de la droite courante
-    rho_d
-    x1 = 0;
-    y1 = round((rho_d - x1* cosd(theta_d ))/ sind(theta_d));
-    x2 = width;
-    y2 = round((rho_d - x2* cosd(theta_d ))/ sind(theta_d));
+    x1_d = 1;
+    y1_d = round((rho_d - x1_d* cosd(theta_d ))/ sind(theta_d));
+    x2_d = width; 
+    y2_d = round((rho_d - x2_d* cosd(theta_d ))/ sind(theta_d));
+    %creation de la droite
+    a_d=y2_d-y1_d;
+    b_d=x2_d-x1_d;
+    g_d=gcd(a_d,b_d); 
+    a_d=a_d/g_d;
+    b_d=b_d/g_d ;
+    mu_d=(a_d*x1_d)-(b_d*y1_d);
+    wd=max(abs(a_d),abs(b_d));
+    [firstdroite,freeman,c1,c2]=droiteNaive(contour,a_d,b_d,mu_d,wd,x1_d,y1_d);
+    imshow(contour);hold on;
+    plot(firstdroite(:, 1),firstdroite(:,2),'o','Color','red' )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%creation de la structure normal
+    a_n=-b_d;
+    b_n= a_d;
+    x1_n=firstdroite(1,1);
+    y1_n=firstdroite(1,2);
+    mu_n=((a_n*x1_n)-(b_n*y1_n));
+    wn=max(abs(a_n),abs(b_n));
+    %demi normal naive
+    [pixel_all_line_dec_up,freeman_dec,c1_dec,c2_dec]=droiteNaive(contour,a_n,b_n,mu_n,wn,x1_n,y1_n);
+    
+    %extraction du pattern
+    pattern_dec=extract_pattern(freeman_dec,a_n,b_n);
+    
+    %construction de la normal complete par la structure
+    pixel_droite=getPixelByStructure(a_n,b_n,mu_n ,pattern_dec,contour);
+
+    plot(pixel_droite(:, 1), pixel_droite(:,2),'o','Color','green');
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    all_pixel=[];
+    [nbligne,nblcolonne] = size(P);
+    for n = 2 :nbligne 
+        theta_current=theta(P(n,2));
+        rho_current=rho(P(n,1));
+        %discrétisation des autres droites à partir de la structure 
+%         pixel_droite=getPixelByStructure(theta_current ,rho_current,pattern,contour);
+%         plot(pixel_droite(:,1),pixel_droite(:,2),'o','Color','blue' );
+        %discrétisation naïve
+        x1_d = 1;
+        y1_d = round((rho_current - x1_d* cosd(theta_current ))/ sind(theta_current));
+        x2_d = width; 
+        y2_d = round((rho_current - x2_d* cosd(theta_current ))/ sind(theta_current));
+        a_d=y2_d-y1_d;
+        b_d=x2_d-x1_d;
+        g_d=gcd(a_d,b_d); 
+        a_d=a_d/g_d;
+        b_d=b_d/g_d ;
+        mu_d=(a_d*x1_d)-(b_d*y1_d);
+        wd=max(abs(a_d),abs(b_d));
+        [pixel,freeman,c1,c2]=droiteNaive(contour,a_d,b_d,mu_d,wd,x1_d,y1_d);
+        plot(pixel(:,1),pixel(:,2),'o','Color','red' );
+    end 
+    
 
   
-    
-    plot([x1 x2],[y1 y2],'color','red');
-    
-    %coeficient a,b,mu et w de la norm
-    a=y2-y1;
-    b=x2-x1;
-    g=gcd(a,b) 
-    a=a/g;
-    b=b/g; 
-
-    mu=rho_d;
-    ww=max(abs(a),abs(b));
-
-    D=droiteNaive(contour,a,b,mu,ww,x1,x2,y1,y2);
-    plot(D(:,1),D(:,2),'o','color','yellow'); 
-    plot([x1 x2],[y1 y2],'o','color','red');
-    pause;
+ end
+function [pixel_droite]=getPixelByStructure(a,b,c,structure,contour)
+    [height, width] = size(contour);  
+    xd2 = 1;
+    %yd2 = round((rho - xd2* cosd(theta ))/ sind(theta)); 
+    yd2=round((c-(a*xd2))/(-b));
+    pixel_droite=[xd2 yd2];
+    p=1;
+    while(xd2<width )
+        if(p<=length(structure))
+            if(structure(p)==0)
+                xd2=xd2+1;
+                pixel_droite=[pixel_droite ; xd2 yd2];
+            end
+            if(structure(p)==1)
+                xd2=xd2+1;
+                yd2=yd2+1;
+                pixel_droite=[pixel_droite ; xd2 yd2];
+            end
+            if(structure(p)==2)
+                yd2=yd2+1;
+                pixel_droite=[pixel_droite ; xd2 yd2];
+            end
+            if(structure(p)==3)
+                xd2=xd2-1;
+                yd2=yd2+1;
+                pixel_droite=[pixel_droite ; xd2 yd2];
+            end
+            if(structure(p)==4)
+                xd2=xd2-1;
+                pixel_droite=[pixel_droite ; xd2 yd2];
+            end
+            if(structure(p)==5)
+                xd2=xd2-1;
+                yd2=yd2-1;
+                pixel_droite=[pixel_droite ; xd2 yd2];
+            end
+            if(structure(p)==6)
+                yd2=yd2-1;
+                pixel_droite=[pixel_droite ; xd2 yd2];
+            end
+            if(structure(p)==7)
+                xd2=xd2+1;
+                yd2=yd2-1;
+                pixel_droite=[pixel_droite ; xd2 yd2];
+            end
+            
+        else
+            p=0;
+        end
+        p=p+1;
+    end
 end
-
-function [pixel_droite]=droiteNaive(contour,a,b,mu,w,x1,x2,y1,y2)
+function [pattern]=extract_pattern(freeman_code,a,b)
+    %la longueur de la période est défini par a ou b 
+    periode=max(abs(a),abs(b));
+    if(periode<=length(freeman_code))
+        pattern=freeman_code(1:periode);
+    else
+        pattern=freeman_code;
+    end
+end
+function [pixel_droite,freeman,c1,c2]=droiteNaive(contour,a,b,mu,w,x1,y1)
     x=x1;
     y=y1;
-    deltaX=x2-x1;
+
+    [height, width] = size(contour); 
+    nbp=max(height,width);
     pixel_droite= [];
-     for i = 1:deltaX
-        pixel_droite=[pixel_droite; [x y]];
-        if((mu<=(a*x)-(b*y)) && ((a*x)-(b*y)<(mu+w-1)))
-            x=x+1;    
-        else
-            x=x+1;
-            y=y+1;
-        end
-    end
-    
+    freeman= [];
+     code=-1;
+     c1=-1;
+     c2=-1;
+    for i = 1:nbp
+         %if((x>0 && x<=width) && (y>0 && y<=height))   
+         pixel_droite=[pixel_droite; [x y]];
+         if(code ~=-1)
+            freeman= [freeman; code];
+         end
+         %end
+         %octant haut/droite
+         if(a>=0 && b>=0)
+            if(abs(b)>abs(a)) 
+                if(((mu<=(a*x)-(b*y)) && ((a*x)-(b*y)<(mu+w-1))))
+                    x=x+1; 
+                    code=0;
+                    c1=code;
+                else
+                    x=x+1; 
+                    y=y+1;
+                    code=1;
+                    c2=code;
+                end
+            else
+                if(((mu<=(a*x)-(b*y)) && ((a*x)-(b*y)<(mu+w-1))))
+                    y=y+1;    
+                    code=2;
+                    c1=code;
+                else
+                    x=x+1; 
+                    y=y+1;
+                    code=1;
+                    c2=code;
+                end
+            end
+         end
+         %octant bas/droite
+         if(a<=0 && b>=0)
+            if(abs(b)>abs(a)) 
+                if(((mu<=(a*x)-(b*y)) && ((a*x)-(b*y)<(mu+w-1))))
+                    x=x+1;   
+                    code=0;
+                    c1=code;
+                else
+                    x=x+1; 
+                    y=y-1;
+                    code=7;
+                   c2=code;
+                end
+            else
+                if(((mu<=(a*x)-(b*y)) && ((a*x)-(b*y)<(mu+w-1))))
+                    y=y-1; 
+                    code=6;
+                   c1=code;
+                else
+                    x=x+1; 
+                    y=y-1;
+                    code=7;
+                    c2=code;
+                end
+            end
+         end
+         %octant bas/gauche
+         if(a<=0 && b<=0)
+            if(abs(b)>abs(a)) 
+                if(((mu<=(a*x)-(b*y)) && ((a*x)-(b*y)<(mu+w-1))))
+                    x=x-1;   
+                    code=4
+                    c1=code;
+                else
+                    x=x-1; 
+                    y=y-1;
+                    code=5;
+                    c2=code;
+                end
+            else
+                if(((mu<=(a*x)-(b*y)) && ((a*x)-(b*y)<(mu+w-1))))
+                    y=y-1; 
+                    code=6;
+                    c1=code;
+                else
+                    x=x-1; 
+                    y=y-1;
+                    code=5;
+                    c2=code;
+                end
+            end
+         end
+         %octant haut/gauche
+         if(a>=0 && b<=0)
+           if(abs(b)>abs(a)) 
+                if(((mu<=(a*x)-(b*y)) && ((a*x)-(b*y)<(mu+w-1))))
+                    x=x-1;  
+                    code=4;
+                    c1=code;
+                else
+                    x=x-1; 
+                    y=y+1;
+                    code=3;
+                    c2=code;
+                end
+            else
+                if(((mu<=(a*x)-(b*y)) && ((a*x)-(b*y)<(mu+w-1))))
+                    y=y+1;  
+                    code=2;
+                    c1=code;
+                else
+                    x=x-1; 
+                    y=y+1;
+                    code=3
+                    c2=code;
+                end
+            end
+         end 
+    end  
 end
+
 function [pixel_all_line]=get_pixel_line_by_normal(fig_img,contour,rho,theta,P,w)
     [height, width] = size(contour);  
     pixel_all_line=[];
@@ -298,12 +631,12 @@ function affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_
         end
     end
     %nombre de ligne/colonne de la matrice des droite decalé pixelisé 
-    [nbligne,nbcolonne]=size(pixel_all_line_dec);
-    for j = 1:2:nbcolonne
+    [nbligne_dec,nbcolonne_dec]=size(pixel_all_line_dec);
+    for j = 1:2:nbcolonne_dec
         pixel_line=pixel_all_line_dec(:,j); 
         j=j+1;
         pixel_line=[pixel_line ,pixel_all_line_dec(:,j)];
-        for i = 1:nbligne       
+        for i = 1:nbligne_dec       
              if(pixel_line(i,2)>-1 && pixel_line(i,1)>-1)
                 droite_bleu(sub2ind(size(droite_bleu),pixel_line(i,2),pixel_line(i,1))) = 255;
             end
@@ -311,11 +644,16 @@ function affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_
     end
     
     final_image(:,:,1)=droite_rouge;
+    %final_image(:,:,2)=contour;
     final_image(:,:,3)=droite_bleu;
+    %X=[pixel_all_line(1,1) pixel_all_line(nbligne,1)]
+    %Y=[pixel_all_line(1,2) pixel_all_line(nbligne,2)]
     imshow(final_image);hold on;
+    %plot(X,Y,'LineWidth',0.5,'Color','white');
     truesize(fig_pixel );
     hold off;
 end
+
 function affichage_img(fig_img,img,img_name,rho_out,theta_out,rho_dec_out,theta_dec_out)
     figure(fig_img);
     imshow(img);hold on;
@@ -328,31 +666,38 @@ function affichage_img(fig_img,img,img_name,rho_out,theta_out,rho_dec_out,theta_
         if theta_out(i)==0
             %plot([rho_out(i),rho_out(i)],[1,height],'LineWidth',1.5,'Color','red');
         end
-        x1=1:width;
+        %x1=1:width;
+        x1=1;
         y1 = ((rho_out(i)) - x1* cosd(theta_out(i)) )/ sind(theta_out(i));
+        x2=width;
+        y2 = ((rho_out(i)) - x2* cosd(theta_out(i)) )/ sind(theta_out(i));
         %%%
-        y1=y1';
-        x1=x1';
-        pts=[x1 y1];
-        pts(pts(:,2)<0, :)=[];
-        pts(pts(:,2)>height, :)=[];
+%         y1=y1';
+%         x1=x1';
+%         pts=[x1 y1];
+%         pts(pts(:,2)<0, :)=[];
+%         pts(pts(:,2)>height, :)=[];
         %plot(pts(:,1),pts(:,2),'Color','yellow','r*');
-        plot(pts(:,1),pts(:,2),'LineWidth',1.5,'Color','red');
+        plot([x1 x2],[y1 y2],'LineWidth',1.5,'Color','red');
     end
     for i=1:length(rho_dec_out(1,:))
         if theta_dec_out(i)==0
             %plot([rho_dec_out(i),rho_dec_out(i)],[1,height],'LineWidth',1.5,'Color','red');
         end
-        x1=1:width;
-        y1 = ((rho_dec_out(i)) - x1* cosd(theta_dec_out(i)) )/ sind(theta_dec_out(i))  ; 
-        y1=y1';
-        x1=x1';
-        pts=[x1,y1];
-        pts(pts(:,2)<0, :)=[];
-        pts(pts(:,2)>height, :)=[];
+%         x1=1:width;
+%         y1 = ((rho_dec_out(i)) - x1* cosd(theta_dec_out(i)) )/ sind(theta_dec_out(i))  ; 
+%         y1=y1';
+%         x1=x1';
+%         pts=[x1,y1];
+%         pts(pts(:,2)<0, :)=[];
+%         pts(pts(:,2)>height, :)=[];
+        x1=1;
+        y1 = ((rho_dec_out(i)) - x1* cosd(theta_dec_out(i)) )/ sind(theta_dec_out(i));
+        x2=width;
+        y2 = ((rho_dec_out(i)) - x2* cosd(theta_dec_out(i)) )/ sind(theta_dec_out(i));
 %         x1=pts(:,1);
 %         y1=pts(:,2);
-        plot(pts(:,1),pts(:,2),'LineWidth',1.5,'Color','blue');
+        plot([x1 x2],[y1 y2] ,'LineWidth',1.5,'Color','blue');
     end
 end
 function affichage_hough(fig_hough,hough,theta,rho,I,I_dec,max_theta,max_theta_dec)
