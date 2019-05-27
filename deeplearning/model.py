@@ -38,7 +38,7 @@ imgFormat = "PNG"
 size_folder=str(height)+"_"+str(width)
 
 #name = "LEN_"+s ize_folder+"_"+object+"_c.hdf5"
-name= "LEN256_OBJmire_30-entropy.hdf5"
+name= "LEN256_OBJmire_30.hdf5"
 
 train_folder	= "train"
 valid_folder	= "valid"
@@ -228,6 +228,6 @@ def unet(pretrained_weights = None,input_size = (height, width, channels)):
 
 	model = Model(inputs = inputs, outputs = conv10)
 	#binary_crossentropy
-	model.compile(optimizer = Adam(lr = 1e-4), loss = 'poisson', metrics = ['accuracy'])
+	model.compile(optimizer = Adam(lr = 1e-4), loss = 'binary_crossentropy', metrics = ['accuracy'])
 
 	return model

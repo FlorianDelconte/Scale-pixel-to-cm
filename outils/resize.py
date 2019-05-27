@@ -12,8 +12,8 @@ import sys, getopt
 ################################################################################
 
 path_imgTruth = "../DATA/PNG/truth_ground/img/normal_size/"
-path_imgTest = "../DATA/PNG/test/mire/256_256/output/"
-path_destination = "../DATA/PNG/sgm_mire/"
+path_imgTest = "../DATA/PNG/test/visu/mire/256_256/"
+path_destination = "../DATA/PNG/sgm_mire/visu/"
 taille=0
 up=0
 def main(path_img):
