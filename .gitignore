@@ -15,3 +15,5 @@ venv
 deeplearning/model
 truth_ground
 DATA
+#build
+segmentation_mire/segment_flou/build/
