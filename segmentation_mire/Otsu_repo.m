@@ -12,5 +12,5 @@ for i = 1:nfiles
     SGM=imread(path_name);
     level=graythresh(SGM);
     SGM=im2bw(SGM,level);
-    imwrite(SGM,path_name_write);x
+    imwrite(SGM,path_name_write);
 end

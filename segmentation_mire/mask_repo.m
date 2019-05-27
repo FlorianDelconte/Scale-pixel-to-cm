@@ -1,6 +1,6 @@
 clear all
 
-path_img='../DATA/PNG/sgm_mire/img_canny/S/';
+path_img='../DATA/PNG/sgm_mire/img_canny/V/';
 path_sgmMire='../DATA/PNG/sgm_mire/msk_otsu/max_composante/';
 %obtient la liste des images 
 filelist_sgm=[dir(strcat(path_img,'*.png'));dir(strcat(path_img,'*.PNG'))];

@@ -4,7 +4,7 @@ path_img='../DATA/PNG/sgm_mire/img_canny/R/msk/';
 path_write='../DATA/PNG/sgm_mire/pixel_line/';
 filelist_img=[dir(strcat(path_img,'*.png'));dir(strcat(path_img,'*.PNG'))];
 nfiles = length(filelist_img);
-
+% 
 fig_img=figure('Name','contour');
 fig_pixel =figure('Name','pixels');
 fig_hough=figure('Name','hough space');
@@ -12,13 +12,16 @@ fig_vecteur=figure('Name','vecteur theta max');
 fig_vecteur_long=figure('Name','vecteur theta max +90');
 
 for i = 1 :nfiles
+    filelist_img(i).name
     filelist_img(i);
+    if(strcmp(filelist_img(i).name,"huawei_E004B_label.png")==1)
     if(check_sgm(filelist_img(i).name)==1)
-        filelist_img(i).name
+        
         %%%%%%%%%%%%%OUVERTURE BOITE ENGLOBANTE IMG%%%%%%%%%%%%%%
         path_name=strcat(strcat(path_img, '/'), filelist_img(i).name);
         contour=imread(path_name);
         contour=bounding_box(filelist_img(i).name,contour);
+        size(contour)
         %%%%%%%%%%%%%DETECTION DE LA MIRE%%%%%%%%%%%%%%%%%%%%%%%%
         [H,theta,rho] = hough(contour,'RhoResolution',5);
         %%%%DETECTION DES LIGNES HORIZONTALES%%%%
@@ -51,10 +54,10 @@ for i = 1 :nfiles
         theta_dec_out=theta(P_dec(:,2));
         %%%%EXTRACTION DES PIXELS ASSOCIER AUX DROITES%%%%%%%%%%%%%%%%
         %get_pixel_line_by_hough(P,P_dec,contour,theta,rho,fig_pixel,w/2);
-        %pixel_all_line=get_pixel_line_by_normal(fig_img, contour,rho,theta,P,w);
-        %pixel_all_line_dec=get_pixel_line_by_normal(fig_img, contour,rho,theta,P_dec,w_dec);
-        figure(fig_pixel);
-        pixel_all_line=get_pixel_line_by_pavage(fig_img, contour,rho,theta,P,P_dec,w);
+        pixel_all_line=get_pixel_line_by_normal(contour,rho,theta,P,w);
+        pixel_all_line_dec=get_pixel_line_by_normal( contour,rho,theta,P_dec,w_dec);
+        %figure(fig_pixel);
+        %pixel_all_line=get_pixel_line_by_pavage(fig_img, contour,rho,theta,P,P_dec,w);
 
         %%%%LINES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %         lines = houghlines(contour,theta,rho,P,'FillGap',10000);
@@ -63,17 +66,21 @@ for i = 1 :nfiles
         %write_file(strcat(path_write, strrep(filelist_img(i).name,'.png','.dat')),pixel_all_line);
         %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %pixel_all_line_dec=[];
-        %affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_dec);
-        affichage_img(fig_img,contour,filelist_img(i).name,rho_out,theta_out,rho_dec_out,theta_dec_out);
-        affichage_hough(fig_hough,H,theta,rho,I,I_dec,theta_max,theta_dec);
-        affichage_distrib(fig_vecteur,hough_vector_max_theta,[V,I,w],fig_vecteur_long,hough_vector_max_theta_90,[V_dec,I_dec,w_dec],rho);
-        pause;   
-        figure(fig_pixel);
-        clf('reset')
-        clearfig(fig_img,fig_vecteur,fig_vecteur_long,fig_hough,fig_pixel);
+         affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_dec);
+         affichage_img(fig_img,contour,filelist_img(i).name,rho_out,theta_out,rho_dec_out,theta_dec_out);
+         affichage_hough(fig_hough,H,theta,rho,I,I_dec,theta_max,theta_dec);
+         affichage_distrib(fig_vecteur,hough_vector_max_theta,[V,I,w],fig_vecteur_long,hough_vector_max_theta_90,[V_dec,I_dec,w_dec],rho);
+        %write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '.dat')),pixel_all_line);
+        %write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '_dec.dat')),pixel_all_line_dec);
+         pause;
+         figure(fig_pixel);
+         clf('reset')
+         clearfig(fig_img,fig_vecteur,fig_vecteur_long,fig_hough,fig_pixel);
+        
     else
         fprintf("segmentation to short for analyse")
-        pause;
+        %pause;
+    end
     end
     
 end
@@ -85,9 +92,8 @@ function write_file(file_name,pixels_lines)
     %: X12 Y12 X22 Y22 X32 Y32 ... 
     %: X13 Y13 X23 Y23 X33 Y33 ... 
     %: X14 Y14 X24 Y24 X34 Y34 ... 
-    file_name;
-    pixels_lines;
-    csvwrite(file_name,pixels_lines);
+    [nbligne,nblcolonne] = size(pixels_lines);
+    writematrix(pixels_lines(:,:),[file_name] ,'Delimiter','space');
 end
 function [V_res,I_res,w_res]= clear(V_dec,ind_dec,w)
     m=mean(V_dec);
@@ -510,14 +516,14 @@ function [pixel_droite,freeman,c1,c2]=droiteNaive(contour,a,b,mu,w,x1,y1)
     end  
 end
 
-function [pixel_all_line]=get_pixel_line_by_normal(fig_img,contour,rho,theta,P,w)
+function [pixel_all_line]=get_pixel_line_by_normal(contour,rho,theta,P,w)
     [height, width] = size(contour);  
     pixel_all_line=[];
     [nbligne,nblcolonne] = size(P);
     for j = 1:nbligne
         numdroite=j;
         %largeur/theta/rho de la droite courante
-        largeur_d=w(numdroite)*10;
+        largeur_d=w(numdroite)*4;
         theta_d=theta(P(numdroite,2 ));
         rho_d=rho(P(numdroite,1));
         %creation de la droite courante
