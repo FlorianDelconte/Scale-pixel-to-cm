@@ -4,17 +4,17 @@ path_img='../DATA/PNG/sgm_mire/img_canny/R/msk/';
 path_write='../DATA/PNG/sgm_mire/pixel_line/';
 filelist_img=[dir(strcat(path_img,'*.png'));dir(strcat(path_img,'*.PNG'))];
 nfiles = length(filelist_img);
-% 
-fig_img=figure('Name','contour');
-fig_pixel =figure('Name','pixels');
-fig_hough=figure('Name','hough space');
-fig_vecteur=figure('Name','vecteur theta max');
-fig_vecteur_long=figure('Name','vecteur theta max +90');
+
+ fig_img=figure('Name','contour');
+ fig_pixel =figure('Name','pixels');
+ fig_hough=figure('Name','hough space');
+ fig_vecteur=figure('Name','vecteur theta max');
+ fig_vecteur_long=figure('Name','vecteur theta max +90');
 
 for i = 1 :nfiles
     filelist_img(i).name
     filelist_img(i);
-    if(strcmp(filelist_img(i).name,"huawei_E004B_label.png")==1)
+    if(strcmp(filelist_img(i).name,"fva_huawei_E056B_label.png")==1)
     if(check_sgm(filelist_img(i).name)==1)
         
         %%%%%%%%%%%%%OUVERTURE BOITE ENGLOBANTE IMG%%%%%%%%%%%%%%
@@ -28,16 +28,18 @@ for i = 1 :nfiles
         ind_max_p = houghpeaks(H,1);
         theta_max = theta(ind_max_p(2));
         hough_vector_max_theta=H(:,ind_max_p(2));
-        [V,I,w]=findpeaks(hough_vector_max_theta,'WidthReference','halfheight');%'MinPeakDistance',10
+        %[V,I,w]=findpeaks(hough_vector_max_theta,'WidthReference','halfheight');%'MinPeakDistance',10
+        [V,I,w]=findpeaks(hough_vector_max_theta,'WidthReference','halfprom','SortStr','descend','NPeaks',3);
         %w=w.*5;
         %%%%DETECTION DES LIGNES +90 DEGREES%%%%%
         ind_dec_p = mod(ind_max_p(2)+90,180);
         theta_dec = theta(ind_dec_p);
         hough_vector_max_theta_90=H(:,ind_dec_p);
-        [V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90,'WidthReference','halfheight');%'MinPeakDistance',5
+        %[V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90,'WidthReference','halfheight');%'MinPeakDistance',5
+        [V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90,'WidthReference','halfprom');
         %w_dec=w_dec.*5; 
         %%%%NETOYAGE VECTEURS%%%%%%%%%%%%%%%%%%%%
-        [V,I,w]=clear(V,I,w);
+        %[V,I,w]=clear(V,I,w);
         %[V,I,w]=clear2(V,I,w,rho);
         [V_dec,I_dec,w_dec]=clear_dec(V_dec,I_dec,w_dec,rho );
         %%%%CREATION DES PEAKS%%%%%%%%%%%%%%%%%%%
@@ -58,30 +60,30 @@ for i = 1 :nfiles
         pixel_all_line_dec=get_pixel_line_by_normal( contour,rho,theta,P_dec,w_dec);
         %figure(fig_pixel);
         %pixel_all_line=get_pixel_line_by_pavage(fig_img, contour,rho,theta,P,P_dec,w);
-
         %%%%LINES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%         lines = houghlines(contour,theta,rho,P,'FillGap',10000);
-%         lines_dec = houghlines(contour,theta,rho,P_dec,'FillGap',10000);   
+%       lines = houghlines(contour,theta,rho,P,'FillGap',10000);
+%       lines_dec = houghlines(contour,theta,rho,P_dec,'FillGap',10000);   
         %%%%ECRITURE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %write_file(strcat(path_write, strrep(filelist_img(i).name,'.png','.dat')),pixel_all_line);
         %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %pixel_all_line_dec=[];
-         affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_dec);
-         affichage_img(fig_img,contour,filelist_img(i).name,rho_out,theta_out,rho_dec_out,theta_dec_out);
-         affichage_hough(fig_hough,H,theta,rho,I,I_dec,theta_max,theta_dec);
-         affichage_distrib(fig_vecteur,hough_vector_max_theta,[V,I,w],fig_vecteur_long,hough_vector_max_theta_90,[V_dec,I_dec,w_dec],rho);
+        affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_dec);
+        affichage_img(fig_img,contour,filelist_img(i).name,rho_out,theta_out,rho_dec_out,theta_dec_out);
+        affichage_hough(fig_hough,H,theta,rho,I,I_dec,theta_max,theta_dec);
+        affichage_distrib(fig_vecteur,hough_vector_max_theta,[V,I,w],fig_vecteur_long,hough_vector_max_theta_90,[V_dec,I_dec,w_dec],rho);
         %write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '.dat')),pixel_all_line);
         %write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '_dec.dat')),pixel_all_line_dec);
-         pause;
-         figure(fig_pixel);
-         clf('reset')
-         clearfig(fig_img,fig_vecteur,fig_vecteur_long,fig_hough,fig_pixel);
+        pause;
+        figure(fig_pixel);
+        clf('reset')
+        clearfig(fig_img,fig_vecteur,fig_vecteur_long,fig_hough,fig_pixel);
         
     else
         fprintf("segmentation to short for analyse")
-        %pause;
+        %TODO : grossir la boite englobante et verifier qu'il y a 2 droite
+        %horizontal et 4 droite vertical
     end
-    end
+   end
     
 end
 
@@ -92,18 +94,16 @@ function write_file(file_name,pixels_lines)
     %: X12 Y12 X22 Y22 X32 Y32 ... 
     %: X13 Y13 X23 Y23 X33 Y33 ... 
     %: X14 Y14 X24 Y24 X34 Y34 ... 
+   
     [nbligne,nblcolonne] = size(pixels_lines);
     writematrix(pixels_lines(:,:),[file_name] ,'Delimiter','space');
 end
 function [V_res,I_res,w_res]= clear(V_dec,ind_dec,w)
-    m=mean(V_dec);
-    
+    m=mean(V_dec); 
     t=[V_dec ind_dec];
     t=[t w];
     %retrait des lignes dont le nombre de vote est < à la moyenne
     t(t(:,1)<m, :)=[];
-
-
     V_res=t(:,1);
     I_res= t(:,2);
     w_res = t(:,3);
@@ -189,7 +189,7 @@ function [V_res,I_res,w_res]= clear2(V_dec,ind_dec,w,rho)
 %         res=[t(imax1,1) t(imax1,2) t(imax1,3)];
 %         res=[res;t(imax2,1) t(imax2,2) t(imax2,3)];
     end
-    res
+    res = unique(res)
     V_res=res(:,1);
     I_res= res(:,2); 
     w_res = res(:,3);
@@ -228,9 +228,14 @@ function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho)
             res=[res;t(i+1,1) t(i+1,2) t(i+1,3)];
         end
     end
+    
+    res=unique(res,'rows');
     V_res=res(:,1);
+
     I_res= res(:,2);
+
     w_res = res(:,3);
+
     
 end
 function get_pixel_line_by_hough(P,P_dec,contour,theta,rho,fig_pixel,w)
@@ -520,10 +525,12 @@ function [pixel_all_line]=get_pixel_line_by_normal(contour,rho,theta,P,w)
     [height, width] = size(contour);  
     pixel_all_line=[];
     [nbligne,nblcolonne] = size(P);
+    %trie du P en fonction de la distance à l'origine
+    P=sortrows(P,1);
     for j = 1:nbligne
         numdroite=j;
         %largeur/theta/rho de la droite courante
-        largeur_d=w(numdroite)*4;
+        largeur_d=w(numdroite);
         theta_d=theta(P(numdroite,2 ));
         rho_d=rho(P(numdroite,1));
         %creation de la droite courante
