@@ -43,7 +43,7 @@ class Comparator:
     def maj_red_mask(self):
         self.img2[self.img2>0]=255
         RGB = np.array((*"RGB",))
-        self.red_masque=np.multiply.outer(self.img2, RGB=='R')
+        self.red_masque=np.multiply.outer(self.img2, RGB=='B')
 
     def compare_image(self):
         self.maj_red_mask()
