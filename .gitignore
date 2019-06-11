@@ -9,6 +9,7 @@
 *.jpg
 *.pyc
 *.m~
+*.eps
 .Python
 #Virtual environnement
 venv
