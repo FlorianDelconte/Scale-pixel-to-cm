@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <math.h>
 #include "ConfigExamples.h"
 #include "DGtal/helpers/StdDefs.h"
 #include "DGtal/base/Common.h"
@@ -8,13 +10,15 @@
 #include "DGtal/helpers/StdDefs.h"
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include <bits/stdc++.h>
 using namespace DGtal;
 using namespace DGtal::Z2i;
 using namespace std;
 
 typedef AlphaThickSegmentComputer< Z2i::Point > AlphaThickSegmentComputer2D;
-
+//const string fileToWriteHorizontal="../build/echelle_computed_horizontal.txt";
+//const string fileToWriteVertical="../build/echelle_computed_vertical.txt";
 
 int count_nb_droite (string filename)
 {
@@ -140,10 +144,34 @@ void drawIntersec(Board2D &b,AlphaThickSegmentComputer2D * d,int nbdroite,AlphaT
       b_n=n[j].getNormal()[1];
       mu_n=n[j].getMu();
       nu_n=n[j].getNu()/2;
-      //calcul de point d'intersection
-      x_actu=(((-mu_d-nu_d)/b_d)+((mu_n+nu_n)/b_n))/((-a_d/b_d)+(a_n/b_n));
-      y_actu=(mu_d+nu_d-(a_d*x_actu))/(b_d);
-      //TODO : check si b=0 ou a=0;
+      //calcul de point d'intersection : 4 cas possible
+      //CAS 1
+      if(b_d!=0 && b_n!=0){
+        //cout<<"cas1";
+        x_actu=(((-mu_d-nu_d)/b_d)+((mu_n+nu_n)/b_n))/((-a_d/b_d)+(a_n/b_n));
+        y_actu=(mu_d+nu_d-(a_d*x_actu))/(b_d);
+      }else{
+        //CAS 2
+        if(b_d==0 && b_n==0){
+          //cout<<"cas2";
+          x_actu=(mu_d-mu_n+nu_d-nu_n)/(a_d-a_n);
+          y_actu=(mu_d+nu_d-(a_d*x_actu))/(b_d);
+        }else{
+          //CAS 3
+          if(b_d==0 && b_n!=0){
+            x_actu=(mu_d+nu_d)/a_d;
+            y_actu=(mu_n+nu_n-(a_n*x_actu))/(b_n);
+            //cout<<"cas3 "<<x_actu<<"  "<< a_d*x_actu<<"\n";
+          }else{
+            //CAS 4
+            if(b_d!=0 && b_n==0){
+              //cout<<"cas4";
+              x_actu=(mu_n+nu_n)/a_n;
+              y_actu=(mu_d+nu_d-(a_d*x_actu))/(b_d);
+            }
+          }
+        }
+      }
       //on calcul la distance qu'a partir du deuxiemme point
       if(x_old!=-1 && y_old!=-1){
         distance=distanceCalculate_integer(x_actu,y_actu,x_old,y_old);
@@ -162,9 +190,10 @@ double moyenne(vector<double> t)
 {
   double moyenne=0.0;
   int taille=t.size();
+
   for(int i=0; i<taille; ++i)
   {
-    //cout<<"distance : "<<t_dist[j]<<"\n";
+    //cout<<"distance : "<<t[i]<<"\n";
     moyenne+=t[i];
   }
   return moyenne/taille;
@@ -174,16 +203,65 @@ double variance(double m,vector<double> t)
 {
   double vari=0.0;
   int taille=t.size();
+  double currentEcart;
   for(int i=0; i<taille; ++i)
   {
-    ecart=t[i]-m;
-    //cout<<"distance : "<<t_dist[j]<<"\n";
-    vari+=(ecart*ecart);
+    currentEcart=t[i]-m;
+    vari+=(currentEcart*currentEcart);
   }
-  return vari=ecart/t
+  vari=vari/taille;
+  return vari;
+}
+void writeFile(string imgFile,double distance1cm,string fileToWrite)
+{
+  ofstream fichier(fileToWrite, ios::out | ios::app);
+  if(fichier)
+  {
+    fichier<<imgFile<<" "<<distance1cm<<endl;
+    fichier.close();
+  }
+  else
+  {
+    cerr << "Impossible d'ouvrir le fichier !" << endl;
+  }
+}
+void computeVecteurMoyenneDistance(vector<double> h,vector<double> v,vector<double> &m)
+{
+  int taille=h.size();
+  for(int i=0; i<taille; ++i)
+  {
+    m.push_back((h[i]+v[i])/2);
+  }
+}
+void filtreEcartType(double ecartType,double moyenne, vector<double> &vecDist)
+{
+  vector<double> vecDist_filtered;
+  int taille=vecDist.size();
+  double vari;
+
+  //parcours des disctance pour remplie une liste d'indice à supprimer
+  //un distance est à supprimer si son écart à la moyenne est supérieur à l'écart type
+  for(int i=0; i<taille; ++i)
+  {
+    vari=vecDist[i]-moyenne;
+    vari=(vari*vari);
+    vari=sqrt(vari);
+    //cout<<vecDist[i]<< " "<< vari<<"\n";
+    //si l'écart à la moyenne courrant est inférieur à l'écart type
+    if(vari<ecartType)
+    {
+      //on garde la distance : on l'ajoute au vecteur de distance quon retourne
+      vecDist_filtered.push_back(vecDist[i]);
+    }
+  }
+  //cout<<"----------"<<"\n";
+  vecDist=vecDist_filtered;
 }
 int main(int argc, char** argv)
 {
+  string fileToWriteHorizontal="../build/echelle_computed_horizontal.txt";
+  string fileToWriteVertical="../build/echelle_computed_vertical.txt";
+  string fileToWriteMoyenne="../build/echelle_computed_moyenne.txt";
   //longueur d'un coté de carré de la mire
   int cote=1;
   //creation du boards
@@ -206,27 +284,76 @@ int main(int argc, char** argv)
   //tableau des alphasegment sur les droite ortho
   AlphaThickSegmentComputer2D tabAlphaNormal[nbNormal];
   makeAllAlphaSegment(aBoard,naiveLine_decFilename,DGtal::Color::Blue,tabAlphaNormal);
-  //vecteur qui contient les longueur des coté des carré le long des longues droites
-  vector<double> vecteur_dist_long;
-  drawIntersec(aBoard,tabAlphaDroite,nbDroite,tabAlphaNormal,nbNormal,vecteur_dist_long);
-  //vecteur qui contient les longueur des coté des carré le long des droite orthogonal
-  //double t_ortho[taille_tab];
-  //drawIntersec(aBoard,tabAlphaNormal,nbNormal,tabAlphaDroite,nbDroite,t_ortho);
+  //vecteur qui contient les longueur des coté des carré horizontal
+  vector<double> vecteur_dist_horizontal;
+  drawIntersec(aBoard,tabAlphaDroite,nbDroite,tabAlphaNormal,nbNormal,vecteur_dist_horizontal);
+  //vecteur qui contient les longueur des coté des carré vertical
+  vector<double> vecteur_dist_vertical;
+  drawIntersec(aBoard,tabAlphaNormal,nbNormal,tabAlphaDroite,nbDroite,vecteur_dist_vertical);
+
+
   //***************************STATISTIQUES*************************************//
-  double moy_d=moyenne(vecteur_dist_long);
-  double min_d =*min_element(vecteur_dist_long.begin(), vecteur_dist_long.end());
-  double max_d =*max_element(vecteur_dist_long.begin(), vecteur_dist_long.end());
-  double variance=variance(moy_d,vecteur_dist_long)
-  int nb_pixel_per_cm=moy_d+0.5;
-  double cm_per_pixel=cote/moy_d;
+  /*droite horizontales*/
+  int taille=vecteur_dist_horizontal.size();
+  //cout<<taille<<"\n";
+  double moy_d=moyenne(vecteur_dist_horizontal);//droite horizontal
+  double min_d =*min_element(vecteur_dist_horizontal.begin(), vecteur_dist_horizontal.end());
+  double max_d =*max_element(vecteur_dist_horizontal.begin(), vecteur_dist_horizontal.end());
+  double var_d=variance(moy_d,vecteur_dist_horizontal);
+  double ecartType_d=sqrt(var_d);
+  filtreEcartType(ecartType_d,moy_d,vecteur_dist_horizontal);//filtre des distance par rapport à l'écart type
+  //taille=vecteur_dist_horizontal.size();
+  //cout<<taille<<"\n";
+
+  double moy_filtered_d=moyenne(vecteur_dist_horizontal);
+  /*droite vertical*/
+  double moy_n=moyenne(vecteur_dist_vertical);//droite vertical
+  double min_n =*min_element(vecteur_dist_vertical.begin(), vecteur_dist_vertical.end());
+  double max_n =*max_element(vecteur_dist_vertical.begin(), vecteur_dist_vertical.end());
+  double var_n=variance(moy_n,vecteur_dist_vertical);
+  double ecartType_n=sqrt(var_n);
+  filtreEcartType(ecartType_n,moy_n,vecteur_dist_vertical);//filtre des distance par rapport à l'écart type
+  double moy_filtered_n=moyenne(vecteur_dist_vertical);
+  /*moyenne des deux*/
+  double moy_filtered_m=(moy_filtered_d+moy_filtered_n)/2;//moyenne des distance moyennes filtrées des deux type de droites
+  double moy_m=(moy_d+moy_n)/2;//moyenne des distance moyennes des deux droites
+
+  int nb_pixel_per_cm_d=moy_d+0.5;
+  double cm_per_pixel_d=cote/moy_d;
+  int nb_pixel_per_cm_n=moy_n+0.5;
+  double cm_per_pixel_n=cote/moy_n;
+  int nb_pixel_per_cm_m=moy_m+0.5;
+  double cm_per_pixel_m=cote/moy_m;
+
+  //écriture dans le fichier
+  writeFile(name_input,moy_filtered_d,fileToWriteHorizontal);
+  writeFile(name_input,moy_filtered_n,fileToWriteVertical);
+  writeFile(name_input,moy_filtered_m,fileToWriteMoyenne);
 /******************************AFFICHAGE*****************************************/
+  cout<<"DROITE HORIZONTALE-------------------\n";
   cout<<"DISTANCE MOYENNE : "<<moy_d<<"\n";
-  cout<<"DISTANCE MAX : "<<max_d<<"\n";
-  cout<<"DISTANCE MIN : "<<min_d<<"\n";
-  cout<<"1 CM = "<<nb_pixel_per_cm<<" pixels\n";
-  cout<<"1 PIXEL = "<<cm_per_pixel<<" cm\n";
+  cout<<"DISTANCE MOYENNE FILTREE: "<<moy_filtered_d<<"\n";
+  //cout<<"VARIANCE  : "<<var_d<<"\n";
+  cout<<"ECART TYPE : "<<ecartType_d<<"\n";
+
+  //cout<<"DISTANCE MAX : "<<max_d<<"\n";
+  //cout<<"DISTANCE MIN : "<<min_d<<"\n";
+  cout<<"1 CM = "<<nb_pixel_per_cm_d<<" pixels\n";
+  cout<<"1 PIXEL = "<<cm_per_pixel_d<<" cm\n";
+  cout<<"DROITE VERTICALE-------------------\n";
+  cout<<"DISTANCE MOYENNE : "<<moy_n<<"\n";
+  cout<<"DISTANCE MOYENNE FILTREE: "<<moy_filtered_n<<"\n";
+  //cout<<"VARIANCE : "<<var_n<<"\n";
+  cout<<"ECART TYPE : "<<ecartType_n <<"\n";
+  //cout<<"DISTANCE MAX : "<<max_n<<"\n";
+  //cout<<"DISTANCE MIN : "<<min_n<<"\n";
+  cout<<"1 CM = "<<nb_pixel_per_cm_n<<" pixels\n";
+  cout<<"1 PIXEL = "<<cm_per_pixel_n<<" cm\n";
+  cout<<"DROITE MOYENNE-------------------\n";
+  cout<<"DISTANCE MOYENNE : "<<moy_m<<"\n";
+  cout<<"1 CM = "<<nb_pixel_per_cm_m<<" pixels\n";
+  cout<<"1 PIXEL = "<<cm_per_pixel_m<<" cm\n";
   /*****************************SAVE**********************************************/
   aBoard.saveEPS(name_output);
-
   return 0;
 }
