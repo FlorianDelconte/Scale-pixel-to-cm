@@ -1,92 +1,102 @@
 close all
-
+%path_img='../DATA/PNG/sgm_mire/img_masked_canny/R/';
 path_img='../DATA/PNG/sgm_mire/img_canny/R/msk/';
 path_write='../DATA/PNG/sgm_mire/pixel_line/';
 filelist_img=[dir(strcat(path_img,'*.png'));dir(strcat(path_img,'*.PNG'))];
 nfiles = length(filelist_img);
-
- fig_img=figure('Name','contour');
- fig_pixel =figure('Name','pixels');
- fig_hough=figure('Name','hough space');
- fig_vecteur=figure('Name','vecteur theta max');
- fig_vecteur_long=figure('Name','vecteur theta max +90');
-
+seuil_clear=30;
+fig_contourClear=figure('Name','contour normal');
+fig_densite=figure('Name','densite');
+fig_img=figure('Name','contour');
+fig_pixel =figure('Name','pixels');
+fig_hough=figure('Name','hough space');
+fig_vecteur=figure('Name','vecteur theta max');
+fig_vecteur_long=figure('Name','vecteur theta max +90');
+% nfiles
+cpt=0;
 for i = 1 :nfiles
     filelist_img(i).name
     filelist_img(i);
-    if(strcmp(filelist_img(i).name,"fva_huawei_E056B_label.png")==1)
+    %if(strcmp(filelist_img(i).name,"huawei_E045B_1.png")==1)
     if(check_sgm(filelist_img(i).name)==1)
-        
         %%%%%%%%%%%%%OUVERTURE BOITE ENGLOBANTE IMG%%%%%%%%%%%%%%
         path_name=strcat(strcat(path_img, '/'), filelist_img(i).name);
         contour=imread(path_name);
         contour=bounding_box(filelist_img(i).name,contour);
-        size(contour)
+        [img_densite,contour_clear]=densite(contour,20,12);%img canny,taille fenetre, seuil
+        affichage_contourcleared(fig_contourClear,contour);
+        contour=contour_clear;
+        size(contour);
         %%%%%%%%%%%%%DETECTION DE LA MIRE%%%%%%%%%%%%%%%%%%%%%%%%
         [H,theta,rho] = hough(contour,'RhoResolution',5);
         %%%%DETECTION DES LIGNES HORIZONTALES%%%%
         ind_max_p = houghpeaks(H,1);
         theta_max = theta(ind_max_p(2));
         hough_vector_max_theta=H(:,ind_max_p(2));
-        %[V,I,w]=findpeaks(hough_vector_max_theta,'WidthReference','halfheight');%'MinPeakDistance',10
-        [V,I,w]=findpeaks(hough_vector_max_theta,'WidthReference','halfprom','SortStr','descend','NPeaks',3);
+        [V,I,w]=findpeaks(hough_vector_max_theta,'WidthReference','halfheight');%'MinPeakDistance',10
+        %[V,I,w]=findpeaks(hough_vector_max_theta,'WidthReference','halfprom','SortStr','descend','NPeaks',3);
         %w=w.*5;
         %%%%DETECTION DES LIGNES +90 DEGREES%%%%%
         ind_dec_p = mod(ind_max_p(2)+90,180);
         theta_dec = theta(ind_dec_p);
         hough_vector_max_theta_90=H(:,ind_dec_p);
-        %[V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90,'WidthReference','halfheight');%'MinPeakDistance',5
-        [V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90,'WidthReference','halfprom');
+        [V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90,'WidthReference','halfheight');%'MinPeakDistance',5
+        %[V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90,'WidthReference','halfprom','NPeaks',26);
         %w_dec=w_dec.*5; 
         %%%%NETOYAGE VECTEURS%%%%%%%%%%%%%%%%%%%%
         %[V,I,w]=clear(V,I,w);
-        %[V,I,w]=clear2(V,I,w,rho);
-        [V_dec,I_dec,w_dec]=clear_dec(V_dec,I_dec,w_dec,rho );
-        %%%%CREATION DES PEAKS%%%%%%%%%%%%%%%%%%%
-        P=zeros(length(I),1);
-        P(:)=ind_max_p(2);
-        P=[I(:),P];                 %--->P contient les indice de rho | theta 
-        P_dec=zeros(length(I_dec),1);
-        P_dec(:)=ind_dec_p;
-        P_dec=[I_dec(:),P_dec];
-        %Extract rho and theta values from peaks cleared
-        rho_out=rho(P(:,1));
-        theta_out=theta(P(:,2));
-        rho_dec_out=rho(P_dec(:,1));
-        theta_dec_out=theta(P_dec(:,2));
-        %%%%EXTRACTION DES PIXELS ASSOCIER AUX DROITES%%%%%%%%%%%%%%%%
-        %get_pixel_line_by_hough(P,P_dec,contour,theta,rho,fig_pixel,w/2);
-        pixel_all_line=get_pixel_line_by_normal(contour,rho,theta,P,w);
-        pixel_all_line_dec=get_pixel_line_by_normal( contour,rho,theta,P_dec,w_dec);
-        %figure(fig_pixel);
-        %pixel_all_line=get_pixel_line_by_pavage(fig_img, contour,rho,theta,P,P_dec,w);
-        %%%%LINES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%       lines = houghlines(contour,theta,rho,P,'FillGap',10000);
-%       lines_dec = houghlines(contour,theta,rho,P_dec,'FillGap',10000);   
-        %%%%ECRITURE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %write_file(strcat(path_write, strrep(filelist_img(i).name,'.png','.dat')),pixel_all_line);
-        %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %pixel_all_line_dec=[];
-        affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_dec);
-        affichage_img(fig_img,contour,filelist_img(i).name,rho_out,theta_out,rho_dec_out,theta_dec_out);
-        affichage_hough(fig_hough,H,theta,rho,I,I_dec,theta_max,theta_dec);
-        affichage_distrib(fig_vecteur,hough_vector_max_theta,[V,I,w],fig_vecteur_long,hough_vector_max_theta_90,[V_dec,I_dec,w_dec],rho);
-        %write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '.dat')),pixel_all_line);
-        %write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '_dec.dat')),pixel_all_line_dec);
-        pause;
-        figure(fig_pixel);
-        clf('reset')
-        clearfig(fig_img,fig_vecteur,fig_vecteur_long,fig_hough,fig_pixel);
-        
+        %[V,I,w]=clear2(V,I,w,rho,seuil_clear);
+        %[V,I,w]=clear3(V,I,w);
+        if(V~=-1)
+            cpt=cpt+1;
+            [V_dec,I_dec,w_dec]=clear_dec(V_dec,I_dec,w_dec,rho,seuil_clear);
+            %%%%CREATION DES PEAKS%%%%%%%%%%%%%%%%%%%
+            P=zeros(length(I),1);
+            P(:)=ind_max_p(2);
+            P=[I(:),P];                 %--->P concontour_cleartient les indice de rho | theta 
+            P_dec=zeros(length(I_dec),1);
+            P_dec(:)=ind_dec_p;
+            P_dec=[I_dec(:),P_dec];
+            %Extract rho and theta values from peaks cleared
+            rho_out=rho(P(:,1));
+            theta_out=theta(P(:,2));
+            rho_dec_out=rho(P_dec(:,1));
+            theta_dec_out=theta(P_dec(:,2));
+            %%%%EXTRACTION DES PIXELS ASSOCIER AUX DROITES%%%%%%%%%%%%%%%%
+            %get_pixel_line_by_hough(P,P_dec,contour,theta,rho,fig_pixel,w/2);
+            pixel_all_line=get_pixel_line_by_normal(contour,rho,theta,P,w);
+            pixel_all_line_dec=get_pixel_line_by_normal( contour,rho,theta,P_dec,w_dec);
+            %figure(fig_pixel);
+            %pixel_all_line=get_pixel_line_by_pavage(fig_img, contour,rho,theta,P,P_dec,w);
+            %%%%LINES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+    %       lines = houghlines(contour,theta,rho,P,'FillGap',10000);
+    %       lines_dec = houghlines(contour,theta,rho,P_dec,'FillGap',10000);   
+            %%%%ECRITURE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %write_file(strcat(path_write, strrep(filelist_img(i).name,'.png','.dat')),pixel_all_line);
+            %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            pixel_all_line_dec=[];
+            affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_dec);
+            affichage_img(fig_img,contour,filelist_img(i).name,rho_out,theta_out,rho_dec_out,theta_dec_out);
+            affichage_hough(fig_hough,H,theta,rho,I,I_dec,theta_max,theta_dec);
+            affichage_distrib(fig_vecteur,hough_vector_max_theta,[V,I,w],fig_vecteur_long,hough_vector_max_theta_90,[V_dec,I_dec,w_dec],rho);
+            affichage_densite(fig_densite,img_densite);
+            
+            %write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '.dat')),pixel_all_line);
+            %write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '_dec.dat')),pixel_all_line_dec);
+            pause;
+            figure(fig_pixel);
+            clf('reset')
+            clearfig(fig_img,fig_vecteur,fig_vecteur_long,fig_hough,fig_pixel,fig_densite,fig_contourClear);
+        end
     else
         fprintf("segmentation to short for analyse")
         %TODO : grossir la boite englobante et verifier qu'il y a 2 droite
         %horizontal et 4 droite vertical
     end
-   end
+   %end
     
 end
-
+cpt
 function write_file(file_name,pixels_lines)
     %file_name : le chemin+le nom du fichier à écrire
     %pixels_lines : enssemble des pixels appartenant aux droites sous la forme
@@ -99,103 +109,84 @@ function write_file(file_name,pixels_lines)
     writematrix(pixels_lines(:,:),[file_name] ,'Delimiter','space');
 end
 function [V_res,I_res,w_res]= clear(V_dec,ind_dec,w)
+    %retrait des lignes dont le nombre de vote est < à la moyenne
     m=mean(V_dec); 
     t=[V_dec ind_dec];
     t=[t w];
-    %retrait des lignes dont le nombre de vote est < à la moyenne
     t(t(:,1)<m, :)=[];
     V_res=t(:,1);
     I_res= t(:,2);
     w_res = t(:,3);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+end
+function [V_res,I_res,w_res]= clear2(V,ind,w,rho,s)%s est le seuil
+    %retrait des lignes dont le nombre de vote est < à la moyenne
+    m=mean(V); 
+    t=[V ind];
+    t=[t w];
+    t(t(:,1)<m, :)=[];
+    V=t(:,1);
+    ind= t(:,2);
+    w = t(:,3);
+    %parcours des indice de rho 3 par 3 et selection des distance égale
+    ind;
+    rho(ind);
+    indice_equiDist=[];
+    nb_ligne=size(ind);
+    for i=2:nb_ligne-1
+        rho_peaks_previous=rho(ind(i-1));
+        rho_peaks_actu=rho(ind(i));
+        rho_peaks_next=rho(ind(i+1));
+        distance_previous=abs(rho_peaks_actu-rho_peaks_previous);
+        distance_next=abs(rho_peaks_next-rho_peaks_actu);
+        m=max(distance_next,distance_previous);
+        seuil=(m/100)*s;
+        if(distance_previous>(distance_next-seuil) && distance_previous<(distance_next+seuil))
+            indice_equiDist=[indice_equiDist;i distance_previous];
+        end
+    end
+    indice_equiDist;
+    nb_ligne_test=size(indice_equiDist);
+    nb_ligne_test;
+    if(nb_ligne_test>0)
+        %min=999999999;%une très grande valeur
+        ma=-999999999;%une très pette valeur
+        min_ind=-1;
+        for i=1:nb_ligne_test
+            dist=indice_equiDist(i,2);
+            ind_3=indice_equiDist(i,1);
+%              if(dist<min)
+%                  min=dist;
+%                  min_ind=ind_3;
+%              end
+             if(dist>ma)
+                 ma=dist;
+                 min_ind=ind_3;
+             end
+        end
+        dist;
+        V_res=V(ind_3-1:ind_3+1);
+        I_res= ind(ind_3-1:ind_3+1);
+        w_res = w(ind_3-1:ind_3+1);
+    else
+        V_res= -1;
+        I_res= -1;
+        w_res = -1;
+    end
     
 end
-function [V_res,I_res,w_res]= clear2(V_dec,ind_dec,w,rho)
-    m=mean(V_dec);
-    
+function [V_res,I_res,w_res]= clear3(V_dec,ind_dec,w)
+    %retrait des lignes dont le nombre de vote est < à la moyenne
     t=[V_dec ind_dec];
     t=[t w];
-    %retrait des lignes dont le nombre de vote est < à la moyenne
-    V_dec=t(:,1);
-    ind_dec= t(:,2);
-    w_dec = t(:,3);
-    taille=length(ind_dec);
-    res=[]
-    %aucun traitement si qu'un seul peaks
-    if(taille>2)
-       %calcul de la moyenne des distance entre droite
-       m=0;
-       for i=1:taille-1
-           rho_peaks=rho(ind_dec(i));
-           rho_peaks_next=rho(ind_dec(i+1));
-           distance=rho_peaks_next-rho_peaks ;
-           m=m+distance;
-       end
-       m=m/(taille-1);
-       %[votemax,imax]=max(V_dec);
-       [sorted_v,index]= sortrows(V_dec,'descend');
-       imax1=index(1);
-       imax2=index(2);
-       %comparaison des indice de rho pour savoir lequel est à droite ou a
-       %gauche
-       if(ind_dec(imax1)<ind_dec(imax2))
-           ind_gauche=imax1;
-           ind_droite=imax2;
-       else
-           ind_gauche=imax2;
-           ind_droite=imax1;
-       end
-       rho_gauche=rho(ind_dec(ind_gauche));
-       rho_droite=rho(ind_dec(ind_droite));
-       distance_entre_pique_max=rho_droite-rho_gauche
-       seuil_accepted=(distance_entre_pique_max/100)*10
-       res=[];
-       for i=1:length(ind_dec)
-           for j=1:length(ind_dec)
-               if(i~=j)
-                   if(i<j)
-                        rho_peaks=rho(ind_dec(i));
-                        rho_peaks_next=rho(ind_dec(j));
-                   else
-                        rho_peaks=rho(ind_dec(j));
-                        rho_peaks_next=rho(ind_dec(i));
-                   end
-                    distance=rho_peaks_next-rho_peaks ;
-                   if(distance>distance_entre_pique_max-seuil_accepted && distance<distance_entre_pique_max+seuil_accepted)
-                     res=[res;t(i,1) t(i,2) t(i,3)];
-                     res=[res;t(j,1) t(j,2) t(j,3)];
-                   end
-               end
-           end
-       end
-%        %parcourt des autres piques
-%        for i=3:length(sorted_v)
-%            icurrent=index(i);
-%            rho_current=rho(ind_dec(icurrent));
-%            distance_droite_current=rho_droite
-%        end
-%        if(sorted_t(1,2)<sorted_t(2,2))
-%            gauche=[sorted_t(1,1) sorted_t(1,2) sorted_t(1,3)];
-%            droite=[sorted_t(2,1) sorted_t(2,2) sorted_t(2,3)];
-%        else
-%            gauche=[sorted_t(2,1) sorted_t(2,2) sorted_t(2,3)];
-%            droite=[sorted_t(1,1) sorted_t(1,2) sorted_t(1,3)];
-%        end
-       %calcul de rho
-        %rho_gauche=rho(gauche(1,2));
-        %rho_droite=rho(droite(1,2));
-       %distance entre les deux droite = rho_droite-rho-gauche
-%        distance_entre_pique=rho_droite-rho_gauche;
-       
-%         res=[t(imax1,1) t(imax1,2) t(imax1,3)];
-%         res=[res;t(imax2,1) t(imax2,2) t(imax2,3)];
-    end
-    res = unique(res)
-    V_res=res(:,1);
-    I_res= res(:,2); 
-    w_res = res(:,3);
-    
+    %t(t(:,1)<m, :)=[];
+    [M,I] = max(V_dec)
+    V_res=V_dec(I);
+    I_res=ind_dec(I);
+    w_res = w(I);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 end
-function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho)
+function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho,s)
     m=mean(V_dec);
     t=[V_dec ind_dec];
     t=[t w];
@@ -204,16 +195,18 @@ function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho)
     V_dec=t(:,1);
     ind_dec= t(:,2);
     w_dec = t(:,3);
-    %Calcul de la distance (rho) moyenne entre les piques
+    %Calcul de la distance (rho) entre les piques
     dist=[];
+
     for i=1:length(ind_dec)-1
        rho_peaks=rho(ind_dec(i));
        rho_peaks_next=rho(ind_dec(i+1));
        distance=rho_peaks_next-rho_peaks ;
        dist=[dist ;distance];
     end
-    mdist=median(dist);
-    seuil_accepted=(mdist/100)*45;
+    %retrait des lignes dont la distance est inférieur à la médianne
+    mdist=median(dist);   
+    seuil_accepted=(mdist/100)*s;
     mdist-seuil_accepted;
     mdist+seuil_accepted;
     res=[];
@@ -221,22 +214,52 @@ function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho)
         rho_peaks=rho(ind_dec(i));
         rho_peaks_next=rho(ind_dec(i+1));
         distance=rho_peaks_next-rho_peaks ;
-        distance;
-        w_dec(i);
-        if(distance>mdist-seuil_accepted && distance<mdist+seuil_accepted)
+        if(distance>=mdist-seuil_accepted && distance<=mdist+seuil_accepted)
             res=[res;t(i,1) t(i,2) t(i,3)];
             res=[res;t(i+1,1) t(i+1,2) t(i+1,3)];
         end
     end
-    
     res=unique(res,'rows');
     V_res=res(:,1);
-
     I_res= res(:,2);
-
     w_res = res(:,3);
-
-    
+end
+function [V_res,I_res,w_res]= clear_dec2(V_dec,ind_dec,w,rho,s)
+    m=mean(V_dec);
+    t=[V_dec ind_dec];
+    t=[t w];
+    %retrait des lignes dont le nombre de vote est < à la moyenne
+    t(t(:,1)<m, :)=[];
+    V_dec=t(:,1);
+    ind_dec= t(:,2);
+    w_dec = t(:,3);
+    %Calcul de la distance (rho) entre les piques
+    dist=[];
+    indiceDist=[]
+    for i=1:length(ind_dec)-1
+       rho_peaks=rho(ind_dec(i));
+       rho_peaks_next=rho(ind_dec(i+1));
+       distance=rho_peaks_next-rho_peaks ;
+       dist=[dist ;distance];
+       indiceDist=[indiceDist;ind_dec(i) ind_dec(i+1)];
+    end
+    %retrait des lignes dont la distance est inférieur à la médianne
+    mdist=median(dist);
+    seuil_accepted=(mdist/100)*s;
+    res=[];
+    for icurrentDist=1:length(ind_dec)-1
+        rho_peaks=rho(ind_dec(icurrentDist));
+        rho_peaks_next=rho(ind_dec(icurrentDist+1));
+        distance=rho_peaks_next-rho_peaks;
+        if(distance>mdist-seuil_accepted && distance<mdist+seuil_accepted)
+             res=[res;t(icurrentDist,1) t(icurrentDist,2) t(icurrentDist,3)];
+             res=[res;t(icurrentDist+1,1) t(icurrentDist+1,2) t(icurrentDist+1,3)];
+        end
+    end
+    res=unique(res,'rows');
+    V_res=res(:,1);
+    I_res= res(:,2);
+    w_res = res(:,3);
 end
 function get_pixel_line_by_hough(P,P_dec,contour,theta,rho,fig_pixel,w)
     [m,n]=size(P)
@@ -520,7 +543,6 @@ function [pixel_droite,freeman,c1,c2]=droiteNaive(contour,a,b,mu,w,x1,y1)
          end 
     end  
 end
-
 function [pixel_all_line]=get_pixel_line_by_normal(contour,rho,theta,P,w)
     [height, width] = size(contour);  
     pixel_all_line=[];
@@ -530,7 +552,7 @@ function [pixel_all_line]=get_pixel_line_by_normal(contour,rho,theta,P,w)
     for j = 1:nbligne
         numdroite=j;
         %largeur/theta/rho de la droite courante
-        largeur_d=w(numdroite);
+        largeur_d=w(numdroite)*10;
         theta_d=theta(P(numdroite,2 ));
         rho_d=rho(P(numdroite,1));
         %creation de la droite courante
@@ -617,6 +639,14 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function affichage_densite(fig_densite,img_densite)
+   figure(fig_densite);
+   imshow(img_densite,[0,255]);
+end
+function affichage_contourcleared(fig_contourClear,contour_clear)
+   figure(fig_contourClear);
+   imshow(contour_clear);
+end
 function affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_dec)
     figure(fig_pixel);
     [m_img,n_img]=size(contour);
@@ -666,7 +696,6 @@ function affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_
     truesize(fig_pixel );
     hold off;
 end
-
 function affichage_img(fig_img,img,img_name,rho_out,theta_out,rho_dec_out,theta_dec_out)
     figure(fig_img);
     imshow(img);hold on;
@@ -738,6 +767,7 @@ function []=affichage_distrib(fig_vec,vec,P,fig_vec90,vec90,Pdec,rho)
     ind=1:length(vec);%indice dec correspond aux rho; valeur de vec corrrespond aux nombre de vote dans hough
     plot(rho(ind),vec);
     plot(rho(P(:,2)),P(:,1),'o','color','red');
+    %plot(P(:,2),P(:,1),'o','color','red');
     hold off;
     
     figure(fig_vec90);
@@ -745,9 +775,11 @@ function []=affichage_distrib(fig_vec,vec,P,fig_vec90,vec90,Pdec,rho)
     ind_dec=1:length(vec90);
     plot(rho(ind_dec),vec90);
     plot(rho(Pdec(:,2)),Pdec(:,1),'o','color','red');
+    %plot(Pdec(:,2),Pdec(:,1),'o','color','red');
     hold off;
 end
-function []= clearfig(fig_img,fig_vecteur_long,fig_vecteur_long_90,fig_hough,fig_pixel)
+function []= clearfig(fig_img,fig_vecteur_long,fig_vecteur_long_90,fig_hough,fig_pixel,fig_densite,fig_contourClear)
+    clf('reset')
     figure(fig_img);
     clf('reset')
     figure(fig_vecteur_long);
@@ -758,5 +790,9 @@ function []= clearfig(fig_img,fig_vecteur_long,fig_vecteur_long_90,fig_hough,fig
     clf('reset')
     figure(fig_pixel);
     clf('reset')
+    figure(fig_densite);
+    clf('reset')
+     figure(fig_contourClear);
+    clf('reset')
 end
-
+ 
