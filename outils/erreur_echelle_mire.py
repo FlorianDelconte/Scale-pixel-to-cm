@@ -51,7 +51,6 @@ def main():
     box = ax1.get_position()
     ax1.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     ax1.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    #plt.legend(bbox_to_anchor=(0., 1.02,  1., .102), loc='lower left', borderaxespad=0.)
     #erreur Vertical
     ax2=fig.add_subplot(312)
     ax2.plot(x,GT_distance['dist'],color='green',linewidth=1 ,label="ground truth"   )
@@ -110,6 +109,7 @@ def compute_error(GT,CV):
         file_name=i['file']
         #print(file_name)
         dist_GT=findDist(file_name,GT)
+        print(dist_computed)
         erreur=abs(dist_GT-dist_computed)
         moyenne_error_list.append(erreur)
     moyenne_error_array = np.array(moyenne_error_list)
