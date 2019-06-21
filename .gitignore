@@ -6,6 +6,7 @@
 *.o
 *.so
 *.JPG
+*.png
 *.jpg
 *.pyc
 *.m~
