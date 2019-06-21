@@ -1,6 +1,6 @@
 clear all
 
-path_source='../DATA/PNG/truth_ground/img/256_256/';
+path_source='../DATA/PNG/truth_ground/img/normal_size/';
 %path_dest='../DATA/PNG/sgm_mire/';
 path_dest='../DATA/PNG/truth_ground/img/test/';
 %obtient la liste des images 

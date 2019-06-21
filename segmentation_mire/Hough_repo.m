@@ -15,45 +15,49 @@ fig_vecteur_long=figure('Name','vecteur theta max +90');
 % nfiles
 cpt=0;
 for i = 1 :nfiles
+    %if(i==52)
     filelist_img(i).name
-    filelist_img(i);
-    %if(strcmp(filelist_img(i).name,"huawei_E045B_1.png")==1)
+    if(strcmp(filelist_img(i).name,"huawei_E088H_2.png")==1)
     if(check_sgm(filelist_img(i).name)==1)
         %%%%%%%%%%%%%OUVERTURE BOITE ENGLOBANTE IMG%%%%%%%%%%%%%%
         path_name=strcat(strcat(path_img, '/'), filelist_img(i).name);
         contour=imread(path_name);
         contour=bounding_box(filelist_img(i).name,contour);
-        [img_densite,contour_clear]=densite(contour,20,12);%img canny,taille fenetre, seuil
-        affichage_contourcleared(fig_contourClear,contour);
-        contour=contour_clear;
-        size(contour);
+        [img_densite,contour_clear,ratio]=densite(contour,24,9);%img canny,taille fenetre, seuil
+        %si la proportion de pixel dense depasse 0.2 
+        %ratio
+        if(ratio>=0.4)
+            contour=contour_clear;
+        end
+
         %%%%%%%%%%%%%DETECTION DE LA MIRE%%%%%%%%%%%%%%%%%%%%%%%%
         [H,theta,rho] = hough(contour,'RhoResolution',5);
         %%%%DETECTION DES LIGNES HORIZONTALES%%%%
         ind_max_p = houghpeaks(H,1);
         theta_max = theta(ind_max_p(2));
         hough_vector_max_theta=H(:,ind_max_p(2));
-        [V,I,w]=findpeaks(hough_vector_max_theta,'WidthReference','halfheight');%'MinPeakDistance',10
-        %[V,I,w]=findpeaks(hough_vector_max_theta,'WidthReference','halfprom','SortStr','descend','NPeaks',3);
-        %w=w.*5;
-        %%%%DETECTION DES LIGNES +90 DEGREES%%%%%
+        [V,I,w,prominence]=findpeaks(hough_vector_max_theta);%'WidthReference','halfheight'
+        %%%%DETECTION DES LIGNES 90 (+ ou - 30 degree) DEGREES%%%%%
         ind_dec_p = mod(ind_max_p(2)+90,180);
-        theta_dec = theta(ind_dec_p);
+        %ind_dec_p
+        %[hough_vector_max_theta_90 ind_dec_p]=get_hough_vector_max(ind_dec_p,H,30,rho,seuil_clear);
+        %ind_dec_p
         hough_vector_max_theta_90=H(:,ind_dec_p);
-        [V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90,'WidthReference','halfheight');%'MinPeakDistance',5
-        %[V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90,'WidthReference','halfprom','NPeaks',26);
+        theta_dec = theta(ind_dec_p); 
+        [V_dec,I_dec,w_dec]=findpeaks(hough_vector_max_theta_90);%,'WidthReference','halfheight'
         %w_dec=w_dec.*5; 
         %%%%NETOYAGE VECTEURS%%%%%%%%%%%%%%%%%%%%
         %[V,I,w]=clear(V,I,w);
         %[V,I,w]=clear2(V,I,w,rho,seuil_clear);
         %[V,I,w]=clear3(V,I,w);
+        [V,I,w]=clear3max(V,I,w,rho,prominence);
         if(V~=-1)
             cpt=cpt+1;
             [V_dec,I_dec,w_dec]=clear_dec(V_dec,I_dec,w_dec,rho,seuil_clear);
             %%%%CREATION DES PEAKS%%%%%%%%%%%%%%%%%%%
             P=zeros(length(I),1);
             P(:)=ind_max_p(2);
-            P=[I(:),P];                 %--->P concontour_cleartient les indice de rho | theta 
+            P=[I(:),P];                 %--->P concontour_clear tient les indice de rho | theta 
             P_dec=zeros(length(I_dec),1);
             P_dec(:)=ind_dec_p;
             P_dec=[I_dec(:),P_dec];
@@ -74,15 +78,15 @@ for i = 1 :nfiles
             %%%%ECRITURE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %write_file(strcat(path_write, strrep(filelist_img(i).name,'.png','.dat')),pixel_all_line);
             %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            pixel_all_line_dec=[];
+           
             affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_dec);
             affichage_img(fig_img,contour,filelist_img(i).name,rho_out,theta_out,rho_dec_out,theta_dec_out);
             affichage_hough(fig_hough,H,theta,rho,I,I_dec,theta_max,theta_dec);
             affichage_distrib(fig_vecteur,hough_vector_max_theta,[V,I,w],fig_vecteur_long,hough_vector_max_theta_90,[V_dec,I_dec,w_dec],rho);
-            affichage_densite(fig_densite,img_densite);
+            affichage_densite(fig_densite,img_densite,filelist_img(i).name);
             
-            %write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '.dat')),pixel_all_line);
-            %write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '_dec.dat')),pixel_all_line_dec);
+%             write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '.dat')),pixel_all_line);
+%             write_file(strcat(path_write,strrep(filelist_img(i).name, '.png', '_dec.dat')),pixel_all_line_dec);
             pause;
             figure(fig_pixel);
             clf('reset')
@@ -93,7 +97,7 @@ for i = 1 :nfiles
         %TODO : grossir la boite englobante et verifier qu'il y a 2 droite
         %horizontal et 4 droite vertical
     end
-   %end
+   end
     
 end
 cpt
@@ -186,6 +190,17 @@ function [V_res,I_res,w_res]= clear3(V_dec,ind_dec,w)
     w_res = w(I);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 end
+function [V,I,w] = clear3max(V,I,w,rho,prominence)
+    %suppression des element qui ont un rho trop proche
+    rhosort=rho(I);
+    %trie des peaks en fonction du nombre de vote
+    [vsort isort]=sort(prominence,'descend');
+   
+    %selection des 3 plus piques aillant le plus de vote
+    V=V(isort(1:3));
+    I=I(isort(1:3));
+    w=w(isort(1:3)); 
+end
 function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho,s)
     m=mean(V_dec);
     t=[V_dec ind_dec];
@@ -195,17 +210,29 @@ function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho,s)
     V_dec=t(:,1);
     ind_dec= t(:,2);
     w_dec = t(:,3);
+    %suppression des peaks trop proche ()
     %Calcul de la distance (rho) entre les piques
     dist=[];
-
     for i=1:length(ind_dec)-1
        rho_peaks=rho(ind_dec(i));
        rho_peaks_next=rho(ind_dec(i+1));
        distance=rho_peaks_next-rho_peaks ;
        dist=[dist ;distance];
     end
-    %retrait des lignes dont la distance est inférieur à la médianne
-    mdist=median(dist);   
+    mdist=0;
+    taillemdist=length(dist);
+    %on trie les disctance par ordre décroissant
+    [vsort isort]=sort(dist,'descend');
+    %si le nombre de distance est impaire
+    if(mod(taillemdist,2)~=0)
+        %On selectionne la medianne
+        mdist=median(vsort,'all');
+    %si il est paire
+    else 
+        mid=taillemdist/2;
+        mid_next=mid+1;
+        mdist=max(vsort(mid),vsort(mid_next));
+    end
     seuil_accepted=(mdist/100)*s;
     mdist-seuil_accepted;
     mdist+seuil_accepted;
@@ -219,6 +246,7 @@ function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho,s)
             res=[res;t(i+1,1) t(i+1,2) t(i+1,3)];
         end
     end
+
     res=unique(res,'rows');
     V_res=res(:,1);
     I_res= res(:,2);
@@ -552,7 +580,7 @@ function [pixel_all_line]=get_pixel_line_by_normal(contour,rho,theta,P,w)
     for j = 1:nbligne
         numdroite=j;
         %largeur/theta/rho de la droite courante
-        largeur_d=w(numdroite)*10;
+        largeur_d=w(numdroite)*5;%*5 pour rho_resolution
         theta_d=theta(P(numdroite,2 ));
         rho_d=rho(P(numdroite,1));
         %creation de la droite courante
@@ -634,13 +662,66 @@ function [x, y]=get_nearest_pixel_line(point_droite, pixels, image)
     end
     
 end
+function [hough_vector_max, indice_dec]=get_hough_vector_max(indice,H,angle_accepted,rho,seuil_clear)
+    %fonction qui permet de retourner le vector de hough correspondant au
+    %normale des longue droite
+    %Creation de la sous-matrice de H (défini par l'indice et l'angle
+    %toléré)
+    %H est défini de 0à 180 alors il faut faire attention a ne pas être à
+    %l'exterieur 
+    debut=indice-angle_accepted;
+    fin=indice+angle_accepted;
+    if(debut<=0)
+        debut= 180-(abs(debut));
+        gauche1=H(:,debut:1:180);
+        gauche2=H(:,1:1:indice);
+        gauche=[gauche1 gauche2];
+        %soit début est <0 soit fin est >180 mais pas les deux.
+        droite=H(:,indice:1:fin);
+        hough_matrice_theta=[gauche droite];
+    else
+        if(fin >180)
+            fin2=fin-180;
+            indice;
+            droite1=H(:,indice:1:180);
+            fin2;
+            droite2=H(:,1:1:fin2);
+            droite=[droite1 droite2];
+            %soit début est <0 soit fin est >180 mais pas les deux.
+            gauche=H(:,debut:1:indice);
+            hough_matrice_theta=[gauche droite];
+        else 
+            %cas ou l'angle toleré ne dépase pas les borne de H
+            hough_matrice_theta=H(:,debut:1:fin);
+        end
+    end
+    %TODO : probleme quand fin depasse 180
+    [~, nbcolonne]=size(hough_matrice_theta);
+    indice_max=-1;
+    nb_vote_max=-1;
+    nbcolonne;
+    for i = 1 :nbcolonne
+        vector_candidate=hough_matrice_theta(:,i);
+        [V_dec,I_dec,w_dec]=findpeaks(vector_candidate);
+        [V_dec,I_dec,w_dec]=clear_dec(V_dec,I_dec,w_dec,rho,seuil_clear);
+        nbvote_candidate=sum(V_dec);
+        if(nbvote_candidate>=nb_vote_max)
+            indice_max=i;
+            nb_vote_max=nbvote_candidate;
+        end
+    end
+    hough_vector_max=hough_matrice_theta(:,indice_max);
+    %%TODO : probleme si debut+indice_max > 180
+    indice_dec=mod(debut+indice_max,180);
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function affichage_densite(fig_densite,img_densite)
+function affichage_densite(fig_densite,img_densite,img_name)
    figure(fig_densite);
+   title(img_name);
    imshow(img_densite,[0,255]);
 end
 function affichage_contourcleared(fig_contourClear,contour_clear)
@@ -705,40 +786,23 @@ function affichage_img(fig_img,img,img_name,rho_out,theta_out,rho_dec_out,theta_
     [height, width] = size(img);
     %Plot lines using rho and theta
     for i=1:length(rho_out(1,:))
-        if theta_out(i)==0
-            %plot([rho_out(i),rho_out(i)],[1,height],'LineWidth',1.5,'Color','red');
+        if (sind(theta_out(i))==0)
+            plot([rho_out(i),rho_out(i)],[1,height],'LineWidth',1.5,'Color','red');
         end
-        %x1=1:width;
         x1=1;
         y1 = ((rho_out(i)) - x1* cosd(theta_out(i)) )/ sind(theta_out(i));
         x2=width;
         y2 = ((rho_out(i)) - x2* cosd(theta_out(i)) )/ sind(theta_out(i));
-        %%%
-%         y1=y1';
-%         x1=x1';
-%         pts=[x1 y1];
-%         pts(pts(:,2)<0, :)=[];
-%         pts(pts(:,2)>height, :)=[];
-        %plot(pts(:,1),pts(:,2),'Color','yellow','r*');
         plot([x1 x2],[y1 y2],'LineWidth',1.5,'Color','red');
     end
     for i=1:length(rho_dec_out(1,:))
-        if theta_dec_out(i)==0
-            %plot([rho_dec_out(i),rho_dec_out(i)],[1,height],'LineWidth',1.5,'Color','red');
+        if (sind(theta_dec_out(i))==0)
+            plot([rho_dec_out(i),rho_dec_out(i)],[1,height],'LineWidth',1.5,'Color','blue');
         end
-%         x1=1:width;
-%         y1 = ((rho_dec_out(i)) - x1* cosd(theta_dec_out(i)) )/ sind(theta_dec_out(i))  ; 
-%         y1=y1';
-%         x1=x1';
-%         pts=[x1,y1];
-%         pts(pts(:,2)<0, :)=[];
-%         pts(pts(:,2)>height, :)=[];
-        x1=1;
-        y1 = ((rho_dec_out(i)) - x1* cosd(theta_dec_out(i)) )/ sind(theta_dec_out(i));
-        x2=width;
-        y2 = ((rho_dec_out(i)) - x2* cosd(theta_dec_out(i)) )/ sind(theta_dec_out(i));
-%         x1=pts(:,1);
-%         y1=pts(:,2);
+          x1=1;
+          y1 = ((rho_dec_out(i)) - x1* cosd(theta_dec_out(i)) )/ sind(theta_dec_out(i));
+          x2=width;
+          y2 = ((rho_dec_out(i)) - x2* cosd(theta_dec_out(i)) )/ sind(theta_dec_out(i));
         plot([x1 x2],[y1 y2] ,'LineWidth',1.5,'Color','blue');
     end
 end
@@ -760,14 +824,11 @@ function affichage_hough(fig_hough,hough,theta,rho,I,I_dec,max_theta,max_theta_d
     hold off;
 end
 function []=affichage_distrib(fig_vec,vec,P,fig_vec90,vec90,Pdec,rho)
-    %P=[V,I,w] déjà clear 
-    %Pdec=[Vdec,Idec,wdec] deja clear
     figure(fig_vec);
     hold on;
     ind=1:length(vec);%indice dec correspond aux rho; valeur de vec corrrespond aux nombre de vote dans hough
     plot(rho(ind),vec);
     plot(rho(P(:,2)),P(:,1),'o','color','red');
-    %plot(P(:,2),P(:,1),'o','color','red');
     hold off;
     
     figure(fig_vec90);

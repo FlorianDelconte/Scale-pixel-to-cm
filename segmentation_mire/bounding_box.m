@@ -3,7 +3,7 @@ function [M] = bounding_box(n,img)
     path_name_msk=strcat(strcat(path_sgmMire, '/'), n);
     MASQUE=imread(path_name_msk);
     MASQUE=logical(MASQUE);
-
+    %imshow(MASQUE);pause;
     box=regionprops(MASQUE,'BoundingBox');
     roy=round(box(1).BoundingBox);
     
