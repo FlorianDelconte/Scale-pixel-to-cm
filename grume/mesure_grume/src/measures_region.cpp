@@ -49,8 +49,6 @@ RegionMeasure getSurfaceMeasure(Mat img, double scale){
   connectedComponentsWithStats(img,labels,stats,centroids);
   RegionMeasure s;
   s.areaPix=getArea();//area in pixel
-  //cout<<double(s.areaPix)*(scale*scale)<<"\n";
-  s.areaCm=double(s.areaPix)*(scale*scale);//area in cm
   s.center=getCenter();//center of grume
   return s;
 }

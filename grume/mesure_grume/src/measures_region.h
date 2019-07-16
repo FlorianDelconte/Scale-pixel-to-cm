@@ -9,7 +9,6 @@
 struct RegionMeasure
 {
   int areaPix;
-  double areaCm;
   cv::Point center;
 };
 /**
