@@ -1,5 +1,6 @@
 //interne
 #include "orthogonalAxis.h"
+#include "measures_contour.h"
 //externe
 #include <iostream>
 #include "opencv2/imgproc.hpp"
@@ -13,6 +14,20 @@ Point diamPoint1;
 Point diamPoint2;
 Point normPoint1;
 Point normPoint2;
+double normLenght;
+double diamLenght;
+/**
+*compute euclidian distance
+**/
+double euclideanDistance(double x1,double y1,double x2,double y2){
+  return sqrt(((x2-x1)*(x2-x1))+((y2-y1)*(y2-y1)));
+}
+/**
+*compute euclidian distance
+**/
+double Norme1Distance(double x1,double y1,double x2,double y2){
+  return abs(x2-x1)+abs(y2-y1);
+}
 /**
 *Create a binary img of contour
 **/
@@ -37,15 +52,15 @@ bool collinear(int x1, int y1, int x2, int y2, int x3, int y3)
   return b;
 }
 /**
-*Compute the max diameter going per the moelle in a vector of point and complet an global Axis
+*Compute the max diameter going per the moelle in a vector of point and stock corresponding two point distance: Euclidian
 **/
-void computeMaxDiameterNorme1(vector<Point> contour,Point moelle ){
+void computeEucliDiameter(vector<Point> contour,Point moelle){
   Point currentPoint1,currentPoint2;
   Point selectedPoint1, selectedPoint2;
-  int max=-1;
+  double max=-1;
   int indicep1=-1;
   int indicep2=-1;
-  int distance;
+  double distance;
   for( size_t i = 0; i< contour.size(); i++ )
   {
     currentPoint1=contour[i];
@@ -54,8 +69,7 @@ void computeMaxDiameterNorme1(vector<Point> contour,Point moelle ){
       currentPoint2=contour[j];
       //three point are aligned if slope of any pair of point are same as other pair
       if(collinear(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y,moelle.x,moelle.y)){
-        //distance=abs(currentPoint2.x-currentPoint1.x)+abs(currentPoint2.y-currentPoint1.y);
-        distance=sqrt(((currentPoint2.x-currentPoint1.x)*(currentPoint2.x-currentPoint1.x))+((currentPoint2.y-currentPoint1.y)*(currentPoint2.y-currentPoint1.y)));
+        distance=euclideanDistance(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y);
         if(distance>max){
           selectedPoint1=contour[i];
           selectedPoint2=contour[j];
@@ -64,12 +78,43 @@ void computeMaxDiameterNorme1(vector<Point> contour,Point moelle ){
       }
     }
   }
+  diamLenght=max;
   diamPoint1=selectedPoint1;
   diamPoint2=selectedPoint2;
-
 }
-void computeNormal(vector<Point> contour,Point moelle,Point size){
-  Mat contourImg=makeContourImg(contour,size);
+/**
+*Compute the max diameter going per the moelle in a vector of point and stock corresponding two point distance: Norme1
+**/
+void computeNorme1Diameter(vector<Point> contour,Point moelle){
+  Point currentPoint1,currentPoint2;
+  Point selectedPoint1, selectedPoint2;
+  double max=-1;
+  int indicep1=-1;
+  int indicep2=-1;
+  double distance;
+  for( size_t i = 0; i< contour.size(); i++ )
+  {
+    currentPoint1=contour[i];
+    for( size_t j = 0; j< contour.size(); j++ )
+    {
+      currentPoint2=contour[j];
+      //three point are aligned if slope of any pair of point are same as other pair
+      if(collinear(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y,moelle.x,moelle.y)){
+        distance=Norme1Distance(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y);
+        if(distance>max){
+          selectedPoint1=contour[i];
+          selectedPoint2=contour[j];
+          max=distance;
+        }
+      }
+    }
+  }
+  diamLenght=max;
+  diamPoint1=selectedPoint1;
+  diamPoint2=selectedPoint2;
+}
+void computeNormal(vector<Point> contour,Mat contourImg,Point moelle){
+  //Mat contourImg=makeContourImg(contour,size);
   //les coeficients a et b de la droite passant par les deux points du diametre
   double a = diamPoint2.y - diamPoint1.y;
   double b = diamPoint2.x - diamPoint1.x;
@@ -88,7 +133,6 @@ void computeNormal(vector<Point> contour,Point moelle,Point size){
   int y2;
   y1=(perpendicular_slope*x1)+b_n;
   y2=(perpendicular_slope*x2)+b_n;
-  cout<<perpendicular_slope;
   LineIterator it(contourImg, Point(x1,y1), Point(x2,y2), 8);
   vector<Point> normal;
   int indiceAddVecteur=0;
@@ -103,18 +147,23 @@ void computeNormal(vector<Point> contour,Point moelle,Point size){
   }
   normPoint1=normal.front();
   normPoint2=normal.back();
+  normLenght=euclideanDistance(normPoint1.x,normPoint1.y,normPoint2.x,normPoint2.y);
 }
 
-
-Axis getOrthogonalAxis(vector<Point> contour, Point moelle,Point size){
+Axis getOrthogonalAxis(ContourMeasure c, Point moelle,int d){
   Axis a;
-  //construit une image binaire du contour
-  computeMaxDiameterNorme1(contour,moelle);
-  computeNormal(contour,moelle,size);
+  if(d==1){
+    computeNorme1Diameter(c.contour,moelle);
+  }else if(d==2){
+    computeEucliDiameter(c.contour,moelle);
+  }
+  computeNormal(c.contour,c.imgContour,moelle);
+
   a.diameterPoint1=diamPoint1;
   a.diameterPoint2=diamPoint2;
   a.normalPoint1=normPoint1;
   a.normalPoint2=normPoint2;
-  //cout<<normPoint1<<"\n"<<normPoint2;
+  a.diameterLenght=diamLenght;
+  a.normalLenght=normLenght;
   return a;
 }
