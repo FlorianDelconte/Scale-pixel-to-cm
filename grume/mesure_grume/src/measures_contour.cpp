@@ -16,7 +16,17 @@ vector<Point> contour;
 vector<vector<Point>> liste_contour;
 //useless
 vector<Vec4i> hierarchy;
-
+/**
+*draw contour in Mat
+**/
+Mat drawContourImg(Point size){
+  Mat contourDrawn=Mat::zeros(size, CV_8U );
+  for(int i=0;i<contour.size();i++)
+  {
+      contourDrawn.at<uchar>(contour[i].y,contour[i].x)=255;
+  }
+  return contourDrawn;
+}
 /**
 *Extract contour from shape
 **/
@@ -50,6 +60,7 @@ ContourMeasure getContourMeasure(Mat img, double scale){
   ContourMeasure c;
   extractContour(img);
   c.contour=contour;
+  c.imgContour=drawContourImg(img.size());
   c.perimeter=computePerimeter();
   return c;
 }

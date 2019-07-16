@@ -9,7 +9,9 @@
 struct ContourMeasure
 {
   std::vector<cv::Point> contour;
+  //perimeter in pixel
   int perimeter;
+  cv::Mat imgContour;
 };
 
 
