@@ -10,7 +10,7 @@ cd ..
 cd PIXELS/
 rm *.dat
 cd ..
-cd segment_flou/build/visu_EPS/
+cd segment_flou/src/visu_EPS/
 rm *.eps
 cd ../../../
 cd SCALE/

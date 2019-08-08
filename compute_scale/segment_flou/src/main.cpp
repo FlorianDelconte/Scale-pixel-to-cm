@@ -76,7 +76,7 @@ int main(int argc, char** argv)
       //Board pour créer le visuel
       Board2D aBoard;
       //nom du fichier EPS + conversion string to char
-      string output = "visu_EPS/"+name_input+".eps";
+      string output = "../src/visu_EPS/"+name_input+".eps";
       char name_output[output.size() + 1];
       strcpy(name_output, output.c_str());
       //nom des fichier de lecture

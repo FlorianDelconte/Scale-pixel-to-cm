@@ -22,5 +22,4 @@ venv
 DATA
 #build
 mesure_grume/build/
-compute_scale/segment_flou/build/
 cornerSegmentation/

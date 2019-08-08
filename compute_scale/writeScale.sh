@@ -2,7 +2,7 @@
 #execute all other bash script to compute scale for an input path of image
 #---------------------------------------------------------#
 #path to image you want scale
-path_to_img="../DATA/PNG/INRA_test/fva_huawei/"
+path_to_img="../DATA/PNG/INRA_test/Douglas_Besle/"
 #---------------------------------------------------------#
 echo "-------------TENSORFLOW/KERAS: U-NET for SEGMENTATION"
 cd segmentation_mire
