@@ -1,0 +1,28 @@
+--------------MIRE_512.hdf5---------------
+data_gen_args = dict(rescale = 1.0 / 255,
+                     rotation_range=0.2,
+                     width_shift_range=0.05,
+                     height_shift_range=0.05,
+                     shear_range=0.05,
+                     zoom_range=0.05,
+                     horizontal_flip=True,
+                     fill_mode='nearest')
+channels 	= 3
+numFilt 	= 16
+batch_size		= 3
+epochs			= 10
+steps_per_epoch 	= 100
+validation_steps	= 10
+numDatas = 60
+height		= 512
+width   	= 512
+2528s 25s/step - loss: 0.1414 - acc: 0.9686 - val_loss: 0.1141 - val_acc: 0.9802
+2549s 25s/step - loss: 0.0669 - acc: 0.9690 - val_loss: 0.0567 - val_acc: 0.9740
+2833s 28s/step - loss: 0.0464 - acc: 0.9692 - val_loss: 0.0335 - val_acc: 0.9724
+2574s 26s/step - loss: 0.0353 - acc: 0.9696 - val_loss: 0.0270 - val_acc: 0.9916
+2574s 26s/step - loss: 0.0316 - acc: 0.9907 - val_loss: 0.0442 - val_acc: 0.9878
+2743s 27s/step - loss: 0.0325 - acc: 0.9906 - val_loss: 0.0424 - val_acc: 0.9859
+2621s 26s/step - loss: 0.0412 - acc: 0.9860 - val_loss: 0.0241 - val_acc: 0.9929
+2619s 26s/step - loss: 0.0307 - acc: 0.9912 - val_loss: 0.0258 - val_acc: 0.9929
+2607s 26s/step - loss: 0.0282 - acc: 0.9926 - val_loss: 0.0456 - val_acc: 0.9835
+2685s 27s/step - loss: 0.0269 - acc: 0.9935 - val_loss: 0.0250 - val_acc: 0.9941
