@@ -21,7 +21,7 @@ deeplearning/model
 #données
 DATA
 #build
-grume/mesure_grume/build/
-compute_scale/segmentation_mire/segment_flou/build/
-compute_scale/segment_flou/build/
+mesure_grume/build/*
+compute_scale/segmentation_mire/segment_flou/build/*
+compute_scale/segment_flou/build/*
 cornerSegmentation/
