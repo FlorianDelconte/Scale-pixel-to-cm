@@ -7,9 +7,12 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 #include <math.h>
+#include <bits/stdc++.h>
 
 using namespace std;
 using namespace cv;
+//distance between geometric center and moelle in cm
+double centerDistance;
 //Area in cm*cm
 double area;
 //perimeter in cm
@@ -23,7 +26,7 @@ Mat image_measures;
 //reel square lenght
 int cote_carre;
 /*******************************************INPUT***************************************/
-//input scale
+//input scale in cm per pixel
 double scale;
 //input image
 Mat image_souce;
@@ -40,7 +43,7 @@ Vec3b colorContour=Vec3b(0,255,0);
 Scalar colorDiameter= Scalar( 150, 250, 255 );
 //color for contour shape
 Scalar colorNormal= Scalar( 100, 150, 155 );
-/*****************************************CODE********************************************/
+
 /**
 *Compute measure in cm thanks to the scale
 **/
@@ -49,6 +52,7 @@ void computeMeasureInCm(RegionMeasure regionM,ContourMeasure contourM,Axis a){
   perimeter=((double)contourM.perimeter)*scale;
   lenghtDiam=a.diameterLenght*scale;
   lenghtNormal=a.normalLenght*scale;
+  centerDistance=(sqrt(((moelle.x-regionM.center.x)*(moelle.x-regionM.center.x))+((moelle.y-regionM.center.y)*(moelle.y-regionM.center.y))))*scale;
 }
 /**
 *add a point to image measure
@@ -74,6 +78,7 @@ void DrawLine(Point p1,Point p2,Scalar color){
 **/
 void display(RegionMeasure regionM,ContourMeasure contourM,Axis a){
   /**TERMINAL**/
+  cout<<"\n"<<"distance between geometric center and moelle :" <<centerDistance<<" cm";
   cout<<"\n"<<"perimeter :" <<perimeter<<" cm";
   cout<<"\n"<<"area :" <<area<<" cm²";
   cout<<"\n"<<"diameter lenght :" <<lenghtDiam<<" cm";
@@ -96,6 +101,8 @@ void display(RegionMeasure regionM,ContourMeasure contourM,Axis a){
 
 int main(int argc, char** argv)
 {
+  clock_t start, end;
+  start = clock();
   /****************ARGUMENTS GESTION **********************************************************/
   cote_carre=1;
   moelle=Point(atoi(argv[3]),atoi(argv[4]));
@@ -111,25 +118,24 @@ int main(int argc, char** argv)
       return -1;
   }
   image_measures = Mat::zeros(image_souce.size(), CV_8UC3 );
+  threshold(image_souce, image_souce, 0, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
   scale=cote_carre/atof(argv[2]);
   /***************MEASURES********************************************************************/
   RegionMeasure r=getSurfaceMeasure(image_souce,scale);
   ContourMeasure c=getContourMeasure(image_souce,scale);
-  Axis a = getOrthogonalAxis(c,moelle,2);
-  /*########TEST NORME1#############
-  Axis a2 = getOrthogonalAxis(c,moelle,1);
-  Scalar colortestDiam= Scalar( 255, 200, 150 );
-  Scalar colortestNorme= Scalar( 155, 100, 50 );
-  DrawLine(a2.diameterPoint1,a2.diameterPoint2,colortestDiam);
-  DrawLine(a2.normalPoint1,a2.normalPoint2,colortestNorme);
-  ####################################*/
-
+  Axis a = getOrthogonalAxis(c,moelle);
+  
   computeMeasureInCm(r,c,a);
   display(r,c,a);
-
-
+  end = clock();
+  double time_taken = double(end - start)/ double(CLOCKS_PER_SEC);
+  cout<< "Time taken by program is : " << fixed
+      <<time_taken << setprecision(5);
+  cout<< " sec " << endl;
+  /**************WRITE MEASURE IN TXT FILE***************************************************/
 
   /**************WRITE JPG to check *********************************************************/
   imwrite( "imgSave/mesures.png", image_measures );
   imwrite( "imgSave/images.png", image_souce );
+  return 0;
 }

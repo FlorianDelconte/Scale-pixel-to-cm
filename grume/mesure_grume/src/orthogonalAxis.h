@@ -24,7 +24,7 @@ struct Axis
 *s=1 : Distance norme1 used
 *s=2 : Distance norme2 used
 **/
-Axis getOrthogonalAxis(ContourMeasure c, cv::Point moelle,int s);
+Axis getOrthogonalAxis(ContourMeasure c, cv::Point moelle);
 
 
 #endif
