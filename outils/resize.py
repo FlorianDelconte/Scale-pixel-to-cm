@@ -11,9 +11,9 @@ import sys, getopt
 #                                                         et 256*256
 ################################################################################
 
-path_imgTruth = "../DATA/PNG/truth_ground/img/normal_size/"
-path_imgTest = "../DATA/PNG/truth_ground/img/test/R/"
-path_destination = "../DATA/PNG/truth_ground/img/test/R/"
+path_imgTruth = "../DATA/PNG/sgm_mireRemi/img/"
+path_imgTest = "../DATA/PNG/test/grume/256_256/output/"
+path_destination = "../DATA/PNG/sgm_grumeRemi/"
 taille=0
 up=0
 def main(path_img):
@@ -28,7 +28,7 @@ def resize_down(path_img):
         print(item)
         im = cv2.imread(path_img+item)
         f, e = os.path.splitext(path_img+item)
-        imResize =  cv2.resize(im,(taille,taille),interpolation =cv2.INTER_NEAREST)#INTER_NEAREST for binaire et INTER_AREA for rgb
+        imResize =  cv2.resize(im,(taille,taille),interpolation =cv2.INTER_AREA)#INTER_NEAREST for binaire et INTER_AREA for rgb
         #imResize.save(f+e, 'JPEG', quality=100)
         cv2.imwrite(f+e,imResize)
 

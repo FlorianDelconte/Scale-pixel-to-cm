@@ -24,18 +24,18 @@ make
 
 ---------------------------------------------------------------TensorFlow
 %%voir https://www.tensorflow.org/install/pip
+%pour créer l'environnement virtuel
+virtualenv --system-site-packages -p python3 ./venv
 %%pour activer l'environnement virtuel
 source ./venv/bin/activate
-%%pour installer tensorflow
+%%pour installer tensorflow dans l'environnement virtuel
 pip install --upgrade tensorflow
+%%pour installer keras dans l'environnement virtuel
+pip install keras
 %%pour quitter l'environnement virtuel
 deactivate
 ---------------------------------------------------------------Changer de format d'images tous les fichiers recursivement
 find . -iname '*.JPG' -exec mogrify -format png {} +
 
 ---------------------------------------------------------------Suppression de tous les fichiers recursivement ayant l'extenstion spécifié
-find . -iname *.png -type f | xargs rm
-
-
-huawei_E092H_4.jpg
-huawei_E091B_2.jpg
+find . -iname "*.jpg" -type f | xargs rm
