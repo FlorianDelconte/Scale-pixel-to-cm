@@ -1,3 +1,0 @@
-/home/dooz/Desktop/stage/source/compute_scale/segment_flou/build/CMakeFiles/edit_cache.dir
-/home/dooz/Desktop/stage/source/compute_scale/segment_flou/build/CMakeFiles/rebuild_cache.dir
-/home/dooz/Desktop/stage/source/compute_scale/segment_flou/build/CMakeFiles/MakeScale.dir
