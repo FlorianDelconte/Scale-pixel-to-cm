@@ -48,10 +48,12 @@ void read_directory(string& path, vector<std::string>& v)
     //parcours pour check si la regex match
     for (boost::filesystem::directory_iterator iter(p),end; iter!=end; ++iter) {
       string name = iter->path().leaf().string();
-      name = name.substr(0, name.size()-4);
-      if (regex_match(name, pattern)) {
-         //file_abs_name = dir_abs_name + name;
-         v.push_back(name);
+      if(name!=".gitkeep"){
+        name = name.substr(0, name.size()-4);
+        if (regex_match(name, pattern)){
+           //file_abs_name = dir_abs_name + name;
+           v.push_back(name);
+        }
       }
     }
 
@@ -115,7 +117,7 @@ int main(int argc, char** argv)
     Mire mire(droitesHorizontales,droitesVerticales);
     //calcul de l'échelle
     mire.computeScale(aBoard);
-    mire.toString();
+    //mire.toString();
     //WRITE SCALE
     writeFile(name_input,mire.getScaleHorizontale(),fileToWriteHorizontal);
     writeFile(name_input,mire.getScaleVerticale(),fileToWriteVertical);
