@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/MakeScale.dir/Droites.cpp.o CMakeFiles/MakeScale.dir/Mire.cpp.o CMakeFiles/MakeScale.dir/main.cpp.o  -o MakeScale  -L/usr/local/lib -Wl,-rpath,/usr/local/lib -rdynamic /usr/local/lib/libDGtal.so -lboost_filesystem -lboost_regex -lboost_system -lz -lrt 

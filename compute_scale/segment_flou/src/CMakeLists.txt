@@ -1,0 +1,14 @@
+PROJECT(segment_flou)
+
+#Required in DGtal
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+FIND_PACKAGE(DGtal REQUIRED)
+FIND_PACKAGE(Boost 1.62.0 COMPONENTS filesystem regex)
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${DGTAL_INCLUDE_DIRS})
+LINK_DIRECTORIES(${DGTAL_LIBRARY_DIRS})
+
+ADD_EXECUTABLE(MakeScale Droites.hpp Droites.cpp  Mire.hpp Mire.cpp main.cpp)#Droites.hpp Droites.cpp  Mire.hpp Mire.cpp main.cpp
+
+TARGET_LINK_LIBRARIES(MakeScale  ${DGTAL_LIBRARIES})
+TARGET_LINK_LIBRARIES(MakeScale ${Boost_LIBRARIES})

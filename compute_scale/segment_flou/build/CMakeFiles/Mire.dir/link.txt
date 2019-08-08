@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/Mire.dir/Mire.cpp.o  -o Mire  -L/usr/local/lib -Wl,-rpath,/usr/local/lib -rdynamic /usr/local/lib/libDGtal.so -lz -lrt 

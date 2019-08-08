@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/makeSgmFlou.dir/makeSgmFlou.cpp.o  -o makeSgmFlou  -L/usr/local/lib -Wl,-rpath,/usr/local/lib -rdynamic /usr/local/lib/libDGtal.so -lz -lrt 
