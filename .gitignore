@@ -11,11 +11,15 @@
 *.pyc
 *.m~
 *.eps
+*.dat
+*.hdf5
 .Python
 #Virtual environnement
 venv
+#model d'apprentissage
 deeplearning/model
-truth_ground
+#données
 DATA
 #build
 segmentation_mire/segment_flou/build/
+grume/mesure_grume/build/
