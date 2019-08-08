@@ -14,12 +14,14 @@
 *.dat
 *.hdf5
 .Python
+
 #Virtual environnement
 venv
-#model d'apprentissage
-deeplearning/model
+
 #données
 DATA
+litterature
+
 #build
 mesure_grume/build/*
 compute_scale/segmentation_mire/segment_flou/build/*
