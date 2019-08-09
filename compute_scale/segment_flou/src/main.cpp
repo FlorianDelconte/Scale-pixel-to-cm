@@ -31,8 +31,8 @@ void writeFile(string imgFile,double distance1cm,string fileToWrite)
   ofstream fichier(fileToWrite, ios::out | ios::app);
   if(fichier)
   {
-    fichier<<imgFile<<" "<<distance1cm<<endl;
-    fichier.close();
+  fichier<<imgFile<<" "<<distance1cm<<endl;
+  fichier.close();
   }
   else
   {
