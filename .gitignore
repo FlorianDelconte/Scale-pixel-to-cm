@@ -20,6 +20,9 @@ venv
 
 #données
 DATA
+compute_scale/segment_flou/src/visu_EPS/
+compute_scale/SCALE/
 #build
+compute_scale/segment_flou/build/
 mesure_grume/build/
 cornerSegmentation/
