@@ -12,11 +12,10 @@
 *.m~
 *.eps
 *.dat
+*.txt
 *.hdf5
 .Python
 
-####EXCEPTION IGNORANCE : MODELE CNN
-!compute_scale/model/save/MIRE_512.hdf5
 
 ####VIRTUAL ENVIRONNEMENT
 venv
@@ -24,13 +23,14 @@ venv
 ####IMG
 DATA/
 
-####DATA - CALCUL ECHELLE
-compute_scale/segment_flou/src/visu_EPS/
-compute_scale/SCALE/
-compute_scale/PIXELS/
-compute_scale/IMG_SGM/
-
 ####BUILD
-compute_scale/segment_flou/build/
-mesure_grume/build/
+compute_scale/segment_flou/build/*
+mesure_grume/build/*
 cornerSegmentation/
+
+####EXCEPTION IGNORANCE
+##MODELE CNN
+!compute_scale/segmentation_mire/model/save/MIRE_512.hdf5
+##REPERTOIRE VIDE DE BUILD
+!compute_scale/segment_flou/build/.gitkeep
+!mesure_grume/build/.gitkeep
