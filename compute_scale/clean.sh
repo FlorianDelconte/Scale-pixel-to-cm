@@ -14,8 +14,6 @@ cd segment_flou/src/visu_EPS/
 rm *.eps
 cd ../../../
 cd SCALE/
-> echelle_computed_horizontal.txt
-> echelle_computed_moyenne.txt
-> echelle_computed_vertical.txt
+rm *.txt
 cd ..
 echo "-------------CLEAN completed"
