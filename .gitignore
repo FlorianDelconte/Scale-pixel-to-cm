@@ -1,4 +1,4 @@
-# Compiled source
+####SOURCE COMPILE
 *.com
 *.class
 *.dll
@@ -15,16 +15,22 @@
 *.hdf5
 .Python
 
-#Virtual environnement
+####EXCEPTION IGNORANCE : MODELE CNN
+!compute_scale/model/save/MIRE_512.hdf5
+
+####VIRTUAL ENVIRONNEMENT
 venv
 
-#données
+####IMG
 DATA/
+
+####DATA - CALCUL ECHELLE
 compute_scale/segment_flou/src/visu_EPS/
 compute_scale/SCALE/
 compute_scale/PIXELS/
 compute_scale/IMG_SGM/
-#build
+
+####BUILD
 compute_scale/segment_flou/build/
 mesure_grume/build/
 cornerSegmentation/
