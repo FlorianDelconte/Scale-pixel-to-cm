@@ -19,9 +19,11 @@
 venv
 
 #données
-DATA
+DATA/
 compute_scale/segment_flou/src/visu_EPS/
 compute_scale/SCALE/
+compute_scale/PIXELS/
+compute_scale/IMG_SGM/
 #build
 compute_scale/segment_flou/build/
 mesure_grume/build/
