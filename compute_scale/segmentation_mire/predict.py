@@ -55,7 +55,7 @@ for path in os.listdir(dir_input):
 	px 		= net.predict(img, verbose=1)
 	#resize de la sortie a la taille de l'image de base
 	segmentation	= px[0,:,:,0]
-	segmentation 	= cv2.resize(segmentation, (h, w), interpolation =cv2.INTER_NEAREST)
+	segmentation 	= cv2.resize(segmentation, (w, h), interpolation =cv2.INTER_NEAREST)
 	segmentation = (segmentation * 255).astype(np.uint8)
 	segmentation	=Image.fromarray(segmentation,"L")
 	segmentation.save('{}/{}'.format(dir_output, path))

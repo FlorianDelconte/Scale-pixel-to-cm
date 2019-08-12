@@ -17,8 +17,6 @@ function [img_out,proportion]=pretreatment(img_in,img_sgm)
     if(isBinaryImage~=1)
         level=graythresh(img_sgm);
         img_sgm=im2bw(img_sgm,level);
-        %imshow(img_sgm);   
-        
         %MAX COMPOSANTE
         img_sgm=bwareafilt(img_sgm,1);
         %BOUNDINGBOX
