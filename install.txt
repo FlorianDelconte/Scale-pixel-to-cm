@@ -21,6 +21,7 @@ git clone git://github.com/DGtal-team/DGtal.git
 %%rentrer dedans
 %%exécuter cmake ../<path to openCV>
 make
+sudo make install
 
 ---------------------------------------------------------------TensorFlow
 %%voir https://www.tensorflow.org/install/pip

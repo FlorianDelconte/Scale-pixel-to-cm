@@ -2,14 +2,14 @@
 #execute all other bash script to compute scale for an input path of image
 #---------------------------------------------------------#
 #path to image you want scale
-path_to_img="../DATA/PNG/INRA_test/Douglas_Besle/"
+path_to_img=$1
 #---------------------------------------------------------#
 echo "-------------TENSORFLOW/KERAS: U-NET for SEGMENTATION"
-cd segmentation_mire
+cd segmentation_mire/
 time . ./segmentation.sh $path_to_img
 cd ..
-cd pixel_Hough
 echo "-------------MATLAB: HOUGH-SPACE to extract PIXEL LINE"
+cd pixel_Hough/
 time . ./pixelHough.sh $path_to_img
 cd ..
 echo "-------------DGTAl: Segment flou to compute scale"
