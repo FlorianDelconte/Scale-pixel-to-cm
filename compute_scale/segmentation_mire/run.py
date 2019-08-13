@@ -8,8 +8,6 @@ import skimage.transform as transform
 import numpy as np
 import matplotlib.image as img
 
-from sklearn.model_selection import train_test_split
-
 from keras.models import *
 from keras.layers import *
 from keras.optimizers import *
@@ -107,7 +105,7 @@ def loadTargets(directory, h=model.height, w=model.width, c=model.channels, n=mo
 __generators    = data.trainset_generator(model.batch_size, train_dir, input_folder, label_folder,
                                  data_gen_args, save_to_dir=None)
 
-__validator     = data.trainset_generator(1, valid_dir, input_folder, label_folder,
+__validator     = data.trainset_generator(model.batch_size, valid_dir, input_folder, label_folder,
                                           data_gen_args, save_to_dir=None)
 
 model_checkpoint = ModelCheckpoint(model.fullname,

@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #PATH_GROUND_TRUTH_DISTANCE="../DATA/PNG/truth_ground/mire/echelle_remi.txt"
-PATH_GROUND_TRUTH_DISTANCE="../DATA/PNG/INRA_test/GT_fvaHuawei.txt"
+PATH_GROUND_TRUTH_DISTANCE="../DATA/PNG/INRA_test/GT_DouglasBBF.txt"
 #PATH_COMPUTED_DISTANCE_VERTICALE="../segmentation_mire/segment_flou/build/echelle_computed_vertical.txt"
-PATH_COMPUTED_DISTANCE_HORIZONTAL="../DATA/PNG/INRA_test/computed_fvaHuawei.txt"
+PATH_COMPUTED_DISTANCE_HORIZONTAL="../DATA/PNG/INRA_test/computed_DouglasBBF.txt"
 #PATH_COMPUTED_DISTANCE_MOYENNE="../segmentation_mire/segment_flou/build/echelle_computed_moyenne.txt"
 ID_FILE=[]#list all file
 def main():
@@ -203,7 +203,7 @@ def makeVectorDistance(path_file_distance):
 
 def makeVectorDistanceGT(path_file_distance):
     #vectorDistance = np.loadtxt(path_file_distance,dtype={'names': ('file', 'dist'),'formats': ('|S25', np.float)},delimiter='\t',usecols =(1, 3),skiprows=1)
-    vectorDistance = np.loadtxt(path_file_distance,dtype={'names': ('file', 'dist'),'formats': ('|S25', np.float)},skiprows=1,usecols =(1, 3))
+    vectorDistance = np.loadtxt(path_file_distance,dtype={'names': ('file', 'dist'),'formats': ('|S25', np.float)},skiprows=1,usecols =(0, 2))
     vectorDistance['dist']=vectorDistance['dist'] / 10
     return vectorDistance
 if __name__ == "__main__":

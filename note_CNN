@@ -26,3 +26,34 @@ width   	= 512
 2619s 26s/step - loss: 0.0307 - acc: 0.9912 - val_loss: 0.0258 - val_acc: 0.9929
 2607s 26s/step - loss: 0.0282 - acc: 0.9926 - val_loss: 0.0456 - val_acc: 0.9835
 2685s 27s/step - loss: 0.0269 - acc: 0.9935 - val_loss: 0.0250 - val_acc: 0.9941
+
+--------------MIRE_512V3.hdf5---------------
+data_gen_args = dict(rescale = 1.0 / 255,
+                     rotation_range=0.2,
+                     width_shift_range=0.05,
+                     height_shift_range=0.05,
+                     shear_range=0.05,
+                     zoom_range=0.05,
+                     horizontal_flip=True,
+                     fill_mode='nearest')
+channels 	= 3
+numFilt 	= 16
+batch_size		= 3
+epochs			= 10
+steps_per_epoch 	= 100
+validation_steps	= 10
+numDatas = 54
+height		= 256
+width   	= 256
++Image de Douglas
+
+279s 3s/step - loss: 0.1087 - accuracy: 0.9758 - val_loss: 0.0970 - val_accuracy: 0.9793
+270s 3s/step - loss: 0.0704 - accuracy: 0.9754 - val_loss: 0.0679 - val_accuracy: 0.9792
+271s 3s/step - loss: 0.0576 - accuracy: 0.9756 - val_loss: 0.0597 - val_accuracy: 0.9807
+269s 3s/step - loss: 0.0446 - accuracy: 0.9755 - val_loss: 0.0549 - val_accuracy: 0.9833
+272s 3s/step - loss: 0.0403 - accuracy: 0.9753 - val_loss: 0.0427 - val_accuracy: 0.9772
+270s 3s/step - loss: 0.0370 - accuracy: 0.9800 - val_loss: 0.0495 - val_accuracy: 0.9842
+269s 3s/step - loss: 0.0362 - accuracy: 0.9829 - val_loss: 0.0307 - val_accuracy: 0.9862
+271s 3s/step - loss: 0.0321 - accuracy: 0.9853 - val_loss: 0.0305 - val_accuracy: 0.9863
+270s 3s/step - loss: 0.0385 - accuracy: 0.9840 - val_loss: 0.0412 - val_accuracy: 0.9846
+271s 3s/step - loss: 0.0309 - accuracy: 0.9862 - val_loss: 0.0325 - val_accuracy: 0.9855

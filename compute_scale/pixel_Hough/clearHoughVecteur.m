@@ -36,9 +36,12 @@ function [V_res,I_res,w_res]= clearMoy(V_dec,ind_dec,w)
     t=[V_dec ind_dec];
     t=[t w];
     t(t(:,1)<m, :)=[];
-    V_res=t(:,1);
-    I_res= t(:,2);
-    w_res = t(:,3);
+    
+    if(isempty(t)==0)
+        V_res=t(:,1);
+        I_res= t(:,2);
+        w_res = t(:,3);
+    end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 end
 %%
@@ -118,13 +121,19 @@ end
 %%
 %Selectionne les 3 piques ayant la prominence la plus elevé 
 %%
-function [V,I,w] = clear3max(V,I,w,prominence)
+function [Vout,Iout,wout] = clear3max(V,I,w,prominence)
+    Vout=[];
+    Iout=[];
+    wout=[];
     %trie des peaks en fonction du nombre de vote
     [vsort isort]=sort(prominence,'descend');
+    [rows,cols] = size(isort);
     %selection des 3 plus piques aillant le plus de vote
-    V=V(isort(1:3));
-    I=I(isort(1:3));
-    w=w(isort(1:3)); 
+    if(length(isort)>=3)
+        Vout=V(isort(1:3));
+        Iout=I(isort(1:3));
+        wout=w(isort(1:3)); 
+    end
 end
 %%
 %retirer les piques ayant un nombre de vote inférieur à la moyenne
@@ -132,6 +141,9 @@ end
 %retire les piques ayant une distance trop éloigner de la médianne (à un seuil près défini par s)
 %%
 function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho,s)
+    V_res=[];
+    I_res=[];
+    w_res=[];
     m=mean(V_dec);
     t=[V_dec ind_dec];
     t=[t w];
@@ -181,8 +193,13 @@ function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho,s)
     end
 
     res=unique(res,'rows');
-    V_res=res(:,1);
-    I_res= res(:,2);
-    w_res = res(:,3);
+    if(isempty(res)==0)
+        V_res=t(:,1);
+        I_res= t(:,2);
+        w_res = t(:,3);
+    end
+    %V_res=res(:,1);
+    %I_res= res(:,2);
+    %w_res = res(:,3);
 end
 

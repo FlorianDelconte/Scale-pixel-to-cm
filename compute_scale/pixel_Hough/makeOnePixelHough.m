@@ -58,6 +58,10 @@ function [hough_line_pixels,hough_line_pixels_dec]=makeOnePixelHough(img_RGB , i
             %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %afficheur(shape_outline,hough_line_pixels,hough_line_pixels_dec,horizontal_lines,vertical_lines,H,theta,rho,rho_indice_clear,rho_indice_dec_clear,theta_maxPeaks,theta_dec,vote_max_theta,vote_max_theta_clear,prominence,vote_max_theta_dec,vote_max_theta_dec_clear,prominence_dec,density_picture)  
             %pause;
+        else
+            fprintf("verticales or horizontales line detection problem\n")
+            hough_line_pixels=[];
+            hough_line_pixels_dec=[];
         end
     else
         fprintf("segmentation to short for analyse\n")

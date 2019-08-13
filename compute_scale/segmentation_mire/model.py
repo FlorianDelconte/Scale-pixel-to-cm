@@ -20,8 +20,8 @@ import os
 #####################
 
 # Image size
-height		= 512#256
-width   	= 512#256
+height		= 256#256
+width   	= 256#256
 channels 	= 3
 numFilt 	= 16
 
@@ -35,10 +35,10 @@ validation_steps	= 10
 
 object = "mire"
 imgFormat = "PNG"
-size_folder=str(height)+"_"+str(width)
+size_folder="normale"
 
 #name = "LEN_"+s ize_folder+"_"+object+"_c.hdf5"
-name= "MIRE_512.hdf5"
+name= "MIRE_512V3.hdf5"
 
 train_folder	= "train"
 valid_folder	= "valid"
@@ -57,7 +57,7 @@ save_dir 			= os.path.join(os.getcwd(),'model', 'save')
 
 fullname 			= "".join([save_dir, '/', name])
 
-numDatas = 60
+numDatas = 54
 #########
 # Model #
 # ----- #
