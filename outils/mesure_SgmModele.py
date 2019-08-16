@@ -12,10 +12,8 @@ def make_list(pathToFolder1):
             list_file_folder1.append(element)
     list_file_folder1=sorted(list_file_folder1)
     return list_file_folder1
-
-#return a img tresholded by otsu and select the max composante
-def Otsu_MaxComposant(img):
-    _,img=cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+#return an binary img of the maximum component
+def maxComponent(img):
     ret, labels = cv2.connectedComponents(img,connectivity = 8)
     max_area=-sys.maxsize - 1;
     label_max=-1;
@@ -25,11 +23,38 @@ def Otsu_MaxComposant(img):
         if(label_counter>max_area):
             max_area=label_counter
             label_max=i
-    labels=np.where(labels!=label_max, 0, labels)
-    labels=np.where(labels==label_max, 255, labels)
-    #plt.imshow(labels)
-    #plt.show()
-    return labels
+
+    img=np.where(labels!=label_max, 0, img)
+
+    img=np.where(labels==label_max, 255, img)
+
+    return img
+#return a img tresholded by otsu and select the max composante
+def Otsu_MaxComponent(img):
+    _,img=cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    max_comp=maxComponent(img)
+    return max_comp
+#return a img tresholded by otsu and select the max composante and royed
+def Otsu_MaxComponent_Roy(img):
+    #print(img.dtype)
+    img=Otsu_MaxComponent(img)
+    # print(img.dtype)
+    #BOUNDING BOX
+    #x, y, w, h = cv2.boundingRect(np.argwhere(img))
+    #print("x",x,"y",y,"w",w,"h",h)
+    #rect = cv2.rectangle(img.copy(),(y,x),(y+h,x+w),(127),-1)
+    #ROTATED BOUNDING BOX
+    contours,_ = cv2.findContours(img.copy(), 1, 2) # not copying here will throw an error
+    #print(contours)
+    rect = cv2.minAreaRect(contours[len(contours)-1]) # basically you can feed this rect into your classifier
+    (x,y),(w,h), a = rect
+    box = cv2.boxPoints(rect)
+    box = np.int0(box) #turn into ints
+    rect2 = cv2.drawContours(img.copy(),[box],0,127,3 )
+
+    plt.imshow(rect2)
+    plt.show()
+    return img
 #compute TP,FN,FP,TN between two image, second image is the groudtruth
 def confusion_matrix(img_test,img_truth):
     '''fig=plt.figure()
@@ -84,8 +109,14 @@ if __name__ == '__main__':
         print(nameFileSgm)
         img_Expected=cv2.imread(path_SGM_expected+nameFileSgm,0)
         img_Computed=cv2.imread(path_SGM_computed+nameFileSgm,0)
+        #get the otsu/maxcomponent
+        img_cl=Otsu_MaxComponent(img_Computed)
+        #get the otsu/maxcomponent/boundingbox img
+        img_Roy=Otsu_MaxComponent_Roy(img_Computed)
+        #compute confusion matrix
         TP1,TN1,FN1,FP1,precision1,recall1=confusion_matrix(img_Computed,img_Expected)
-        img_Computed=Otsu_MaxComposant(img_Computed)
-        TP2,TN2,FN2,FP2,precision2,recall2=confusion_matrix(img_Computed,img_Expected)
+        TP2,TN2,FN2,FP2,precision2,recall2=confusion_matrix(img_cl,img_Expected)
+        TP3,TN3,FN3,FP3,precision3,recall3=confusion_matrix(img_Roy,img_Expected)
         print("BRUT-----TP : ",TP1,"TN : ",TN1,"FN : ",FN1,"FP : ",FP1, "precision : ",precision1, "recall : ",recall1)
         print("OTSU_MAX-----TP : ",TP2,"TN : ",TN2,"FN : ",FN2,"FP : ",FP2, "precision : ",precision2, "recall : ",recall2)
+        print("OTSU_MAX_ROY-----TP : ",TP3,"TN : ",TN3,"FN : ",FN3,"FP : ",FP3, "precision : ",precision3, "recall : ",recall3)
