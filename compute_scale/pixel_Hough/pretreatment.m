@@ -15,35 +15,24 @@ function [img_out,proportion]=pretreatment(img_in,img_sgm)
     %OTSU
     isBinaryImage = islogical(img_sgm);
     if(isBinaryImage~=1)
+        %OTSU
         level=graythresh(img_sgm);
         img_sgm=im2bw(img_sgm,level);
         %MAX COMPOSANTE
         img_sgm=bwareafilt(img_sgm,1);
+        %Canny * imgSgm
+        %R_canny = bsxfun(@times, R_canny, cast(img_sgm,class(R_canny))); 
         %BOUNDINGBOX
-        R_canny = bsxfun(@times, R_canny, cast(img_sgm,class(R_canny))); 
         box=regionprops(img_sgm,'BoundingBox');
         roy=round(box(1).BoundingBox);
         %découpe la composante R et l'image segmenté
-        %img_out=imcrop(R_canny,roy);
-
-        img_out=imcrop(R_canny,roy);
+        img_out=imcrop(R_canny,roy);%R_canny
 %             test=imcrop(rgb2gray(img_in),roy);
 %             corners = detectHarrisFeatures(test);
 %             imshow(test);hold on;
 %             plot(corners.selectStrongest(10));
 %             pause;
-        %sgm_crop=imcrop(img_sgm,roy);
-        %contour canny sur l'image découpé
-        %img_out=edge(R_crop,'Canny');
-       % img_out = bsxfun(@times, img_out, cast(sgm_crop,class(img_out))); 
-       % figure;
-       % imshow(img_out);
-        %on multipli canny avec la segmentation pour retirer les contour en
-        %trop
-        %img_out = bsxfun(@times, img_canny, cast(sgm_crop,class(img_canny))); 
-       
         %PROPORTION DE PIXEL BLANC DANS L'IMAGE SEGMENTEE
-
         nbPixBlanc=nnz(img_sgm);
         [m,n]=size(img_sgm);
         nbPix=m*n;

@@ -24,7 +24,7 @@ function main(pathToRepoImg_RGB , pathToRepoImg_SGM, pathToWrite)
     for i = 1 :nfiles
         %give the file name
         img_name=filelist_img(i).name
-        %if(img_name=="D03-L1-BBF-1.png")
+        %if(img_name=="fva_huawei_E096H_label.png")
             %concat file name and repository
             path_name_img=strcat(strcat(path_repo_img, '/'), img_name);
             path_name_sgm=strcat(strcat(path_repo_sgm, '/'), img_name);
@@ -36,7 +36,6 @@ function main(pathToRepoImg_RGB , pathToRepoImg_SGM, pathToWrite)
             [hough_line_pixels,hough_line_pixels_dec]=makeOnePixelHough(img,img_sgm);
             %check if they are line to detect
             if(isempty(hough_line_pixels)==0 && isempty(hough_line_pixels_dec)==0)
-                %write two matrix at the specified repo
                 write_file(strcat(path_write,strrep(img_name, '.png', '.dat')),hough_line_pixels);
                 write_file(strcat(path_write,strrep(img_name, '.png', '_dec.dat')),hough_line_pixels_dec);  
             end
