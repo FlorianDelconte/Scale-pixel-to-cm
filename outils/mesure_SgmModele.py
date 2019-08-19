@@ -155,5 +155,5 @@ if __name__ == '__main__':
     moyFN=moyFN/len(list_SGM_expected)
     moyFP=moyFP/len(list_SGM_expected)
     moyPré=moyPré/len(list_SGM_expected)
-    moyReca=moyReca/len(list_SGM_expected)
+    moyReca=moyReca/len(list_SGM_expected)  
     print("moyenne TP : ",TP,"moyenne TN : ",TN,"moyenne FN : ",FN,"moyenne FP : ",FP, "moyenne precision : ",precision, "moyenne recall : ",recall)
