@@ -43,23 +43,29 @@ function [hough_line_pixels,hough_line_pixels_dec]=makeOnePixelHough(img_RGB , i
         % 1 pour les droites verticales
         [vote_max_theta_dec_clear,rho_indice_dec_clear,prominence_dec]=clearHoughVecteur(rho,vote_max_theta_dec,1);
         %check if the clear operation let at least one value
-        if(isempty(vote_max_theta_clear)==0 && isempty(vote_max_theta_dec_clear)==0)
-            %%%%Lines creation%%%%%%%%%%%%%%%%%%%
-            horizontal_lines=zeros(length(rho_indice_clear),1);
-            horizontal_lines(:)=theta(maxPeak(2));
-            horizontal_lines=[rho(rho_indice_clear(:))',horizontal_lines];
-            vertical_lines=zeros(length(rho_indice_dec_clear),1);
-            vertical_lines(:)=theta(ind_dec_p);
-            vertical_lines=[rho(rho_indice_dec_clear(:))',vertical_lines];
-            %%%%EXTRACTION DES PIXELS ASSOCIER AUX DROITES%%%%%%%%%%%%%%%%
-            %get_pixel_line_by_hough(P,P_dec,contour,theta,rho,fig_pixel,w/2);
-            hough_line_pixels=get_pixel_line_by_normal(shape_outline,horizontal_lines,prominence);
-            hough_line_pixels_dec=get_pixel_line_by_normal( shape_outline,vertical_lines,prominence_dec);
-            %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %afficheur(shape_outline,hough_line_pixels,hough_line_pixels_dec,horizontal_lines,vertical_lines,H,theta,rho,rho_indice_clear,rho_indice_dec_clear,theta_maxPeaks,theta_dec,vote_max_theta,vote_max_theta_clear,prominence,vote_max_theta_dec,vote_max_theta_dec_clear,prominence_dec,density_picture)  
-            %pause;
+        if(isempty(vote_max_theta_clear)==0)
+            if(isempty(vote_max_theta_dec_clear)==0)
+                %%%%Lines creation%%%%%%%%%%%%%%%%%%%
+                horizontal_lines=zeros(length(rho_indice_clear),1);
+                horizontal_lines(:)=theta(maxPeak(2));
+                horizontal_lines=[rho(rho_indice_clear(:))',horizontal_lines];
+                vertical_lines=zeros(length(rho_indice_dec_clear),1);
+                vertical_lines(:)=theta(ind_dec_p);
+                vertical_lines=[rho(rho_indice_dec_clear(:))',vertical_lines];
+                %%%%EXTRACTION DES PIXELS ASSOCIER AUX DROITES%%%%%%%%%%%%%%%%
+                %get_pixel_line_by_hough(P,P_dec,contour,theta,rho,fig_pixel,w/2);
+                hough_line_pixels=get_pixel_line_by_normal(shape_outline,horizontal_lines,prominence);
+                hough_line_pixels_dec=get_pixel_line_by_normal( shape_outline,vertical_lines,prominence_dec);
+                %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                %afficheur(shape_outline,hough_line_pixels,hough_line_pixels_dec,horizontal_lines,vertical_lines,H,theta,rho,rho_indice_clear,rho_indice_dec_clear,theta_maxPeaks,theta_dec,vote_max_theta,vote_max_theta_clear,prominence,vote_max_theta_dec,vote_max_theta_dec_clear,prominence_dec,density_picture)  
+                %pause;
+            else
+                fprintf("verticales line detection problem\n")
+                hough_line_pixels=[];
+                hough_line_pixels_dec=[];
+            end
         else
-            fprintf("verticales or horizontales line detection problem\n")
+            fprintf("horizontales line detection problem\n")
             hough_line_pixels=[];
             hough_line_pixels_dec=[];
         end
