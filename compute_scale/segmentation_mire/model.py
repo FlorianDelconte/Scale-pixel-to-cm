@@ -20,22 +20,22 @@ import os
 #####################
 
 # Image size
-height		= 560#256
-width   	= 560#256
 channels 	= 3
-numFilt 	= 11
+numFilt 	= 16
 batch_size		= 3
 epochs			= 10
 steps_per_epoch 	= 100
 validation_steps	= 10
-numDatas = 54
+numDatas = 60
+height		= 512
+width   	= 512
 
 object = "mire"
 imgFormat = "PNG"
 size_folder="normale"
 
 #name = "LEN_"+s ize_folder+"_"+object+"_c.hdf5"
-name= "MIRE_512V6.hdf5"
+name= "MIRE_512.hdf5"
 
 train_folder	= "train"
 valid_folder	= "valid"
