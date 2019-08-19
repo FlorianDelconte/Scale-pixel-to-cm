@@ -98,21 +98,23 @@ def confusion_matrix(detections,truth):
     image_exp_inverse_add_test=np.bitwise_and(img_exp_inverse,img_test)
     FP=np.count_nonzero(image_exp_inverse_add_test)
     '''
+
+
     if(FP !=0):
         if(TP != 0):
-            precision=TP/(TP+FP)
+            precision=float(TP)/(TP+FP)
         else:
-            precision=(truth.size-FP)/truth.size
+            precision=float((truth.size-FP))/truth.size
     else:
-        precision =1
+        precision =1.
 
     if(FN!=0):
         if(TP != 0):
-            recall=TP/(TP+FN)
+            recall=float(TP)/(TP+FN)
         else:
-            recall=(truth.size-FN)/truth.size
+            recall=float((truth.size-FN))/truth.size
     else:
-        recall=1
+        recall=1.
     return TP,TN,FN,FP,precision,recall
 
 def display(img_Expected,img_cl):
@@ -131,8 +133,8 @@ if __name__ == '__main__':
     moyTN=0
     moyFN=0
     moyFP=0
-    moyPré=0
-    moyReca=0
+    moyPre=0.
+    moyReca=0.
     list_SGM_expected=make_list(path_SGM_expected)
     for nameFileSgm in list_SGM_expected:
         print(nameFileSgm)
@@ -147,13 +149,9 @@ if __name__ == '__main__':
         moyTN+=TN
         moyFN+=FN
         moyFP+=FP
-        moyPré+=precision
+        moyPre+=precision
         moyReca+=recall
-        display(img_Expected,img_cl)
-    moyTP=moyTP/len(list_SGM_expected)
-    moyTN=moyTN/len(list_SGM_expected)
-    moyFN=moyFN/len(list_SGM_expected)
-    moyFP=moyFP/len(list_SGM_expected)
-    moyPré=moyPré/len(list_SGM_expected)
-    moyReca=moyReca/len(list_SGM_expected)  
-    print("moyenne TP : ",TP,"moyenne TN : ",TN,"moyenne FN : ",FN,"moyenne FP : ",FP, "moyenne precision : ",precision, "moyenne recall : ",recall)
+        #display(img_Expected,img_cl)
+    moyPre=float(moyPre)/len(list_SGM_expected)
+    moyReca=float(moyReca)/len(list_SGM_expected)
+    print("moyenne precision : ",moyPre, "moyenne recall : ",moyReca)
