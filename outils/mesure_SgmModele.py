@@ -3,6 +3,9 @@ import os
 import sys, getopt
 import cv2
 import matplotlib.pyplot as plt
+
+
+
 #return lsit of file name of two folder
 def make_list(pathToFolder1):
     #list of all fil in folder1
@@ -31,32 +34,28 @@ def maxComponent(img):
     return img
 #return a img tresholded by otsu and select the max composante
 def Otsu_MaxComponent(img):
-    _,img=cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-    max_comp=maxComponent(img)
+    _,img_tresholded=cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    max_comp=maxComponent(img_tresholded)
     return max_comp
 #return a img tresholded by otsu and select the max composante and royed
 def Otsu_MaxComponent_Roy(img):
-    #print(img.dtype)
-    img=Otsu_MaxComponent(img)
-    # print(img.dtype)
+    img_otsuMax=Otsu_MaxComponent(img)
     #BOUNDING BOX
-    #x, y, w, h = cv2.boundingRect(np.argwhere(img))
-    #print("x",x,"y",y,"w",w,"h",h)
-    #rect = cv2.rectangle(img.copy(),(y,x),(y+h,x+w),(127),-1)
-    #ROTATED BOUNDING BOX
-    contours,_ = cv2.findContours(img.copy(), 1, 2) # not copying here will throw an error
-    #print(contours)
+    x, y, w, h = cv2.boundingRect(np.argwhere(img_otsuMax))
+    rect = cv2.rectangle(img_otsuMax.copy(),(y,x),(y+h,x+w),(127),-1)
+    return rect
+    #return an img tresholdef by otsu and select the max composante and constructed min area rotated rect around the past
+def Otsu_MaxComponent_RotatedRoy(img):
+    img_otsuMax=Otsu_MaxComponent(img)
+    contours,_ = cv2.findContours(img_otsuMax.copy(), 1, 2) # not copying here will throw an error
     rect = cv2.minAreaRect(contours[len(contours)-1]) # basically you can feed this rect into your classifier
     (x,y),(w,h), a = rect
     box = cv2.boxPoints(rect)
     box = np.int0(box) #turn into ints
-    rect2 = cv2.drawContours(img.copy(),[box],0,127,3 )
-
-    plt.imshow(rect2)
-    plt.show()
-    return img
+    rect2 = cv2.drawContours(img_otsuMax.copy(),[box],0,127,-1)
+    return rect2
 #compute TP,FN,FP,TN between two image, second image is the groudtruth
-def confusion_matrix(img_test,img_truth):
+def confusion_matrix(detections,truth):
     '''fig=plt.figure()
     plt.subplot(2,2,1)
     plt.imshow(img_test)
@@ -67,7 +66,19 @@ def confusion_matrix(img_test,img_truth):
     FN = 0
     FP = 0
     TN = 0
-    #compute TruePositif
+
+    positive_count = np.count_nonzero(detections)
+    negative_count = truth.size - positive_count
+
+
+    temp1=np.bitwise_and(truth,detections)
+    TP = np.count_nonzero(temp1)
+    FP = positive_count - TP
+    temp2=np.bitwise_not(detections)
+    temp2=np.bitwise_and(truth, temp2)
+    FN = np.count_nonzero(temp2)
+    TN = negative_count - FN
+    '''#compute TruePositif
     image_test_add_exp=np.bitwise_and(img_test,img_truth)
     TP=np.count_nonzero(image_test_add_exp)#nombre de pixel dansf la forme réel ET dans la forme estimée
 
@@ -86,24 +97,42 @@ def confusion_matrix(img_test,img_truth):
     img_exp_inverse=np.bitwise_not(img_truth)
     image_exp_inverse_add_test=np.bitwise_and(img_exp_inverse,img_test)
     FP=np.count_nonzero(image_exp_inverse_add_test)
-
-    if(TP+FP !=0):
-        precision=TP/(TP+FP)
+    '''
+    if(FP !=0):
+        if(TP != 0):
+            precision=TP/(TP+FP)
+        else:
+            precision=(truth.size-FP)/truth.size
     else:
-        precision =0
-    if(TP+FN!=0):
-        recall=TP/(TP+FN)
-    else:
-        recall=0
+        precision =1
 
+    if(FN!=0):
+        if(TP != 0):
+            recall=TP/(TP+FN)
+        else:
+            recall=(truth.size-FN)/truth.size
+    else:
+        recall=1
     return TP,TN,FN,FP,precision,recall
 
+def display(img_Expected,img_cl):
+    plt.figure()
+    plt.imshow(np.dstack((img_cl,img_Expected,np.zeros(img_Expected.shape))))
+
+
+
+    plt.show()
 if __name__ == '__main__':
     #path to  computed img segmentation
-    path_SGM_computed="../compute_scale/IMG_SGM/"
+    path_SGM_computed="../compute_scale/IMG_SGM/"#
     #path to expected img segmentation
     path_SGM_expected="../DATA/PNG/truth_ground/mire/normal_size/"
-
+    moyTP=0
+    moyTN=0
+    moyFN=0
+    moyFP=0
+    moyPré=0
+    moyReca=0
     list_SGM_expected=make_list(path_SGM_expected)
     for nameFileSgm in list_SGM_expected:
         print(nameFileSgm)
@@ -111,12 +140,20 @@ if __name__ == '__main__':
         img_Computed=cv2.imread(path_SGM_computed+nameFileSgm,0)
         #get the otsu/maxcomponent
         img_cl=Otsu_MaxComponent(img_Computed)
-        #get the otsu/maxcomponent/boundingbox img
-        img_Roy=Otsu_MaxComponent_Roy(img_Computed)
         #compute confusion matrix
-        TP1,TN1,FN1,FP1,precision1,recall1=confusion_matrix(img_Computed,img_Expected)
-        TP2,TN2,FN2,FP2,precision2,recall2=confusion_matrix(img_cl,img_Expected)
-        TP3,TN3,FN3,FP3,precision3,recall3=confusion_matrix(img_Roy,img_Expected)
-        print("BRUT-----TP : ",TP1,"TN : ",TN1,"FN : ",FN1,"FP : ",FP1, "precision : ",precision1, "recall : ",recall1)
-        print("OTSU_MAX-----TP : ",TP2,"TN : ",TN2,"FN : ",FN2,"FP : ",FP2, "precision : ",precision2, "recall : ",recall2)
-        print("OTSU_MAX_ROY-----TP : ",TP3,"TN : ",TN3,"FN : ",FN3,"FP : ",FP3, "precision : ",precision3, "recall : ",recall3)
+        TP,TN,FN,FP,precision,recall=confusion_matrix(img_cl,img_Expected)
+        print("BRUT-----TP : ",TP,"TN : ",TN,"FN : ",FN,"FP : ",FP, "precision : ",precision, "recall : ",recall)
+        moyTP+=TP
+        moyTN+=TN
+        moyFN+=FN
+        moyFP+=FP
+        moyPré+=precision
+        moyReca+=recall
+        display(img_Expected,img_cl)
+    moyTP=moyTP/len(list_SGM_expected)
+    moyTN=moyTN/len(list_SGM_expected)
+    moyFN=moyFN/len(list_SGM_expected)
+    moyFP=moyFP/len(list_SGM_expected)
+    moyPré=moyPré/len(list_SGM_expected)
+    moyReca=moyReca/len(list_SGM_expected)
+    print("moyenne TP : ",TP,"moyenne TN : ",TN,"moyenne FN : ",FN,"moyenne FP : ",FP, "moyenne precision : ",precision, "moyenne recall : ",recall)
