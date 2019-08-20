@@ -1,3 +1,31 @@
+################################################
+##########################
+####################
+#########OLD
+------------------------------------------------------LEN_256_256_mireRec_c
+channels 	= 3
+numFilt 	= 16
+batch_size		= 1
+epochs			= 10
+steps_per_epoch 	= 100
+validation_steps	= 10
+numDatas = 60
+height		= 256
+width   	= 256
+data_gen_args = dict(rescale = 1.0 / 255,
+                     rotation_range=0.2,
+                     width_shift_range=0.05,
+                     height_shift_range=0.05,
+                     shear_range=0.05,
+                     zoom_range=0.05,
+                     horizontal_flip=True,
+                     fill_mode='nearest')
+precision :  0.9361908050685099
+recall :  0.6738968498680508
+##############NEW
+#######################
+#############################
+###########################################
 --------------MIRE_512.hdf5--------------------------------------------------------------------------------
 data_gen_args = dict(rescale = 1.0 / 255,
                      rotation_range=0.2,
@@ -27,6 +55,8 @@ width   	= 512
 2607s 26s/step - loss: 0.0282 - acc: 0.9926 - val_loss: 0.0456 - val_acc: 0.9835
 2685s 27s/step - loss: 0.0269 - acc: 0.9935 - val_loss: 0.0250 - val_acc: 0.9941
 
+precision : 0.9524393451928254
+recall :  0.720312357395129
 --------------MIRE_512V2.hdf5---------------------------------------------------------------------------------
 data_gen_args = dict(rescale = 1.0 / 255,
                      rotation_range=0.2,
@@ -46,6 +76,10 @@ epochs			= 10
 steps_per_epoch 	= 100
 validation_steps	= 10
 numDatas = 54
++Image de Douglas
+
+precision :  0.9392029646030341
+recall :  0.6813584356466202
 
 520s 5s/step - loss: 0.1957 - accuracy: 0.9716 - val_loss: 0.2055 - val_accuracy: 0.9803
 510s 5s/step - loss: 0.0747 - accuracy: 0.9765 - val_loss: 0.0527 - val_accuracy: 0.9802
@@ -75,6 +109,10 @@ epochs			= 10
 steps_per_epoch 	= 100
 validation_steps	= 10
 numDatas = 54
++Image de Douglas
+
+precision :  0.9560313953520578
+recall :  0.753534200921755
 
 835s 8s/step - loss: 0.2032 - accuracy: 0.9767 - val_loss: 0.1480 - val_accuracy: 0.9813
 825s 8s/step - loss: 0.0802 - accuracy: 0.9770 - val_loss: 0.0608 - val_accuracy: 0.9802
@@ -105,6 +143,10 @@ steps_per_epoch 	= 100
 validation_steps	= 10
 numDatas = 54
 
+precision :  0.8650822732066967
+recall :  0.8083943589836927
+
++Image de Douglas
 325s 3s/step - loss: 0.2241 - accuracy: 0.9766 - val_loss: 0.1269 - val_accuracy: 0.9800
 319s 3s/step - loss: 0.1038 - accuracy: 0.9762 - val_loss: 0.0920 - val_accuracy: 0.9800
 319s 3s/step - loss: 0.0683 - accuracy: 0.9763 - val_loss: 0.0710 - val_accuracy: 0.9814
@@ -133,6 +175,11 @@ epochs			= 10
 steps_per_epoch 	= 100
 validation_steps	= 10
 numDatas = 54
++Image de Douglas
+
+precision :  0.9656895865318463
+recall :  0.6752737286248252
+
 
 327s 3s/step - loss: 0.1690 - accuracy: 0.9733 - val_loss: 0.1528 - val_accuracy: 0.9771
 319s 3s/step - loss: 0.1017 - accuracy: 0.9761 - val_loss: 0.0750 - val_accuracy: 0.9820
@@ -162,6 +209,10 @@ epochs			= 10
 steps_per_epoch 	= 100
 validation_steps	= 10
 numDatas = 54
++Image de Douglas
+
+precision :  0.9897630487233314
+recall :  0.6401991112194388
 
 893s 9s/step - loss: 0.1306 - accuracy: 0.9769 - val_loss: 0.0945 - val_accuracy: 0.9804
 883s 9s/step - loss: 0.0636 - accuracy: 0.9773 - val_loss: 0.0567 - val_accuracy: 0.9813
@@ -192,6 +243,8 @@ numDatas = 54
 height		= 256
 width   	= 256
 +Image de Douglas
+precision :  0.9605354308677906
+recall :  0.6903535611726668
 
 279s 3s/step - loss: 0.1087 - accuracy: 0.9758 - val_loss: 0.0970 - val_accuracy: 0.9793
 270s 3s/step - loss: 0.0704 - accuracy: 0.9754 - val_loss: 0.0679 - val_accuracy: 0.9792
@@ -223,6 +276,8 @@ numDatas = 54
 height		= 256
 width   	= 256
 +Image de Douglas
+precision :  0.9524680271887203
+recall :  0.681800057498934
 
 279s 3s/step - loss: 0.1087 - accuracy: 0.9758 - val_loss: 0.0970 - val_accuracy: 0.9793
 270s 3s/step - loss: 0.0704 - accuracy: 0.9754 - val_loss: 0.0679 - val_accuracy: 0.9792
