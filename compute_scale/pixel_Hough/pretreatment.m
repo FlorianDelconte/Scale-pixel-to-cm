@@ -39,5 +39,4 @@ function [img_out,proportion]=pretreatment(img_in,img_sgm)
         proportion=0;
         img_out=img_sgm;
     end
-
 end

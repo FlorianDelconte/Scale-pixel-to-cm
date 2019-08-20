@@ -168,12 +168,12 @@ function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho,s)
     dist(dist(:,1)<mean(dist(:,1))/2, :)=[];
     mean(dist(:,1));
     %on trie les disctance par ordre décroissant
-    [vsort isort]=sort(dist,'descend')
+    [vsort isort]=sort(dist,'descend');
     %si le nombre de distance est impaire
     %if(mod(taillemdist,2)~=0)
         %On selectionne la medianne
         %mdist=median(vsort,'all');
-    mdist=median(vsort)
+    mdist=median(vsort);
     %pause;
     %si il est paire
     %else 
