@@ -165,7 +165,7 @@ function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho,s)
     taillemdist=length(dist);
     %retrait des distance < mean(distance)/2 : permet de virer les doublons
     %trop proche
-    dist(dist(:,1)<mean(dist(:,1))/1.5, :)=[];
+    dist(dist(:,1)<mean(dist(:,1))/2, :)=[];
     mean(dist(:,1));
     %on trie les disctance par ordre décroissant
     [vsort isort]=sort(dist,'descend')
@@ -173,7 +173,7 @@ function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho,s)
     %if(mod(taillemdist,2)~=0)
         %On selectionne la medianne
         %mdist=median(vsort,'all');
-    mdist=median(vsort);
+    mdist=median(vsort)
     %pause;
     %si il est paire
     %else 
