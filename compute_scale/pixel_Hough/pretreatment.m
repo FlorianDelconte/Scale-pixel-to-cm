@@ -10,7 +10,7 @@ function [img_out,proportion]=pretreatment(img_in,img_sgm)
     %EXTRACTION DE COMPOSANTE
     R = img_in(:,:,1);
     %OTSU
-    Canny_test=edge(R,'Canny');
+    %Canny_test=edge(R,'Canny');
     isBinaryImage = islogical(img_sgm);
     if(isBinaryImage~=1)
         %OTSU
