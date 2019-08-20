@@ -1,6 +1,6 @@
 #! /bin/bash
 # Make segmentation from path_to_img to path_to_sgm
-#path_to_img="./../../DATA/PNG/truth_ground/img/normal_size/"
+
 path_to_img="$1"
 path_to_venv="./venv/bin/activate"
 #path to output segmentation mire
