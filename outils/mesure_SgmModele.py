@@ -99,7 +99,7 @@ def confusion_matrix(detections,truth):
     FP=np.count_nonzero(image_exp_inverse_add_test)
     '''
 
-
+    #PRECISION
     if(FP !=0):
         if(TP != 0):
             precision=float(TP)/(TP+FP)
@@ -107,7 +107,7 @@ def confusion_matrix(detections,truth):
             precision=float((truth.size-FP))/truth.size
     else:
         precision =1.
-
+    #RECALL
     if(FN!=0):
         if(TP != 0):
             recall=float(TP)/(TP+FN)
@@ -115,7 +115,9 @@ def confusion_matrix(detections,truth):
             recall=float((truth.size-FN))/truth.size
     else:
         recall=1.
-    return TP,TN,FN,FP,precision,recall
+    #ACCURACY
+    accuracy=float(TP+TN)/(TP+TN+FP+FN)
+    return TP,TN,FN,FP,precision,recall,accuracy
 
 def display(img_Expected,img_cl):
     plt.figure()
@@ -135,6 +137,7 @@ if __name__ == '__main__':
     moyFP=0
     moyPre=0.
     moyReca=0.
+    moyAccu=0.
     list_SGM_expected=make_list(path_SGM_expected)
     for nameFileSgm in list_SGM_expected:
         print(nameFileSgm)
@@ -143,15 +146,17 @@ if __name__ == '__main__':
         #get the otsu/maxcomponent
         img_cl=Otsu_MaxComponent(img_Computed)
         #compute confusion matrix
-        TP,TN,FN,FP,precision,recall=confusion_matrix(img_cl,img_Expected)
-        print("BRUT-----TP : ",TP,"TN : ",TN,"FN : ",FN,"FP : ",FP, "precision : ",precision, "recall : ",recall)
+        TP,TN,FN,FP,precision,recall,accuracy=confusion_matrix(img_cl,img_Expected)
+        print("BRUT-----TP : ",TP,"TN : ",TN,"FN : ",FN,"FP : ",FP, "precision : ",precision, "recall : ",recall,"accuracy : ",accuracy)
         moyTP+=TP
         moyTN+=TN
         moyFN+=FN
         moyFP+=FP
         moyPre+=precision
         moyReca+=recall
+        moyAccu+=accuracy
         #display(img_Expected,img_cl)
     moyPre=float(moyPre)/len(list_SGM_expected)
     moyReca=float(moyReca)/len(list_SGM_expected)
-    print("moyenne precision : ",moyPre, "moyenne recall : ",moyReca)
+    moyAccu=float(moyAccu)/len(list_SGM_expected)
+    print("moyenne precision : ",moyPre, "moyenne recall : ",moyReca,"moyenne accuracy : ",moyAccu)
