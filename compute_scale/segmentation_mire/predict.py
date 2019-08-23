@@ -25,6 +25,9 @@ from PIL import Image
 import model
 import cv2
 
+def rgb2gray(rgb):
+    return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
+
 net = model.unet()
 net.load_weights(model.fullname)
 
@@ -51,6 +54,9 @@ for path in os.listdir(dir_input):
 	print(img.shape)
 	img 	= cv2.resize(img, (model.height, model.width), interpolation =cv2.INTER_AREA)
 	img 	= np.array([img])
+	if( model.channels==1):
+		img = rgb2gray(img)
+
 	img 	= np.reshape(img, [1, model.height, model.width, model.channels])
 	px 		= net.predict(img, verbose=1)
 	#resize de la sortie a la taille de l'image de base

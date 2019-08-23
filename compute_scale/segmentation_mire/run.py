@@ -59,8 +59,8 @@ def loadDataset(directory, h=model.height, w=model.width, c=model.channels, n=mo
 
         mylist = ["{}/{}".format(directory, file) for file in mylist]
         imgs = io.imread_collection(mylist, plugin='matplotlib')
+        #[img.upper() for img in imgs]
         imgs = np.array([img for img in imgs])
-
         return imgs
 
 #        for (i, file) in enumerate(os.listdir(directory)):

@@ -8,13 +8,13 @@ import itertools
 import image
 
 import model
-
+#rgb
 def trainset_generator(batch_size,
                        train_path,
                        image_folder,
                        mask_folder,
                        aug_dict,
-                       image_color_mode = "rgb",
+                       image_color_mode = "grayscale",
                        mask_color_mode  = "grayscale",
                        image_save_prefix= "image",
                        mask_save_prefix = "mask",

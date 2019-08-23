@@ -2,7 +2,7 @@
 ##########################
 ####################
 #########OLD
-------------------------------------------------------LEN_256_256_mireRec_c
+------------------------------------------------------256_M_16
 channels 	= 3
 numFilt 	= 16
 batch_size		= 1
@@ -21,15 +21,23 @@ data_gen_args = dict(rescale = 1.0 / 255,
                      horizontal_flip=True,
                      fill_mode='nearest')
 GT1 :
-precision :  0.9361908050685099
-recall :  0.6738968498680508
-accuracy :  0.9796357000832081
+precision :  0.7289856262910985
+recall :  0.8087979805034506
+accuracy :  0.9876424215212232
 GT2 :
+precision :  0.6421134149957518
+recall :  0.31627175796115437
+accuracy :  0.9871667932581019
+
+GT3 :
+precision :  0.7145069244085408
+recall :  0.7267102767464012
+accuracy :  0.9875687326353875
 ##############NEW
 #######################
 #############################
 ###########################################
---------------MIRE_512.hdf5--------------------------------------------------------------------------------
+--------------512_M_16--------------------------------------------------------------------------------
 data_gen_args = dict(rescale = 1.0 / 255,
                      rotation_range=0.2,
                      width_shift_range=0.05,
@@ -59,86 +67,18 @@ width   	= 512
 2685s 27s/step - loss: 0.0269 - acc: 0.9935 - val_loss: 0.0250 - val_acc: 0.9941
 
 GT1 :
-precision : 0.9524393451928254
-recall :  0.720312357395129
-accuracy :  0.9836469298043327
-
+precision :  0.7636603755075513
+recall :  0.9190235092412297
+accuracy :  0.9905411955148922
 GT2 :
---------------MIRE_512V2.hdf5---------------------------------------------------------------------------------
-data_gen_args = dict(rescale = 1.0 / 255,
-                     rotation_range=0.2,
-                     width_shift_range=0.05,
-                     height_shift_range=0.05,
-                     shear_range=0.05,
-                     zoom_range=0.05,
-                     horizontal_flip=True,
-                     fill_mode='nearest')
+precision :  0.7196927328260859
+recall :  0.7646181163028554
+accuracy :  0.9919433765004648
+GT3 :
+precision :  0.7563324350606404
+recall :  0.8932892770848337
+accuracy :  0.9907584348225162
 
-height		= 512
-width   	= 512
-channels 	= 3
-numFilt 	= 8
-batch_size		= 3
-epochs			= 10
-steps_per_epoch 	= 100
-validation_steps	= 10
-numDatas = 54
-+Image de Douglas
-
-GT1 :
-precision :  0.9560313953520578
-recall :  0.753534200921755
-accuracy :  0.984246723631876
-
-GT2 :
-
-520s 5s/step - loss: 0.1957 - accuracy: 0.9716 - val_loss: 0.2055 - val_accuracy: 0.9803
-510s 5s/step - loss: 0.0747 - accuracy: 0.9765 - val_loss: 0.0527 - val_accuracy: 0.9802
-510s 5s/step - loss: 0.0520 - accuracy: 0.9767 - val_loss: 0.0537 - val_accuracy: 0.9817
-510s 5s/step - loss: 0.0465 - accuracy: 0.9777 - val_loss: 0.0420 - val_accuracy: 0.9862
-511s 5s/step - loss: 0.0375 - accuracy: 0.9850 - val_loss: 0.0427 - val_accuracy: 0.9829
-508s 5s/step - loss: 0.0334 - accuracy: 0.9873 - val_loss: 0.0303 - val_accuracy: 0.9891
-509s 5s/step - loss: 0.0305 - accuracy: 0.9880 - val_loss: 0.0254 - val_accuracy: 0.9900
-512s 5s/step - loss: 0.0284 - accuracy: 0.9889 - val_loss: 0.0266 - val_accuracy: 0.9919
-511s 5s/step - loss: 0.0269 - accuracy: 0.9895 - val_loss: 0.0569 - val_accuracy: 0.9828
-512s 5s/step - loss: 0.0254 - accuracy: 0.9897 - val_loss: 0.0336 - val_accuracy: 0.9874
---------------MIRE_512V3.hdf5---------------------------------------------------------------------------------
-data_gen_args = dict(rescale = 1.0 / 255,
-                     rotation_range=0.2,
-                     width_shift_range=0.05,
-                     height_shift_range=0.05,
-                     shear_range=0.05,
-                     zoom_range=0.05,
-                     horizontal_flip=True,
-                     fill_mode='nearest')
-height		= 512
-width   	= 512
-channels 	= 3
-numFilt 	= 8
-batch_size		= 5
-epochs			= 10
-steps_per_epoch 	= 100
-validation_steps	= 10
-numDatas = 54
-+Image de Douglas
-
-GT1 :
-precision :  0.9560313953520578
-recall :  0.753534200921755
-accuracy :  0.984246723631876
-
-GT2 :
-
-835s 8s/step - loss: 0.2032 - accuracy: 0.9767 - val_loss: 0.1480 - val_accuracy: 0.9813
-825s 8s/step - loss: 0.0802 - accuracy: 0.9770 - val_loss: 0.0608 - val_accuracy: 0.9802
-824s 8s/step - loss: 0.0533 - accuracy: 0.9765 - val_loss: 0.0594 - val_accuracy: 0.9814
-829s 8s/step - loss: 0.0445 - accuracy: 0.9767 - val_loss: 0.0497 - val_accuracy: 0.9810
-824s 8s/step - loss: 0.0436 - accuracy: 0.9764 - val_loss: 0.0405 - val_accuracy: 0.9802
-827s 8s/step - loss: 0.0343 - accuracy: 0.9771 - val_loss: 0.0383 - val_accuracy: 0.9799
-825s 8s/step - loss: 0.0339 - accuracy: 0.9769 - val_loss: 0.0362 - val_accuracy: 0.9802
-825s 8s/step - loss: 0.0323 - accuracy: 0.9769 - val_loss: 0.0362 - val_accuracy: 0.9811
-825s 8s/step - loss: 0.0321 - accuracy: 0.9831 - val_loss: 0.0384 - val_accuracy: 0.9854
-826s 8s/step - loss: 0.0295 - accuracy: 0.9893 - val_loss: 0.0308 - val_accuracy: 0.9886
 --------------MIRE_400V1.hdf5---------------------------------------------------------------------------------
 data_gen_args = dict(rescale = 1.0 / 255,
                        rotation_range=0.2,
@@ -157,15 +97,19 @@ epochs			= 10
 steps_per_epoch 	= 100
 validation_steps	= 10
 numDatas = 54
++Image de Douglas
 
 GT1 :
-precision :  0.8650822732066967
-recall :  0.8083943589836927
-accuracy :  0.9823638650093507
+precision :  0.5796779270691658
+recall :  0.9473398157110972
+accuracy :  0.9822467921421904
 
 GT2 :
+precision :  0.708431759990816
+recall :  0.9499739530687143
+accuracy :  0.9924134476729829
 
-+Image de Douglas
+
 325s 3s/step - loss: 0.2241 - accuracy: 0.9766 - val_loss: 0.1269 - val_accuracy: 0.9800
 319s 3s/step - loss: 0.1038 - accuracy: 0.9762 - val_loss: 0.0920 - val_accuracy: 0.9800
 319s 3s/step - loss: 0.0683 - accuracy: 0.9763 - val_loss: 0.0710 - val_accuracy: 0.9814
@@ -176,7 +120,7 @@ GT2 :
  318s 3s/step - loss: 0.0365 - accuracy: 0.9766 - val_loss: 0.0391 - val_accuracy: 0.9817
 317s 3s/step - loss: 0.0347 - accuracy: 0.9765 - val_loss: 0.0370 - val_accuracy: 0.9793
 320s 3s/step - loss: 0.0330 - accuracy: 0.9764 - val_loss: 0.0371 - val_accuracy: 0.9791
---------------MIRE_400V2.hdf5---------------------------------------------------------------------------------
+--------------400_M_12.hdf5---------------------------------------------------------------------------------
 data_gen_args = dict(rescale = 1.0 / 255,
                        rotation_range=0.2,
                        width_shift_range=0.05,
@@ -197,11 +141,19 @@ numDatas = 54
 +Image de Douglas
 
 GT1 :
-precision :  0.9656895865318463
-recall :  0.6752737286248252
-accuracy :  0.980935375151677
+precision :  0.8040863376974411
+recall :  0.8875947675940673
+accuracy :  0.9906338760553567
 
 GT2 :
+precision :  0.8507576381064559
+recall :  0.891166616178277
+accuracy :  0.995801937789717
+
+GT3 :
+precision :  0.8118648877656103
+recall :  0.8881900756914355
+accuracy :  0.9914345616761732
 
 327s 3s/step - loss: 0.1690 - accuracy: 0.9733 - val_loss: 0.1528 - val_accuracy: 0.9771
 319s 3s/step - loss: 0.1017 - accuracy: 0.9761 - val_loss: 0.0750 - val_accuracy: 0.9820
@@ -213,7 +165,95 @@ GT2 :
 320s 3s/step - loss: 0.0336 - accuracy: 0.9865 - val_loss: 0.0331 - val_accuracy: 0.9873
 320s 3s/step - loss: 0.0304 - accuracy: 0.9875 - val_loss: 0.0356 - val_accuracy: 0.9845
 320s 3s/step - loss: 0.0295 - accuracy: 0.9875 - val_loss: 0.0205 - val_accuracy: 0.9912
---------------MIRE_560V1.hdf5---------------------------------------------------------------------------------
+
+--------------400_M_16_GRAY.hdf5---------------------------------------------------------------------------------
+data_gen_args = dict(rescale = 1.0 / 255,
+                       rotation_range=0.2,
+                       width_shift_range=0.05,
+                       height_shift_range=0.05,
+                       shear_range=0.05,
+                       zoom_range=0.05,
+                       horizontal_flip=True,
+                       fill_mode='nearest'
+height		= 400
+width   	= 400
+channels 	= 1
+numFilt 	= 16
+batch_size		= 2
+epochs			= 10
+steps_per_epoch 	= 100
+validation_steps	= 10
+numDatas = 54
++Image de Douglas
+IMAGE GRAYSCALE !!!
+
+626s 6s/step - loss: 0.1829 - accuracy: 0.9749 - val_loss: 0.1786 - val_accuracy: 0.9800
+621s 6s/step - loss: 0.0971 - accuracy: 0.9762 - val_loss: 0.0979 - val_accuracy: 0.9800
+622s 6s/step - loss: 0.0698 - accuracy: 0.9770 - val_loss: 0.0954 - val_accuracy: 0.9820
+619s 6s/step - loss: 0.0557 - accuracy: 0.9806 - val_loss: 0.0634 - val_accuracy: 0.9872
+623s 6s/step - loss: 0.0397 - accuracy: 0.9850 - val_loss: 0.0493 - val_accuracy: 0.9856
+619s 6s/step - loss: 0.0315 - accuracy: 0.9875 - val_loss: 0.0261 - val_accuracy: 0.9908
+623s 6s/step - loss: 0.0239 - accuracy: 0.9901 - val_loss: 0.0297 - val_accuracy: 0.9916
+619s 6s/step - loss: 0.0221 - accuracy: 0.9910 - val_loss: 0.0352 - val_accuracy: 0.9915
+619s 6s/step - loss: 0.0210 - accuracy: 0.9913 - val_loss: 0.0182 - val_accuracy: 0.9935
+621s 6s/step - loss: 0.0169 - accuracy: 0.9927 - val_loss: 0.0249 - val_accuracy: 0.9916
+
+GT1 :
+precision :  0.7797960355443839
+recall :  0.949233574834214
+accuracy :  0.989712521148236
+GT2 :
+precision :  0.7821102122023352
+recall :  0.9403191810571383
+accuracy :  0.9949881585403367
+GT3 :
+precision :  0.7801817316540425
+recall :  0.9477478425380349
+accuracy :  0.9905298734202514
+
+--------------400_M_16.hdf5---------------------------------------------------------------------------------
+data_gen_args = dict(rescale = 1.0 / 255,
+                       rotation_range=0.2,
+                       width_shift_range=0.05,
+                       height_shift_range=0.05,
+                       shear_range=0.05,
+                       zoom_range=0.05,
+                       horizontal_flip=True,
+                       fill_mode='nearest'
+height		= 400
+width   	= 400
+channels 	= 3
+numFilt 	= 16
+batch_size		= 3
+epochs			= 10
+steps_per_epoch 	= 100
+validation_steps	= 10
+numDatas = 54
+
+637s 6s/step - loss: 0.1641 - accuracy: 0.9764 - val_loss: 0.1332 - val_accuracy: 0.9800
+630s 6s/step - loss: 0.0912 - accuracy: 0.9762 - val_loss: 0.0782 - val_accuracy: 0.9800
+631s 6s/step - loss: 0.0689 - accuracy: 0.9773 - val_loss: 0.0654 - val_accuracy: 0.9828
+629s 6s/step - loss: 0.0508 - accuracy: 0.9823 - val_loss: 0.0459 - val_accuracy: 0.9862
+632s 6s/step - loss: 0.0399 - accuracy: 0.9859 - val_loss: 0.0635 - val_accuracy: 0.9726
+630s 6s/step - loss: 0.0316 - accuracy: 0.9882 - val_loss: 0.0321 - val_accuracy: 0.9887
+631s 6s/step - loss: 0.0278 - accuracy: 0.9893 - val_loss: 0.0237 - val_accuracy: 0.9910
+632s 6s/step - loss: 0.0258 - accuracy: 0.9902 - val_loss: 0.0226 - val_accuracy: 0.9921
+631s 6s/step - loss: 0.0233 - accuracy: 0.9909 - val_loss: 0.0199 - val_accuracy: 0.9918
+630s 6s/step - loss: 0.0191 - accuracy: 0.9917 - val_loss: 0.0364 - val_accuracy: 0.9878
+
+GT1 :
+precision :  0.830651021659577
+recall :  0.9266741328749348
+accuracy :  0.9927504880810626
+GT2 :
+precision :  0.8722701700995209
+recall :  0.924669918670804
+accuracy :  0.9969136715827255
+GT3 :
+precision :  0.8375875463995678
+recall :  0.9263400971742463
+accuracy :  0.9933954883418834
+--------------560_M_12.hdf5---------------------------------------------------------------------------------
 data_gen_args = dict(rescale = 1.0 / 255,
                          rotation_range=0.2,
                          width_shift_range=0.05,
@@ -234,12 +274,18 @@ numDatas = 54
 +Image de Douglas
 
 GT1 :
-precision :  0.9524393451928254
-recall :  0.720312357395129
-accuracy :  0.9836469298043327
+precision :  0.8846905357057954
+recall :  0.8997547723588106
+accuracy :  0.9939345464015044
 
 GT2 :
-
+precision :  0.939186290705348
+recall :  0.8796236556980681
+accuracy :  0.9973892000699999
+GT3 :
+precision :  0.8937731615390542
+recall :  0.8963995862486867
+accuracy :  0.9944697744346515
 893s 9s/step - loss: 0.1306 - accuracy: 0.9769 - val_loss: 0.0945 - val_accuracy: 0.9804
 883s 9s/step - loss: 0.0636 - accuracy: 0.9773 - val_loss: 0.0567 - val_accuracy: 0.9813
 889s 9s/step - loss: 0.0472 - accuracy: 0.9823 - val_loss: 0.0421 - val_accuracy: 0.9843
@@ -250,78 +296,45 @@ GT2 :
 880s 9s/step - loss: 0.0210 - accuracy: 0.9917 - val_loss: 0.0234 - val_accuracy: 0.9937
 880s 9s/step - loss: 0.0185 - accuracy: 0.9926 - val_loss: 0.0226 - val_accuracy: 0.9910
 881s 9s/step - loss: 0.0185 - accuracy: 0.9928 - val_loss: 0.0188 - val_accuracy: 0.9929
---------------MIRE_256V1.hdf5----------------------------------------------------------------------------------
+
+--------------MIRE_560V2.hdf5---------------------------------------------------------------------------------
 data_gen_args = dict(rescale = 1.0 / 255,
-                     rotation_range=0.2,
-                     width_shift_range=0.05,
-                     height_shift_range=0.05,
-                     shear_range=0.05,
-                     zoom_range=0.05,
-                     horizontal_flip=True,
-                     fill_mode='nearest')
-channels 	= 3
-numFilt 	= 16
+                         rotation_range=0.2,
+                         width_shift_range=0.05,
+                         height_shift_range=0.05,
+                         shear_range=0.05,
+                         zoom_range=0.05,
+                         horizontal_flip=True,
+                         fill_mode='nearest')
+height		= 560
+width   	= 560
+channels 	= 1
+numFilt 	= 12
 batch_size		= 3
 epochs			= 10
 steps_per_epoch 	= 100
 validation_steps	= 10
 numDatas = 54
-height		= 256
-width   	= 256
 +Image de Douglas
+IMAGE EN GRAYSCALE !!!
+
+9s/step - loss: 0.1698 - accuracy: 0.9730 - val_loss: 0.1208 - val_accuracy: 0.9803
+9s/step - loss: 0.0758 - accuracy: 0.9766 - val_loss: 0.0711 - val_accuracy: 0.9803
+878s 9s/step - loss: 0.0492 - accuracy: 0.9768 - val_loss: 0.0381 - val_accuracy: 0.9817
+881s 9s/step - loss: 0.0429 - accuracy: 0.9768 - val_loss: 0.0370 - val_accuracy: 0.9844
+880s 9s/step - loss: 0.0371 - accuracy: 0.9765 - val_loss: 0.0532 - val_accuracy: 0.9783
+876s 9s/step - loss: 0.0334 - accuracy: 0.9825 - val_loss: 0.0243 - val_accuracy: 0.9924
+872s 9s/step - loss: 0.0304 - accuracy: 0.9912 - val_loss: 0.0293 - val_accuracy: 0.9924
+874s 9s/step - loss: 0.0297 - accuracy: 0.9915 - val_loss: 0.0313 - val_accuracy: 0.9926
+877s 9s/step - loss: 0.0274 - accuracy: 0.9926 - val_loss: 0.0214 - val_accuracy: 0.9943
+8s - loss: 0.0268 - accuracy: 0.9927
 
 GT1 :
-precision :  0.9605354308677906
-recall :  0.6903535611726668
-accuracy :  0.9798224478003607
+precision :  0.6780035946938204
+recall :  0.9524225270442835
+accuracy :  0.9895027359818752
 
 GT2 :
-
-279s 3s/step - loss: 0.1087 - accuracy: 0.9758 - val_loss: 0.0970 - val_accuracy: 0.9793
-270s 3s/step - loss: 0.0704 - accuracy: 0.9754 - val_loss: 0.0679 - val_accuracy: 0.9792
-271s 3s/step - loss: 0.0576 - accuracy: 0.9756 - val_loss: 0.0597 - val_accuracy: 0.9807
-269s 3s/step - loss: 0.0446 - accuracy: 0.9755 - val_loss: 0.0549 - val_accuracy: 0.9833
-272s 3s/step - loss: 0.0403 - accuracy: 0.9753 - val_loss: 0.0427 - val_accuracy: 0.9772
-270s 3s/step - loss: 0.0370 - accuracy: 0.9800 - val_loss: 0.0495 - val_accuracy: 0.9842
-269s 3s/step - loss: 0.0362 - accuracy: 0.9829 - val_loss: 0.0307 - val_accuracy: 0.9862
-271s 3s/step - loss: 0.0321 - accuracy: 0.9853 - val_loss: 0.0305 - val_accuracy: 0.9863
-270s 3s/step - loss: 0.0385 - accuracy: 0.9840 - val_loss: 0.0412 - val_accuracy: 0.9846
-271s 3s/step - loss: 0.0309 - accuracy: 0.9862 - val_loss: 0.0325 - val_accuracy: 0.9855
-
---------------MIRE_256V2.hdf5-------------------------------------------------------------------------------------
-data_gen_args = dict(rescale = 1.0 / 255,
-                     rotation_range=0.2,
-                     width_shift_range=0.05,
-                     height_shift_range=0.05,
-                     shear_range=0.05,
-                     zoom_range=0.05,
-                     horizontal_flip=True,
-                     fill_mode='nearest')
-channels 	= 3
-numFilt 	= 32
-batch_size		= 2
-epochs			= 10
-steps_per_epoch 	= 100
-validation_steps	= 10
-numDatas = 54
-height		= 256
-width   	= 256
-+Image de Douglas
-
-GT1 :
-precision :  0.9524680271887203
-recall :  0.681800057498934
-accuracy :  0.9791024508765719
-
-GT2 :
-
-279s 3s/step - loss: 0.1087 - accuracy: 0.9758 - val_loss: 0.0970 - val_accuracy: 0.9793
-270s 3s/step - loss: 0.0704 - accuracy: 0.9754 - val_loss: 0.0679 - val_accuracy: 0.9792
-271s 3s/step - loss: 0.0576 - accuracy: 0.9756 - val_loss: 0.0597 - val_accuracy: 0.9807
-269s 3s/step - loss: 0.0446 - accuracy: 0.9755 - val_loss: 0.0549 - val_accuracy: 0.9833
-272s 3s/step - loss: 0.0403 - accuracy: 0.9753 - val_loss: 0.0427 - val_accuracy: 0.9772
-270s 3s/step - loss: 0.0370 - accuracy: 0.9800 - val_loss: 0.0495 - val_accuracy: 0.9842
-269s 3s/step - loss: 0.0362 - accuracy: 0.9829 - val_loss: 0.0307 - val_accuracy: 0.9862
-271s 3s/step - loss: 0.0321 - accuracy: 0.9853 - val_loss: 0.0305 - val_accuracy: 0.9863
-270s 3s/step - loss: 0.0385 - accuracy: 0.9840 - val_loss: 0.0412 - val_accuracy: 0.9846
-271s 3s/step - loss: 0.0309 - accuracy: 0.9862 - val_loss: 0.0325 - val_accuracy: 0.9855
+precision :  0.7781002602474817
+recall :  0.9426691563977063
+accuracy :  0.9945817712626117

@@ -57,8 +57,8 @@ function [hough_line_pixels,hough_line_pixels_dec]=makeOnePixelHough(img_RGB , i
                 hough_line_pixels=get_pixel_line_by_normal(shape_outline,horizontal_lines,prominence);
                 hough_line_pixels_dec=get_pixel_line_by_normal( shape_outline,vertical_lines,prominence_dec);
                 %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                %afficheur(shape_outline,hough_line_pixels,hough_line_pixels_dec,horizontal_lines,vertical_lines,H,theta,rho,rho_indice_clear,rho_indice_dec_clear,theta_maxPeaks,theta_dec,vote_max_theta,vote_max_theta_clear,prominence,vote_max_theta_dec,vote_max_theta_dec_clear,prominence_dec,density_picture)  
-                %pause;
+                afficheur(shape_outline,hough_line_pixels,hough_line_pixels_dec,horizontal_lines,vertical_lines,H,theta,rho,rho_indice_clear,rho_indice_dec_clear,theta_maxPeaks,theta_dec,vote_max_theta,vote_max_theta_clear,prominence,vote_max_theta_dec,vote_max_theta_dec_clear,prominence_dec,density_picture)  
+                pause;
             else
                 fprintf("verticales line detection problem\n")
                 hough_line_pixels=[];

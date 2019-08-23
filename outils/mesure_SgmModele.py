@@ -5,7 +5,6 @@ import cv2
 import matplotlib.pyplot as plt
 
 
-
 #return lsit of file name of two folder
 def make_list(pathToFolder1):
     #list of all fil in folder1
@@ -100,21 +99,31 @@ def confusion_matrix(detections,truth):
     '''
 
     #PRECISION
-    if(FP !=0):
+    if(TP+FP != 0 and np.count_nonzero(truth)!=0 ):
+        precision=float(TP)/(TP+FP)
+    else:
+        precision=-1
+
+    '''if(FP !=0):
         if(TP != 0):
             precision=float(TP)/(TP+FP)
         else:
             precision=float((truth.size-FP))/truth.size
     else:
-        precision =1.
-    #RECALL
-    if(FN!=0):
+        precision =1.'''
+    #RECALL'
+    if(TP+FN!=0):
+        recall=float(TP)/(TP+FN)
+    else:
+        recall=-1
+
+    '''if(FN!=0):
         if(TP != 0):
             recall=float(TP)/(TP+FN)
         else:
             recall=float((truth.size-FN))/truth.size
     else:
-        recall=1.
+        recall=1.'''
     #ACCURACY
     accuracy=float(TP+TN)/(TP+TN+FP+FN)
     return TP,TN,FN,FP,precision,recall,accuracy
@@ -130,7 +139,9 @@ if __name__ == '__main__':
     #path to  computed img segmentation
     path_SGM_computed="../compute_scale/IMG_SGM/"#
     #path to expected img segmentation
-    path_SGM_expected="../DATA/PNG/truth_ground/mire/normal_size/"
+    #path_SGM_expected="../DATA/PNG/truth_ground/mire/normal_size/"
+    #path_SGM_expected="../DATA/PNG/truth_groundV2/mire/normal_size/"
+    path_SGM_expected="../DATA/PNG/truth_groundV3/mire/normal_size/"
     moyTP=0
     moyTN=0
     moyFN=0
@@ -139,6 +150,8 @@ if __name__ == '__main__':
     moyReca=0.
     moyAccu=0.
     list_SGM_expected=make_list(path_SGM_expected)
+    denomPre=len(list_SGM_expected)
+    denomRec=len(list_SGM_expected)
     for nameFileSgm in list_SGM_expected:
         print(nameFileSgm)
         img_Expected=cv2.imread(path_SGM_expected+nameFileSgm,0)
@@ -152,11 +165,18 @@ if __name__ == '__main__':
         moyTN+=TN
         moyFN+=FN
         moyFP+=FP
-        moyPre+=precision
-        moyReca+=recall
+        if(precision!=-1):
+            moyPre+=precision
+        else:
+            denomPre=denomPre-1
+        if(recall!=-1):
+            moyReca+=recall
+        else:
+            denomRec=denomRec-1
         moyAccu+=accuracy
         #display(img_Expected,img_cl)
-    moyPre=float(moyPre)/len(list_SGM_expected)
-    moyReca=float(moyReca)/len(list_SGM_expected)
+
+    moyPre=float(moyPre)/(denomPre)
+    moyReca=float(moyReca)/(denomRec)
     moyAccu=float(moyAccu)/len(list_SGM_expected)
     print("moyenne precision : ",moyPre, "moyenne recall : ",moyReca,"moyenne accuracy : ",moyAccu)

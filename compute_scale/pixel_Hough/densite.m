@@ -30,13 +30,14 @@ function [ratio,contour_clear,img_densite]=countPixelSup(img,windowsSize,intens_
     %creation de l'image des contour canny nettoyé
     contour_clear=zeros(s(1),s(2));
     %image de la densité de pixel, initialisation à zero
-    img_densite=zeros(s(1),s(2));
+    img_densite=zeros(s(1),s(2),3);
     ratio=0;
      for i=(windowsSize/2)+1:s(1)-windowsSize/2
         for j=(windowsSize/2)+1:s(2)-windowsSize/2    
             if(img(i,j)~=0)
                 c=compute_densite_color(i,j,img,windowsSize,lutte);
-                img_densite(i,j)=c;
+                img_densite(i,j,1)=c;
+
                 if(c>intens_limite)
                    ratio=ratio+1;
                 else
@@ -45,7 +46,6 @@ function [ratio,contour_clear,img_densite]=countPixelSup(img,windowsSize,intens_
             end
         end
      end
-     
      ratio=ratio/nnz(img);
 end
 

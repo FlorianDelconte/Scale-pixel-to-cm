@@ -18,24 +18,23 @@ import os
 # Global Parameters #
 # ----------------- #
 #####################
-
-# Image size
-channels 	= 3
+height		= 400
+width   	= 400
+channels 	= 1
 numFilt 	= 16
-batch_size		= 3
+batch_size		= 2
 epochs			= 10
 steps_per_epoch 	= 100
 validation_steps	= 10
-numDatas = 60
-height		= 512
-width   	= 512
+numDatas = 54
 
 object = "mire"
 imgFormat = "PNG"
 size_folder="normale"
 
 #name = "LEN_"+s ize_folder+"_"+object+"_c.hdf5"
-name= "MIRE_512.hdf5"
+name= "400_M_16_GRAYTEST.hdf5"
+
 
 train_folder	= "train"
 valid_folder	= "valid"
@@ -178,17 +177,17 @@ def unet(pretrained_weights = None,input_size = (height, width, channels)):
 	# conv10 = Conv2D(1, 1, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(merge)
 
 	inputs = Input(input_size)
-	conv1 = Conv2D(numFilt, 11, data_format='channels_last', activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(inputs)
-	conv1 = Conv2D(numFilt, 11, data_format='channels_last', activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv1)
+	conv1 = Conv2D(numFilt, 11, data_format='channels_last', activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(inputs)#11
+	conv1 = Conv2D(numFilt, 11, data_format='channels_last', activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv1)#11
 	pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
-	conv2 = Conv2D(2*numFilt, 9, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool1)
-	conv2 = Conv2D(2*numFilt, 9, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv2)
+	conv2 = Conv2D(2*numFilt, 9, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool1)#9
+	conv2 = Conv2D(2*numFilt, 9, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv2)#9
 	pool2 = MaxPooling2D(pool_size=(2, 2))(conv2)
-	conv3 = Conv2D(4*numFilt, 7, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool2)
-	conv3 = Conv2D(4*numFilt, 7, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv3)
+	conv3 = Conv2D(4*numFilt, 7, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool2)#7
+	conv3 = Conv2D(4*numFilt, 7, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv3)#7
 	pool3 = MaxPooling2D(pool_size=(2, 2))(conv3)
-	conv4 = Conv2D(8*numFilt, 5, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool3)
-	conv4 = Conv2D(8*numFilt, 5, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv4)
+	conv4 = Conv2D(8*numFilt, 5, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(pool3)#5
+	conv4 = Conv2D(8*numFilt, 5, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv4)#5
 	drop4 = Dropout(0.5)(conv4)
 	pool4 = MaxPooling2D(pool_size=(2, 2))(drop4)
 

@@ -24,7 +24,7 @@ function main(pathToRepoImg_RGB , pathToRepoImg_SGM, pathToWrite)
     for i = 1 :nfiles
         %give the file name
         img_name=filelist_img(i).name
-        %if(img_name=="D02-L1-2.png")
+        %if(img_name=="huawei_E033H_1.png")
             %concat file name and repository
             path_name_img=strcat(strcat(path_repo_img, '/'), img_name);
             path_name_sgm=strcat(strcat(path_repo_sgm, '/'), img_name);
