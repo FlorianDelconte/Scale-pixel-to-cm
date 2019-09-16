@@ -92,8 +92,8 @@ int main(int argc, char** argv)
       mire.computeScale(aBoard);
       //WRITE SCALE
       writeFile(name_input,mire.getScaleHorizontale(),fileToWriteHorizontal);
-      writeFile(name_input,mire.getScaleVerticale(),fileToWriteVertical);
-      writeFile(name_input,mire.getScaleMoyenne(),fileToWriteMoyenne);
+      //writeFile(name_input,mire.getScaleVerticale(),fileToWriteVertical);
+      //writeFile(name_input,mire.getScaleMoyenne(),fileToWriteMoyenne);
       //WRITE EPS
       aBoard.saveEPS(name_output);
     }
@@ -120,8 +120,8 @@ int main(int argc, char** argv)
     //mire.toString();
     //WRITE SCALE
     writeFile(name_input,mire.getScaleHorizontale(),fileToWriteHorizontal);
-    writeFile(name_input,mire.getScaleVerticale(),fileToWriteVertical);
-    writeFile(name_input,mire.getScaleMoyenne(),fileToWriteMoyenne);
+    //writeFile(name_input,mire.getScaleVerticale(),fileToWriteVertical);
+    //writeFile(name_input,mire.getScaleMoyenne(),fileToWriteMoyenne);
     //WRITE EPS
     aBoard.saveEPS(name_output);
   }
