@@ -16,7 +16,7 @@ function [hough_line_pixels,hough_line_pixels_dec]=makeOnePixelHough(img_RGB , i
     [shape_outline,proportion]=pretreatment(img,img_sgm);
     %we assume that if proportion is < 0.015 then, there is no checkboard to
     %detect
-    if(proportion >=0.007)%0.015
+    if(proportion >=0.010)%0.015
         %make a density picture map in grayscale (white pixel means that the pixel in considered dense 
         %clear the shape_outline given in paramater
         %compute the ratio of pixel dense
@@ -57,8 +57,8 @@ function [hough_line_pixels,hough_line_pixels_dec]=makeOnePixelHough(img_RGB , i
                 hough_line_pixels=get_pixel_line_by_normal(shape_outline,horizontal_lines,prominence);
                 hough_line_pixels_dec=get_pixel_line_by_normal( shape_outline,vertical_lines,prominence_dec);
                 %%%%AFFICHAGE%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                afficheur(shape_outline,hough_line_pixels,hough_line_pixels_dec,horizontal_lines,vertical_lines,H,theta,rho,rho_indice_clear,rho_indice_dec_clear,theta_maxPeaks,theta_dec,vote_max_theta,vote_max_theta_clear,prominence,vote_max_theta_dec,vote_max_theta_dec_clear,prominence_dec,density_picture)  
-                pause;
+                %afficheur(shape_outline,hough_line_pixels,hough_line_pixels_dec,horizontal_lines,vertical_lines,H,theta,rho,rho_indice_clear,rho_indice_dec_clear,theta_maxPeaks,theta_dec,vote_max_theta,vote_max_theta_clear,prominence,vote_max_theta_dec,vote_max_theta_dec_clear,prominence_dec,density_picture)  
+                %pause;
             else
                 fprintf("verticales line detection problem\n")
                 hough_line_pixels=[];
@@ -367,7 +367,7 @@ function [pixel_all_line]=get_pixel_line_by_normal(contour,P,w)
     for j = 1:nbligne
         numdroite=j;
         %largeur/theta/rho de la droite courante
-        largeur_d=w(numdroite)*5;
+        largeur_d=w(numdroite)*10;
         theta_d=P(numdroite,2 );
         rho_d=P(numdroite,1);
         %creation de la droite courante

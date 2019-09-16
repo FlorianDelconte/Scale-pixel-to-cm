@@ -1,3 +1,4 @@
+
 %%
 %script qui permet de clear un vecteur de plusieurs manières.
 %(1) : calcul les maximas locaux
@@ -203,9 +204,9 @@ function [V_res,I_res,w_res]= clear_dec(V_dec,ind_dec,w,rho,s)
 
     res=unique(res,'rows');
     if(isempty(res)==0)
-        V_res=t(:,1);
-        I_res= t(:,2);
-        w_res = t(:,3);
+        V_res=res(:,1);
+        I_res= res(:,2);
+        w_res = res(:,3);
     end
     %V_res=res(:,1);
     %I_res= res(:,2);

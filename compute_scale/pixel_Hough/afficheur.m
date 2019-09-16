@@ -114,10 +114,9 @@ function affichage_pixel_normal(fig_pixel,contour,pixel_all_line,pixel_all_line_
     final_image(:,:,1)=droite_rouge;
     %final_image(:,:,2)=contour;
     final_image(:,:,3)=droite_bleu;
-    %X=[pixel_all_line(1,1) pixel_all_line(nbligne,1)]
-    %Y=[pixel_all_line(1,2) pixel_all_line(nbligne,2)]
+   % final_image(final_image(:,:,1)==0 & final_image(:,:,2)==0 & final_image(:,:,3)==0)=100;
     imshow(final_image);hold on;
-    %plot(X,Y,'LineWidth',0.5,'Color','white');
+    
     truesize(fig_pixel );
     hold off;
 end
