@@ -20,20 +20,19 @@ import os
 #####################
 height		= 400
 width   	= 400
-channels 	= 1
+channels 	= 3
 numFilt 	= 16
-batch_size		= 2
+batch_size		= 3
 epochs			= 10
 steps_per_epoch 	= 100
 validation_steps	= 10
 numDatas = 54
-
 object = "mire"
 imgFormat = "PNG"
 size_folder="normale"
 
 #name = "LEN_"+s ize_folder+"_"+object+"_c.hdf5"
-name= "400_M_16_GRAYTEST.hdf5"
+name= "400_M_16.hdf5"
 
 
 train_folder	= "train"
