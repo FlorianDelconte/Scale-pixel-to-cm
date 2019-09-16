@@ -47,12 +47,49 @@ bool collinear(int x1, int y1, int x2, int y2, int x3, int y3)
 {
   bool b=false;
 
-  if ((y3 - y2) * (x2 - x1) == (y2 - y1) * (x3 - x2)){
+  if ((y1 - y2) * (x1 - x3) == (y1 - y3) * (x1 - x2)){
 
       b=true;
   }
   return b;
 }
+
+/**
+*Check if the are formed by A,B,C is null
+**/
+bool areaTriangleNull(int x1, int y1, int x2, int y2, int x3, int y3)
+{
+  bool b=false;
+  int area=((x1*(y2-y3))+(x2*(y3-y1))+(x3*(y1-y2)));
+  if (area==0){
+      b=true;
+  }
+  return b;
+}
+/*int searchIndColinear(vector<Point> contour, Point moelle){
+  double max=-1;
+  double distance;
+  Point currentPoint1,currentPoint2;
+  int ind=-1;
+  for( int i = 0; i< contour.size(); i++ )
+  {
+  currentPoint1=contour[0];
+  for( int j = 1; j< contour.size(); j++ )
+  {
+    currentPoint2=contour[j];
+    distance=euclideanDistance(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y);
+    if(areaTriangleNull(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y,moelle.x,moelle.y) ){
+        if(distance>max){
+          cout<<"oui le triangle est null"<<j;
+          ind=j;
+          max=distance;
+        }
+    }
+  }
+  return ind;
+
+
+}*/
 /**
 *Compute the max diameter going per the moelle in a vector of point and stock corresponding two point distance: Euclidian
 **/
@@ -64,30 +101,57 @@ void computeEucliDiameter(vector<Point> contour,Point moelle){
   int indicep1=-1;
   int indicep2=-1;
   double distance;
+  int i2 =0;
   //FIND first three point collinear and remember the point indice
-  for( size_t i = 1; i< contour.size(); i++ )
+  for( size_t i = 0; i< contour.size(); i++ )
   {
     //cout<<"--------------------"<<i<<"\n";
     currentPoint1=contour[i];
-    for( size_t j = 1; j< contour.size(); j++ )
+    for( size_t j = i2; j< contour.size(); j++ )
     {
       currentPoint2=contour[j];
       //three point are aligned if slope of any pair of point are same as other pair
-      if(collinear(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y,moelle.x,moelle.y)){
-        distance=euclideanDistance(currentPoint1.x,currentPoint2.y,currentPoint2.x,currentPoint2.y);
+      if(areaTriangleNull(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y,moelle.x,moelle.y)){
+        distance=euclideanDistance(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y);
         if(distance>max){
           selectedPoint1=currentPoint1;
           selectedPoint2=currentPoint2;
           max=distance;
-
+          i2=j;
         }
-        break;
       }
     }
   }
   diamLenght=max;
   diamPoint1=selectedPoint1;
   diamPoint2=selectedPoint2;
+    /*i2=searchIndColinear(contour,moelle);
+    currentPoint1=contour[0];
+    currentPoint2=contour[i2];
+    if(collinear(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y,moelle.x,moelle.y)){
+        cout<<"colli";
+    }
+
+    for( int i = 0; i< contour.size(); i++ )
+    {
+      currentPoint1=contour[i];
+      currentPoint2=contour[i2];
+
+      distance=euclideanDistance(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y);
+
+      if(collinear(currentPoint1.x,currentPoint1.y,currentPoint2.x,currentPoint2.y,moelle.x,moelle.y)){
+        if(distance>max){
+
+          selectedPoint1=currentPoint1;
+          selectedPoint2=currentPoint2;
+          max=distance;
+        }
+      }
+      i2++;
+      if(i2>=contour.size()){
+        i2=0;
+      }
+    }*/
 }
 /**
 *Compute the max diameter going per the moelle in a vector of point and stock corresponding two point distance: Norme1
@@ -128,6 +192,8 @@ void computeNormal(vector<Point> contour,Mat contourImg,Point moelle){
   double c = -(b*moelle.x)-(a*moelle.y);
   //la pente de la droite
   double slope;
+  double perpendicular_slope;
+  double b_n;
   int rows = contourImg.rows;
   int cols = contourImg.cols;
   int x1;
@@ -135,9 +201,10 @@ void computeNormal(vector<Point> contour,Mat contourImg,Point moelle){
   int y1;
   int y2;
   if(b!=0 && a!=0){
+
     slope=a/b;
-    double perpendicular_slope=-1/slope;
-    double b_n = moelle.y-(perpendicular_slope*moelle.x);
+    perpendicular_slope=-1/slope;
+    b_n = moelle.y-(perpendicular_slope*moelle.x);
     x1=0;
     x2=max(rows,cols);
     y1=(perpendicular_slope*x1)+b_n;
@@ -157,12 +224,12 @@ void computeNormal(vector<Point> contour,Mat contourImg,Point moelle){
     }
   }
   //la pente de la droite perpendiculaire
-  /*cout<<"a : "<<a<<"\n";
-  cout<<"b : "<<b<<"\n";
-  cout<<"slope : "<<perpendicular_slope<<"\n";
-  cout<<"biais : "<<b_n;
-  cout<<"p1 : ["<<x1<<";"<<y1<<"]\n";
-  cout<<"p2 : ["<<x2<<";"<<y2<<"]\n";*/
+  //cout<<"a : "<<a<<"\n";
+  //cout<<"b : "<<b<<"\n";
+  //cout<<"slope : "<<perpendicular_slope<<"\n";
+  //cout<<"biais : "<<b_n;
+  //cout<<"p1 : ["<<x1<<";"<<y1<<"]\n";
+  //cout<<"p2 : ["<<x2<<";"<<y2<<"]\n";
   LineIterator it(contourImg, Point(x1,y1), Point(x2,y2), 8);
   vector<Point> normal;
   int indiceAddVecteur=0;

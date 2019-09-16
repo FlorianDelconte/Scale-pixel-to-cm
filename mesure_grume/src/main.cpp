@@ -58,8 +58,8 @@ void computeMeasureInCm(RegionMeasure regionM,ContourMeasure contourM,Axis a){
 *add a point to image measure
 **/
 void addPoint(Point p,Scalar color){
-  circle(image_measures, p, 20, color, 1, 4, 0);
-  drawMarker(image_measures, p, color);
+  circle(image_measures, p, 40, color, 10, 4, 0);
+  drawMarker(image_measures, p, color,45);
 }
 /**
 *draw Point per Point the contour of grume
@@ -71,7 +71,7 @@ void DrawContour(Mat imgContour,Vec3b color){
 *add a line to image measure
 **/
 void DrawLine(Point p1,Point p2,Scalar color){
-  line(image_measures, p1,p2, color, 1, 8, 0);
+  line(image_measures, p1,p2, color, 10, 8, 0);
 }
 /**
 *Display two windows : One for images source, One for image measure
@@ -124,7 +124,7 @@ int main(int argc, char** argv)
   RegionMeasure r=getSurfaceMeasure(image_souce,scale);
   ContourMeasure c=getContourMeasure(image_souce,scale);
   Axis a = getOrthogonalAxis(c,moelle);
-  
+
   computeMeasureInCm(r,c,a);
   display(r,c,a);
   end = clock();
