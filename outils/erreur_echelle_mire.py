@@ -18,10 +18,11 @@ def main():
 
     min_distance,max_distance=min_max(GT_distance,C_distance_verticale,C_distance_horizontal)
     GT_distance_brut.sort(order="file")
+    GT_distance.sort(order="file")
     C_distance_horizontal.sort(order="file")
     global ID_FILE
     ID_FILE=GT_distance['file']
-    print(C_distance_horizontal)
+    #print(C_distance_horizontal)
     #####calcul des erreurs
     #errorVerticale=compute_error(GT_distance,C_distance_verticale)
     errorHorizontal=compute_error(GT_distance,C_distance_horizontal)
@@ -89,7 +90,7 @@ def main():
     ax3.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     ax3.legend(loc='center left', bbox_to_anchor=(1, 0.5))'''
 
-    fig.canvas.callbacks.connect('pick_event', on_pick)
+    #fig.canvas.callbacks.connect('pick_event', on_pick)
     #plt.figure(2)
     #plt.plot(x,errorHorizontal,color='red',linewidth=1 ,label="ground truth"   )
     plt.show()
@@ -194,9 +195,8 @@ def max_custom(vec):
             if(current_value>m):
                 m=current_value
     return m
-##
-#
-##
+
+
 def makeVectorDistance(path_file_distance):
     vectorDistance = np.loadtxt(path_file_distance,dtype={'names': ('file', 'dist'),'formats': ('|S25', np.float)})
     return vectorDistance
@@ -206,6 +206,7 @@ def makeVectorDistanceGT(path_file_distance):
     vectorDistance = np.loadtxt(path_file_distance,dtype={'names': ('file', 'dist'),'formats': ('|S25', np.float)},skiprows=1,usecols =(0, 2))
     vectorDistance['dist']=vectorDistance['dist'] / 10
     return vectorDistance
+
 if __name__ == "__main__":
     # execute only if run as a script
     main()

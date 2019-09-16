@@ -33,7 +33,9 @@ def maxComponent(img):
     return img
 #return a img tresholded by otsu and select the max composante
 def Otsu_MaxComponent(img):
+
     _,img_tresholded=cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+
     max_comp=maxComponent(img_tresholded)
     return max_comp
 #return a img tresholded by otsu and select the max composante and royed
@@ -69,34 +71,15 @@ def confusion_matrix(detections,truth):
     positive_count = np.count_nonzero(detections)
     negative_count = truth.size - positive_count
 
-
     temp1=np.bitwise_and(truth,detections)
+
     TP = np.count_nonzero(temp1)
+
     FP = positive_count - TP
     temp2=np.bitwise_not(detections)
     temp2=np.bitwise_and(truth, temp2)
     FN = np.count_nonzero(temp2)
     TN = negative_count - FN
-    '''#compute TruePositif
-    image_test_add_exp=np.bitwise_and(img_test,img_truth)
-    TP=np.count_nonzero(image_test_add_exp)#nombre de pixel dansf la forme réel ET dans la forme estimée
-
-    #compute TrueNegatif
-    image_test_inverse=np.bitwise_not(img_test)
-    img_expected_inverse=np.bitwise_not(img_truth)
-    image_test_inverse_and_img_expected_inverse=np.bitwise_and(image_test_inverse,img_expected_inverse)
-    TN=np.count_nonzero(image_test_inverse_and_img_expected_inverse)#nombre de pixel à l'exterrieur de la forme réel ET à l'exterrieur de la forme estimée
-
-    #compute FalseNegatif
-    img_test_inverse=np.bitwise_not(img_test)
-    image_test_inverse_add_exp=np.bitwise_and(img_truth,img_test_inverse)
-    FN=np.count_nonzero(image_test_inverse_add_exp)
-
-    #compute FalsePositif
-    img_exp_inverse=np.bitwise_not(img_truth)
-    image_exp_inverse_add_test=np.bitwise_and(img_exp_inverse,img_test)
-    FP=np.count_nonzero(image_exp_inverse_add_test)
-    '''
 
     #PRECISION
     if(TP+FP != 0 and np.count_nonzero(truth)!=0 ):
@@ -141,7 +124,7 @@ if __name__ == '__main__':
     #path to expected img segmentation
     #path_SGM_expected="../DATA/PNG/truth_ground/mire/normal_size/"
     #path_SGM_expected="../DATA/PNG/truth_groundV2/mire/normal_size/"
-    path_SGM_expected="../DATA/PNG/truth_groundV3/mire/normal_size/"
+    path_SGM_expected="../DATA/PNG/truth_ground/grume/normal_size/"
     moyTP=0
     moyTN=0
     moyFN=0
@@ -158,6 +141,7 @@ if __name__ == '__main__':
         img_Computed=cv2.imread(path_SGM_computed+nameFileSgm,0)
         #get the otsu/maxcomponent
         img_cl=Otsu_MaxComponent(img_Computed)
+
         #compute confusion matrix
         TP,TN,FN,FP,precision,recall,accuracy=confusion_matrix(img_cl,img_Expected)
         print("BRUT-----TP : ",TP,"TN : ",TN,"FN : ",FN,"FP : ",FP, "precision : ",precision, "recall : ",recall,"accuracy : ",accuracy)
