@@ -13,7 +13,4 @@ cd ..
 cd segment_flou/src/visu_EPS/
 rm *.eps
 cd ../../../
-cd SCALE/
-rm *.txt
-cd ..
 echo "-------------CLEAN completed"
