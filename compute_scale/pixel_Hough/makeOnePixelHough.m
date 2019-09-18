@@ -242,9 +242,9 @@ function [pixel_droite,freeman,c1,c2]=droiteNaive(contour,a,b,mu,w,x1,y1)
     nbp=max(height,width);
     pixel_droite= [];
     freeman= [];
-     code=-1;
-     c1=-1;
-     c2=-1;
+    code=-1;
+    c1=-1;
+    c2=-1;
     for i = 1:nbp
          %if((x>0 && x<=width) && (y>0 && y<=height))   
          pixel_droite=[pixel_droite; [x y]];

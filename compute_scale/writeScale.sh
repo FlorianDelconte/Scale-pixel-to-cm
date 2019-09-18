@@ -3,6 +3,10 @@
 #---------------------------------------------------------#
 #path to image you want scale
 path_to_img="$1"
+name_scale_file="$2"
+
+
+
 path_to_img_subDir="../$path_to_img"
 #---------------------------------------------------------#
 echo "-------------TENSORFLOW/KERAS: U-NET for SEGMENTATION"
@@ -15,6 +19,6 @@ time . ./pixelHough.sh $path_to_img_subDir
 cd ../
 echo "-------------DGTAl: Segment flou to compute scale"
 cd segment_flou/build/
-time ./MakeScale
+time ./MakeScale $name_scale_file
 cd ../
 echo "FINISH : scale is in SCALE repository"
