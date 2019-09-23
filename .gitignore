@@ -15,7 +15,9 @@
 *.txt
 *.hdf5
 .Python
-
+README.md
+modif_rapport
+note_CNN
 
 ####VIRTUAL ENVIRONNEMENT
 venv
@@ -30,6 +32,7 @@ cornerSegmentation/
 MireGradientDetector/
 mesure_grume/
 outils/
+
 ####EXCEPTION IGNORANCE
 ##MODELE CNN
 !compute_scale/segmentation_mire/model/save/MIRE_512.hdf5
