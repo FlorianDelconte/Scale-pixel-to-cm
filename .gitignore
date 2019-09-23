@@ -35,7 +35,7 @@ outils/
 
 ####EXCEPTION IGNORANCE
 ##MODELE CNN
-!compute_scale/segmentation_mire/model/save/MIRE_512.hdf5
+!compute_scale/segmentation_mire/model/save/400_M_16.hdf5
 ##REPERTOIRE VIDE DE BUILD
 !compute_scale/segment_flou/build/.gitkeep
 !mesure_grume/build/.gitkeep
