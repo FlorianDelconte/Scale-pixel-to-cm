@@ -28,6 +28,8 @@ compute_scale/segment_flou/build/*
 mesure_grume/build/*
 cornerSegmentation/
 MireGradientDetector/
+mesure_grume/
+outils/
 ####EXCEPTION IGNORANCE
 ##MODELE CNN
 !compute_scale/segmentation_mire/model/save/MIRE_512.hdf5
