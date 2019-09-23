@@ -16,13 +16,11 @@ function main(pathToRepoImg_RGB , pathToRepoImg_SGM, pathToWrite)
     extension='*.png';
     extensionMaj='*.PNG';
     %make a list of all picture in the img repository, default picture
-    %extension is '*.png'
-    %dir(path_repo_img);
     filelist_img=[dir(path_repo_img)];
     IMGS=dir(path_repo_img);
     %filelist_img=[dir(strcat(path_repo_img,extension));dir(strcat(path_repo_img,extensionMaj))];
     %number of file in the
-    nfiles = length(IMGS)
+    nfiles = length(IMGS);
     %for each file in repo
     for i = 1 :nfiles
         %give the file name
@@ -45,8 +43,6 @@ function main(pathToRepoImg_RGB , pathToRepoImg_SGM, pathToWrite)
                 img_name = img_name(1:end-4);
                 write_file(append(path_write,img_name,'.dat'),hough_line_pixels);
                 write_file(append(path_write,img_name,'_dec.dat'),hough_line_pixels_dec);
-                %write_file(strcat(path_write,strrep(img_name, '.png', '.dat')),hough_line_pixels);
-                %write_file(strcat(path_write,strrep(img_name, '.png', '_dec.dat')),hough_line_pixels_dec);  
             end
         catch
         end
@@ -64,7 +60,6 @@ function write_file(file_name,pixels_lines)
     %: X12 Y12 X22 Y22 X32 Y32 ... 
     %: X13 Y13 X23 Y23 X33 Y33 ... 
     %: X14 Y14 X24 Y24 X34 Y34 ... 
-   
     [nbligne,nblcolonne] = size(pixels_lines);
     writematrix(pixels_lines(:,:),[file_name] ,'Delimiter','space');
 end

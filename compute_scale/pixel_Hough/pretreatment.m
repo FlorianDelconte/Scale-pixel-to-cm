@@ -8,18 +8,10 @@
 %%
 function [img_out,proportion]=pretreatment(img_in,img_sgm)
     %EXTRACTION DE COMPOSANTE
-    R = img_in(:,:,1);
-    %figure;
-    %imshow(R);
-    
+    R = img_in(:,:,1);    
     %OTSU
     level=graythresh(img_in);
     img_in=im2bw(img_in,level);
-%      [R_test,tresh_test]=edge(R,'Canny',[0.06,0.065],3);
-%      tresh_test
-%      figure;
-%      imshow(R_test);
-%      pause;
     isBinaryImage = islogical(img_sgm);
     if(isBinaryImage~=1)
         %OTSU
@@ -37,11 +29,8 @@ function [img_out,proportion]=pretreatment(img_in,img_sgm)
         %calcul canny dans la bounding box de la composante R
         R_cropped=imgaussfilt(R_cropped,2.3);
         [Canny_cropped,tresh]=edge(R_cropped,'Canny');
-        
         %masque canny avec la segmentation
         Canny_masked = bsxfun(@times, Canny_cropped, cast(SGM_cropped,class(Canny_cropped)));
-        %imshow(Canny_masked);
-        %pause;
         img_out=Canny_masked;
         %PROPORTION DE PIXEL BLANC DANS L'IMAGE SEGMENTEE
         nbPixBlanc=nnz(img_sgm);
