@@ -17,3 +17,8 @@ Ce script prend en entrée un répertoire contenant des images et le nom du fich
   ```
   ./writeScale.sh <Path to your images>  <name of output file>
   ```
+### clean.sh
+Ce script ne prend aucune entrée. Il permet de nettoyer les fichiers temporaire généré lors de l'appel du script *writeScale.sh*. Il faut l'exécuter après chaque appel de *writeScale.sh*.
+```
+./clean.sh
+```
