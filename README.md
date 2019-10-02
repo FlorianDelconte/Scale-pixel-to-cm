@@ -1,4 +1,4 @@
-# Scale pixel to cm
+# Conversion de pixel à cm
 Ce projet à été développé dans le cadre d'un stage de master informatique spécialité AVR (Apprentissage Vision Robotique). Il permet de calculer la taille d'un pixel en cm dans des images contenant un damier de taille 2*13.
 ## Dépendances
 Voici la liste des dépendances nécessaire au bon fonctionnement du projet.
@@ -22,3 +22,5 @@ Ce script ne prend aucune entrée. Il permet de nettoyer les fichiers temporaire
 ```
 ./clean.sh
 ```
+# Mesure sur les image via ImageJ
+Nous avons developpé un plugin ImageJ (*compute_scale/segment_mesure.java*) pour changer l'échelle du logiciel ImageJ. Cela permet de faire des mesures en cm (comme le diamètre ou la surface) directement depuis le logiciel ImageJ. Pour l'utiliser il faut l'installer via le menu *plugin/install/<Path to the .java>*
