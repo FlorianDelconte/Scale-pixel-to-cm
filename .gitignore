@@ -15,7 +15,6 @@
 *.txt
 *.hdf5
 .Python
-README.md
 modif_rapport
 note_CNN
 
