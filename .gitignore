@@ -38,3 +38,4 @@ outils/
 ##REPERTOIRE VIDE DE BUILD
 !compute_scale/segment_flou/build/.gitkeep
 !mesure_grume/build/.gitkeep
+!recap.png
