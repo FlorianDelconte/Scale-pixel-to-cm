@@ -1,5 +1,6 @@
 # Conversion de pixel à cm
-Ce projet à été développé dans le cadre d'un stage de master informatique spécialité AVR (Apprentissage Vision Robotique). Il permet de calculer la taille d'un pixel en cm dans des images contenant un damier de taille 2*13.
+Ce projet à été développé dans le cadre d'un stage de master informatique spécialité AVR (Apprentissage Vision Robotique). Il permet de calculer la taille d'un pixel en cm dans des images contenant un damier de taille 2*13. Cela rend possible des mesures géométrique tel que la surface ou le diamètre sur des grumes de bois. Un plugin ImageJ à été développé pour faire des mesure en cm. Ci-dessous un schéma qui explique à quoi sert ce projet.
+![alt text](recap.png?raw=true "A quoi ca sert ?")
 ## Dépendances
 Voici la liste des dépendances nécessaire au bon fonctionnement du projet.
 - Python 3
@@ -14,9 +15,9 @@ Voici la liste des dépendances nécessaire au bon fonctionnement du projet.
 Deux scripts (*compute_scale/writeScale.sh* et *compute_scale/clean.sh*) permettent de faire fonctionner le projet facilement.
 ### writeScale.sh
 Ce script prend en entrée un répertoire contenant des images et le nom du fichier résultat. Il écrit l'échelle de conversion de pixel à cm dans le fichier résultat sous la forme : "nom de l'image | échelle". échelle est le nombre de pixel le long d'un côté du damier.
-  ```
-  ./writeScale.sh <Path to your images>  <name of output file>
-  ```
+```
+./writeScale.sh <Path to your images>  <name of output file>
+```
 ### clean.sh
 Ce script ne prend aucune entrée. Il permet de nettoyer les fichiers temporaire généré lors de l'appel du script *writeScale.sh*. Il faut l'exécuter après chaque appel de *writeScale.sh*.
 ```
