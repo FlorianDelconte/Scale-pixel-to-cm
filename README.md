@@ -3,6 +3,7 @@ Ce projet à été développé dans le cadre d'un stage de master informatique s
 ![alt text](recap.png?raw=true "A quoi ca sert ?")
 ## Dépendances
 Voici la liste des dépendances nécessaire au bon fonctionnement du projet.
+
 - Python 3
 - Scikit-image
 - numpy 1.16.2
@@ -11,6 +12,9 @@ Voici la liste des dépendances nécessaire au bon fonctionnement du projet.
 - Virtualenv
 - Keras
 - TensorFlow
+- MATLAB R2019a
+- DGtal
+
 ## Fonctionnement
 Deux scripts (*compute_scale/writeScale.sh* et *compute_scale/clean.sh*) permettent de faire fonctionner le projet facilement.
 ### writeScale.sh
